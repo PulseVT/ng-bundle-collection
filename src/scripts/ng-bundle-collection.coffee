@@ -1,44 +1,48 @@
 do ->
 	module = angular.module 'ng-bundle-collection', []
 
-	module.factory 'ngBundleCollection', ($q) ->
+	module.factory 'ngBundleCollection', ($q, $timeout) ->
 		(rest, config) ->
-			new Collection $q, rest, config
+			new Collection $q, $timeout, rest, config
 
 class Collection
-	constructor: (@$q, @rest, @config = {}) ->
+	constructor: (@$q, @$timeout, @rest, @config = {}) ->
 		Collection.instances.push @
 
+		@_initConfig()
+		@_initPublicProperties()
+
+		if @config.withCaching then @__initCaching() else @__initImmediateCaching()
+
+	#private properties
+	defaultMockDelay: 500
+
+	_initConfig: =>
 		@config.withCaching = yes unless @config.withCaching?
-		@config.itemsWithActions = yes unless @config.itemsWithActions?
 		@config.id_field = 'id' unless @config.id_field?
-		@config.affectSpinner = yes unless @config.affectSpinner?
 		@config.respondWithPayload = yes unless @config.respondWithPayload?
 
-		@cache = {}
-		@objById = {}
-		@arr = []
-		@loading = 0
-		
-		@_initExtendFns()
-		if @config.withCaching then @__initCaching() else @__initImmediateCaching()
-		if @config.itemsWithActions then @__initItemsCommonActions()
+	_initPublicProperties: =>
+		_.extend @,
+			cache: {}
+			objById: {}
+			arr: []
+			loading: 0
+			extendFns:
+				add:
+					b: [] #before add item
+					a: [] #after add item
+				remove: [] #on remove item
+				update: [] #on update item
+				fetch:
+					b: [] #before fetch
+					s: [] #on successful fetch
+					e: [] #on error fetch
+					f: [] #on finish (either success or error)
 
 	inc: => @loading++
 	dec: => @loading--
-
-	_initExtendFns: =>
-		@extendFns =
-			add:
-				b: [] #before add item
-				a: [] #after add item
-			remove: [] #on remove item
-			update: [] #on update item
-			fetch:
-				b: [] #before fetch
-				s: [] #on successful fetch
-				e: [] #on error fetch
-				f: [] #on finish (either success or error)
+	isLoading: => @loading
 
 	add_withToCache: (data, params) =>
 		@add data
@@ -54,6 +58,7 @@ class Collection
 	__addOne: (item, params) ->
 		unless item[@config.id_field] in _.pluck @objById, @config.id_field
 			fn item for fn in @extendFns.add.b
+			item = new ItemModel item, @
 			if @config.model?
 				item = new @config.model item
 			@arr.push item
@@ -185,7 +190,9 @@ class Collection
 
 	__setMock: (@mock, @mockDelay) =>
 
-	__removeMock: => @mock = null
+	__removeMock: =>
+		@mock = null
+		@mockDelay = null
 
 	__private_fetch: (params) =>
 		@inc()
@@ -194,10 +201,10 @@ class Collection
 		paramsStr = @__calcParamsMark params
 		deferred = @$q.defer()
 		if @mock #if mock is set, then answer with mock instead of making request
-			setTimeout =>
+			@$timeout =>
 				@__success @mock, params
 				deferred.resolve @mock
-			, @mockDelay or 500
+			, @mockDelay or @defaultMockDelay
 		else
 			paramsToSend = params
 			if params[@config.id_field]?
@@ -270,13 +277,6 @@ class Collection
 			s: (response, params, method) => @cache[@__calcParamsMark params] = angular.copy response #@__determineResponse response, params, method
 			e: (response, params) => delete @cache[@__calcParamsMark params]
 		# setInterval @invalidate, @rest.__invalidate_interval
-
-	__initItemsCommonActions: =>
-		@extendAdd
-			b: (item) =>
-				_.extend item,
-					update: => @update item
-					delete: => @delete item
 
 	isCached: (params) => @getCached(params)?
 

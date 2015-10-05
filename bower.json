@@ -1,9 +1,20 @@
 {
   "name": "ng-bundle-collection",
   "version": "0.0.1",
-  "author": "Vitaliy Tarash",
+  "authors": [
+    "Vitaliy Tarash"
+  ],
   "license": "MIT",
   "devDependencies": {
-    "angular": "~1.4.7"
-  }
+    "angular": "~1.4.7",
+    "restangular": "~1.5.1"
+  },
+  "homepage": "https://github.com/PulseVT/ng-bundle-collection",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
 }

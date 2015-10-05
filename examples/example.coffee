@@ -3,11 +3,30 @@ do ->
 	module = angular.module 'ng-bundle-collection-example', ['ng-bundle-collection', 'restangular']
 
 	module.service 'todos', (ngBundleCollection, Restangular) ->
-		#
-		new ngBundleCollection Restangular.all 'todos'
+		_.extend @, new ngBundleCollection Restangular.all 'todos'
+		@__setMock [
+			id: 1
+			text: 'Todo 1'
+		,
+			id: 2
+			text: 'Todo 2'
+		], 1000
+		@
+		
 
-	module.service 'users', (ngBundleCollection) ->
-		new ngBundleCollection 'users'
+	module.controller 'TodosCtrl', ($scope, todos) ->
+		window.scope = $scope
+		self = @
+		todos.fetch().then -> self.n = todos.arr.length
 
-	module.controller 'TodosCtrl', (todos) ->
-		todos.fetch()
+		_.extend $scope,
+			todos: todos
+
+			addTodo: ->
+				self.n++
+				todos.add
+					id: self.n
+					text: "Todo #{self.n}"
+
+			removeTodo: (id) ->
+				todos.remove id: id
