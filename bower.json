@@ -1,6 +1,6 @@
 {
   "name": "ng-bundle-collection",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": [
     "Vitaliy Tarash <vitaliy.tarash@gmail.com>"
   ],
@@ -9,6 +9,7 @@
     "angular": "~1.4.7",
     "restangular": "~1.5.1"
   },
+  "main": "dist/ng-bundle-collection.js",
   "homepage": "https://github.com/PulseVT/ng-bundle-collection",
   "ignore": [
     "**/.*",

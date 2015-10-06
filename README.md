@@ -1,9 +1,13 @@
 # ng-bundle-collection
 
-## Description
+A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS plugin for comfortable work with collections.
 
-A handy AngularJS plugin for comfortable work with collections
+# Features
 
-## License
+- interaction with API
+- CRUD for collection items
+- caching
+
+# License
 
 [MIT](http://opensource.org/licenses/MIT) © vitaliy.tarash@gmail.com
