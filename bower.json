@@ -2,7 +2,7 @@
   "name": "ng-bundle-collection",
   "version": "0.0.1",
   "authors": [
-    "Vitaliy Tarash"
+    "Vitaliy Tarash <vitaliy.tarash@gmail.com>"
   ],
   "license": "MIT",
   "devDependencies": {

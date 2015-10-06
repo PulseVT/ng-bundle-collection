@@ -7,3 +7,6 @@ class ItemModel
 
 	delete: =>
 		@collection.delete @
+
+	save: =>
+		@collection.update @
