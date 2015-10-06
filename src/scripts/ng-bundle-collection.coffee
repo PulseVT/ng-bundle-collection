@@ -1,6 +1,14 @@
 do ->
 	module = angular.module 'ng-bundle-collection', []
 
+	###*
+	# @ngdoc service
+	# @name ng-bundle-collection.ngBundleCollection
+	# @description
+	# wraps Collection class into angular factory
+	# @requires $q
+	# @requires $timeout
+	###
 	module.factory 'ngBundleCollection', ($q, $timeout) ->
 		(rest, config) ->
 			new Collection $q, $timeout, rest, config
@@ -14,9 +22,24 @@ class Collection
 
 		if @config.withCaching then @__initCaching() else @__initImmediateCaching()
 
-	#private properties
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.ngBundleCollection#defaultMockDelay
+	# @propertyOf ng-bundle-collection.ngBundleCollection
+	# @description
+	# number of milliseconds for responding with mock
+	###
 	defaultMockDelay: 500
 
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.ngBundleCollection#_initConfig
+	# @methodOf ng-bundle-collection.ngBundleCollection
+	# @description
+	# populating collection config with defaults
+	# @example
+	# collection._initConfig()
+	###
 	_initConfig: =>
 		@config.withCaching = yes unless @config.withCaching?
 		@config.id_field = 'id' unless @config.id_field?

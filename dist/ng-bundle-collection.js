@@ -4,6 +4,7 @@ var ItemModel,
 ItemModel = (function() {
   function ItemModel(item, collection) {
     this.collection = collection;
+    this.save = bind(this.save, this);
     this["delete"] = bind(this["delete"], this);
     this.remove = bind(this.remove, this);
     _.extend(this, item);
@@ -17,6 +18,10 @@ ItemModel = (function() {
     return this.collection["delete"](this);
   };
 
+  ItemModel.prototype.save = function() {
+    return this.collection.update(this);
+  };
+
   return ItemModel;
 
 })();
@@ -28,6 +33,15 @@ var Collection,
 (function() {
   var module;
   module = angular.module('ng-bundle-collection', []);
+
+  /**
+  	 * @ngdoc service
+  	 * @name ng-bundle-collection.ngBundleCollection
+  	 * @description
+  	 * wraps Collection class into angular factory
+  	 * @requires $q
+  	 * @requires $timeout
+   */
   return module.factory('ngBundleCollection', function($q, $timeout) {
     return function(rest, config) {
       return new Collection($q, $timeout, rest, config);
@@ -83,7 +97,27 @@ Collection = (function() {
     }
   }
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.ngBundleCollection#defaultMockDelay
+  	 * @propertyOf ng-bundle-collection.ngBundleCollection
+  	 * @description
+  	 * number of milliseconds for responding with mock
+   */
+
   Collection.prototype.defaultMockDelay = 500;
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.ngBundleCollection#_initConfig
+  	 * @methodOf ng-bundle-collection.ngBundleCollection
+  	 * @description
+  	 * populating collection config with defaults
+  	 * @example
+  	 * collection._initConfig()
+   */
 
   Collection.prototype._initConfig = function() {
     if (this.config.withCaching == null) {

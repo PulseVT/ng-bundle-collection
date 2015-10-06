@@ -60,7 +60,25 @@ module.exports = (grunt) ->
 				options:
 					cwd: '.'
 
+		clean:
+			docs: ['<%= ngdocs.options.dest %>']
+			dist: ['<%= config.dist %>']
+
+		ngdocs:
+			options:
+				dest: 'docs'
+			main:
+				src: ['<%= config.dist %>/ng-bundle-collection.js']
+				title: 'Documentation'
+
+	grunt.registerTask 'docs', [
+		'clean:docs'
+		'build'
+		'ngdocs:main'
+	]
+
 	grunt.registerTask 'build', [
+		'clean:dist'
 		'coffee:main'
 	]
 
