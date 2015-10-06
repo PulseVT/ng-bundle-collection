@@ -6,6 +6,7 @@ A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS 
 
 - interaction with API
 - CRUD for collection items
+- single source of truth for data in your app
 - caching
 
 # API
@@ -20,4 +21,4 @@ Look at _docs/index.html_ for generated documenation
 
 # License
 
-[MIT](http://opensource.org/licenses/MIT) © vitaliy.tarash@gmail.com
+[MIT](http://opensource.org/licenses/MIT) © Vitaliy Tarash <vitaliy.tarash@gmail.com>
