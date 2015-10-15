@@ -1,0 +1,117 @@
+<h1><code ng:non-bindable="">Collection</code>
+<div><span class="hint">service in module <code ng:non-bindable="">ng-bundle-collection</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="ng-bundle-collection-collection-page"><p>Wraps Collection class into angular factory</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="main/ng.$q">$q</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="main/ng.$timeout">$timeout</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods__initconfig">_initConfig()</h3>
+<div class="_initconfig"><div class="ng-bundle-collection-collection-initconfig-page"><p>Populating collection config with defaults</p>
+</div><h4 id="methods__initconfig_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-initconfig-page"><p>collection._initConfig()</p>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods__initpublicproperties">_initPublicProperties()</h3>
+<div class="_initpublicproperties"><div class="ng-bundle-collection-collection-initpublicproperties-page"><p>Initialization of public properties of collection</p>
+</div><h4 id="methods__initpublicproperties_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-initpublicproperties-page"><p>collection._initPublicProperties()</p>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_add">add(data)</h3>
+<div class="add"><div class="ng-bundle-collection-collection-add-page"><p>Adds an item to collection</p>
+</div><h5 id="methods_add_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Item to be added, must contain an id-field named the same as the config parameter <code>collection.config.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p>
+</div></td></tr></tbody></table><h5 id="methods_add_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Added item</p>
+</div></td></tr></table><h4 id="methods_add_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-add-page"><blockquote>
+<p>   collection.add({
+       id: 0,
+       name: &#39;User Name&#39;,
+       email: &#39;email@email.com&#39;
+   })</p>
+</blockquote>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_add_withtocache">add_withToCache(data, params)</h3>
+<div class="add_withtocache"><h5 id="methods_add_withtocache_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Item to be added, must contain an id-field named the same as the config parameter <code>collection.config.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p>
+</div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Params object that should be </p>
+</div></td></tr></tbody></table><h5 id="methods_add_withtocache_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Added item</p>
+</div></td></tr></table><h4 id="methods_add_withtocache_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-add-withtocache-page"><p>collection.add_withToCache(itemObject)</p>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_dec">dec()</h3>
+<div class="dec"><div class="ng-bundle-collection-collection-dec-page"><p>Decreases the collection.loading flag by 1</p>
+</div><h5 id="methods_dec_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-dec-page"><p>Resulting collection.loading value</p>
+</div></td></tr></table><h4 id="methods_dec_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-dec-page"><p>collection.dec()</p>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_inc">inc()</h3>
+<div class="inc"><div class="ng-bundle-collection-collection-inc-page"><p>Increases the collection.loading flag by 1</p>
+</div><h5 id="methods_inc_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-inc-page"><p>Resulting collection.loading value</p>
+</div></td></tr></table><h4 id="methods_inc_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-inc-page"><p>collection.inc()</p>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_isloading">isLoading()</h3>
+<div class="isloading"><h5 id="methods_isloading_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ng-bundle-collection-collection-isloading-page"><p>Whether the colletion is loading something or not</p>
+</div></td></tr></table><h4 id="methods_isloading_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-isloading-page"><p>collection.isLoading()</p>
+</div></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_arr">arr</h3>
+<div class="arr"><div class="ng-bundle-collection-collection-arr-page"><p>Array, storage of collection items.</p>
+</div></div>
+</li>
+<li><h3 id="properties_cache">cache</h3>
+<div class="cache"><div class="ng-bundle-collection-collection-cache-page"><p>Object, storage of cached responses:</p>
+<ul>
+<li>Keys of cache are stringified params for request.</li>
+<li>Values of cache are ones of:<ul>
+<li>promises of pending requests</li>
+<li>responses of requests</li>
+</ul>
+</li>
+</ul>
+</div></div>
+</li>
+<li><h3 id="properties_defaultmockdelay">defaultMockDelay</h3>
+<div class="defaultmockdelay"><div class="ng-bundle-collection-collection-defaultmockdelay-page"><p>Number of milliseconds for responding with mock</p>
+</div></div>
+</li>
+<li><h3 id="properties_extendfns">extendFns</h3>
+<div class="extendfns"><div class="ng-bundle-collection-collection-extendfns-page"><p>Object, storage of functions which extend collection actions</p>
+</div></div>
+</li>
+<li><h3 id="properties_loading">loading</h3>
+<div class="loading"><div class="ng-bundle-collection-collection-loading-page"><p>Number, flag which indicates the number of current pending requests through collection</p>
+</div></div>
+</li>
+<li><h3 id="properties_objbyid">objById</h3>
+<div class="objbyid"><div class="ng-bundle-collection-collection-objbyid-page"><p>Object, storage of collection items. Keys of object are item ids.
+The id is the <a href="main/ng-bundle-collection.Collection.config">ng-bundle-collection.Collection.config</a><code>.id_field</code> field of each item.
+For example: 
+<strong>item[collection.config.id_field]</strong></p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>

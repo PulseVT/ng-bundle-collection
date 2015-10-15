@@ -1,15 +1,21 @@
 do ->
+	###*
+	# @ngdoc overview
+	# @name ng-bundle-collection
+	# @description
+	# Main module which contains Collection factory and class
+	###
 	module = angular.module 'ng-bundle-collection', []
 
 	###*
 	# @ngdoc service
-	# @name ng-bundle-collection.ngBundleCollection
+	# @name ng-bundle-collection.Collection
 	# @description
-	# wraps Collection class into angular factory
+	# Wraps Collection class into angular factory
 	# @requires $q
 	# @requires $timeout
 	###
-	module.factory 'ngBundleCollection', ($q, $timeout) ->
+	module.factory 'Collection', ($q, $timeout) ->
 		(rest, config) ->
 			new Collection $q, $timeout, rest, config
 
@@ -24,27 +30,91 @@ class Collection
 
 	###*
 	# @ngdoc
-	# @name ng-bundle-collection.ngBundleCollection#defaultMockDelay
-	# @propertyOf ng-bundle-collection.ngBundleCollection
+	# @name ng-bundle-collection.Collection#defaultMockDelay
+	# @propertyOf ng-bundle-collection.Collection
 	# @description
-	# number of milliseconds for responding with mock
+	# Number of milliseconds for responding with mock
 	###
 	defaultMockDelay: 500
 
 	###*
 	# @ngdoc
-	# @name ng-bundle-collection.ngBundleCollection#_initConfig
-	# @methodOf ng-bundle-collection.ngBundleCollection
+	# @name ng-bundle-collection.Collection#_initConfig
+	# @methodOf ng-bundle-collection.Collection
 	# @description
-	# populating collection config with defaults
+	# Populating collection config with defaults
 	# @example
 	# collection._initConfig()
+	###
+	###*
+	# @ngdoc object
+	# @name ng-bundle-collection.Collection.config
+	# @description
+	# Configuration object of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} instances
+	# @property {boolean} withCaching=true
+	# Controls whether to initialize caching mechanism for collection
+	# @property {string} id_field="id"
+	# Name of identification field for each collection item
+	# @property {boolean} respondWithPayload=true
+	# Controls whether to add payload of each request as a **`__payload`** field in response
 	###
 	_initConfig: =>
 		@config.withCaching = yes unless @config.withCaching?
 		@config.id_field = 'id' unless @config.id_field?
 		@config.respondWithPayload = yes unless @config.respondWithPayload?
 
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#_initPublicProperties
+	# @methodOf ng-bundle-collection.Collection
+	# @description
+	# Initialization of public properties of collection
+	# @example
+	# collection._initPublicProperties()
+	###
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#cache
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Object, storage of cached responses:
+	# - Keys of cache are stringified params for request.
+	# - Values of cache are ones of:
+	#   - promises of pending requests
+	#   - responses of requests
+	###
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#objById
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Object, storage of collection items. Keys of object are item ids.
+	# The id is the {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config}`.id_field` field of each item.
+	# For example: 
+	# **item[collection.config.id_field]**
+	###
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#arr
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Array, storage of collection items.
+	###
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#loading
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Number, flag which indicates the number of current pending requests through collection
+	###
+	###*
+	# @ngdoc object
+	# @name ng-bundle-collection.Collection#extendFns
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Object, storage of functions which extend collection actions
+	###
 	_initPublicProperties: =>
 		_.extend @,
 			cache: {}
@@ -63,22 +133,80 @@ class Collection
 					e: [] #on error fetch
 					f: [] #on finish (either success or error)
 
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#inc
+	# @methodOf ng-bundle-collection.Collection
+	# @description
+	# Increases the collection.loading flag by 1
+	# @returns {number} Resulting collection.loading value
+	# @example
+	# collection.inc()
+	###
 	inc: => @loading++
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#dec
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {number} Resulting collection.loading value
+	# @description
+	# Decreases the collection.loading flag by 1
+	# @example
+	# collection.dec()
+	###
 	dec: => @loading--
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#isLoading
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {boolean} Whether the colletion is loading something or not
+	# @example
+	# collection.isLoading()
+	###
 	isLoading: => @loading
 
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#add
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {object} Added item
+	# @description
+	# Adds an item to collection
+	# @param {object} data
+	# Item to be added, must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)
+	# @example
+	>	collection.add({
+	>		id: 0,
+	>		name: 'User Name',
+	>		email: 'email@email.com'
+	>	})
+	###
+	add: (data) =>
+		if _.isArray data
+			@__addOne item, params for item in data
+		else @__addOne arguments...
+	
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#add_withToCache
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {object} Added item
+	# @param {object} data
+	# Item to be added, must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)
+	# @param {object} params
+	# Params object that should be 
+	# @example
+	# collection.add_withToCache(itemObject)
+	###
 	add_withToCache: (data, params) =>
 		@add data
 		paramsMark = @__calcParamsMark params
 		if @cache[paramsMark]? and data[@config.id_field] not in _.pluck @cache[paramsMark].results, @config.id_field
 			@cache[paramsMark].results.push data
 
-	add: (data, params) =>
-		if _.isArray data
-			@__addOne item, params for item in data
-		else @__addOne arguments...
-
-	__addOne: (item, params) ->
+	__addOne: (item) ->
 		unless item[@config.id_field] in _.pluck @objById, @config.id_field
 			fn item for fn in @extendFns.add.b
 			item = new ItemModel item, @

@@ -9,6 +9,7 @@ module.exports = (grunt) ->
 	grunt.initConfig
 		config:
 			examples: 'examples'
+			docs: 'docs'
 			src: 'src'
 			dist: 'dist'
 
@@ -19,12 +20,22 @@ module.exports = (grunt) ->
 					base: '<%= config.examples %>'
 					debug: yes
 					middleware: (connect, options) ->
-						optBase = if _.isString options.base then [ options.base ] else options.base
 						[
 							modrewrite [ '!(\\..+)$ /example.html [L]' ]
 							serveStatic '.'
-						].concat optBase.map (path) ->
-							serveStatic path
+							serveStatic options.base.toString()
+						]
+			docs:
+				options:
+					port: 9000
+					static: '<%= config.docs %>'
+					middleware: (connect, options) ->
+						[
+							modrewrite ['!\\.ttf|\\.woff|\\.ttf|\\.eot|\\.html|\\.js|\\.css|\\.png|\\.jpg|\\.gif|\\.svg$ /index.html [L]']
+							serveStatic options.static.toString()
+						]
+
+
 
 		watch:
 			main_coffee:
@@ -36,6 +47,9 @@ module.exports = (grunt) ->
 			gruntfile:
 				files: ['Gruntfile.coffee']
 				tasks: ['build-examples', 'build']
+			docs:
+				files: ['<%= config.dist %>/**/*.js']
+				tasks: ['docs']
 
 		coffee:
 			main:
@@ -67,8 +81,9 @@ module.exports = (grunt) ->
 		ngdocs:
 			options:
 				dest: 'docs'
+				html5Mode: yes
 			main:
-				src: ['<%= config.dist %>/ng-bundle-collection.js']
+				src: ['<%= config.dist %>/**/*.js']
 				title: 'Documentation'
 
 	grunt.registerTask 'docs', [
@@ -86,12 +101,18 @@ module.exports = (grunt) ->
 		'coffee:examples'
 	]
 
-	grunt.registerTask 'serve', [
+	grunt.registerTask 'serve-examples', [
 		'bower-install-simple'
 		'build-examples'
 		'build'
-		'connect'
+		'connect:examples'
 		'watch'
 	]
 
-	grunt.registerTask 'default', ['serve']
+	grunt.registerTask 'serve-docs', [
+		'docs'
+		'connect:docs'
+		'watch'
+	]
+
+	grunt.registerTask 'default', ['serve-examples']

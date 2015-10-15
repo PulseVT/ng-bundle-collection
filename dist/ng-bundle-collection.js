@@ -31,18 +31,25 @@ var Collection,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 (function() {
+
+  /**
+  	 * @ngdoc overview
+  	 * @name ng-bundle-collection
+  	 * @description
+  	 * Main module which contains Collection factory and class
+   */
   var module;
   module = angular.module('ng-bundle-collection', []);
 
   /**
   	 * @ngdoc service
-  	 * @name ng-bundle-collection.ngBundleCollection
+  	 * @name ng-bundle-collection.Collection
   	 * @description
-  	 * wraps Collection class into angular factory
+  	 * Wraps Collection class into angular factory
   	 * @requires $q
   	 * @requires $timeout
    */
-  return module.factory('ngBundleCollection', function($q, $timeout) {
+  return module.factory('Collection', function($q, $timeout) {
     return function(rest, config) {
       return new Collection($q, $timeout, rest, config);
     };
@@ -80,8 +87,8 @@ Collection = (function() {
     this.update_locally = bind(this.update_locally, this);
     this.update = bind(this.update, this);
     this.create = bind(this.create, this);
-    this.add = bind(this.add, this);
     this.add_withToCache = bind(this.add_withToCache, this);
+    this.add = bind(this.add, this);
     this.isLoading = bind(this.isLoading, this);
     this.dec = bind(this.dec, this);
     this.inc = bind(this.inc, this);
@@ -100,10 +107,10 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-bundle-collection.ngBundleCollection#defaultMockDelay
-  	 * @propertyOf ng-bundle-collection.ngBundleCollection
+  	 * @name ng-bundle-collection.Collection#defaultMockDelay
+  	 * @propertyOf ng-bundle-collection.Collection
   	 * @description
-  	 * number of milliseconds for responding with mock
+  	 * Number of milliseconds for responding with mock
    */
 
   Collection.prototype.defaultMockDelay = 500;
@@ -111,12 +118,26 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-bundle-collection.ngBundleCollection#_initConfig
-  	 * @methodOf ng-bundle-collection.ngBundleCollection
+  	 * @name ng-bundle-collection.Collection#_initConfig
+  	 * @methodOf ng-bundle-collection.Collection
   	 * @description
-  	 * populating collection config with defaults
+  	 * Populating collection config with defaults
   	 * @example
   	 * collection._initConfig()
+   */
+
+
+  /**
+  	 * @ngdoc object
+  	 * @name ng-bundle-collection.Collection.config
+  	 * @description
+  	 * Configuration object of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} instances
+  	 * @property {boolean} withCaching=true
+  	 * Controls whether to initialize caching mechanism for collection
+  	 * @property {string} id_field="id"
+  	 * Name of identification field for each collection item
+  	 * @property {boolean} respondWithPayload=true
+  	 * Controls whether to add payload of each request as a **`__payload`** field in response
    */
 
   Collection.prototype._initConfig = function() {
@@ -130,6 +151,69 @@ Collection = (function() {
       return this.config.respondWithPayload = true;
     }
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#_initPublicProperties
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Initialization of public properties of collection
+  	 * @example
+  	 * collection._initPublicProperties()
+   */
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#cache
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Object, storage of cached responses:
+  	 * - Keys of cache are stringified params for request.
+  	 * - Values of cache are ones of:
+  	 *   - promises of pending requests
+  	 *   - responses of requests
+   */
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#objById
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Object, storage of collection items. Keys of object are item ids.
+  	 * The id is the {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config}`.id_field` field of each item.
+  	 * For example: 
+  	 * **item[collection.config.id_field]**
+   */
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#arr
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Array, storage of collection items.
+   */
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#loading
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Number, flag which indicates the number of current pending requests through collection
+   */
+
+
+  /**
+  	 * @ngdoc object
+  	 * @name ng-bundle-collection.Collection#extendFns
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Object, storage of functions which extend collection actions
+   */
 
   Collection.prototype._initPublicProperties = function() {
     return _.extend(this, {
@@ -154,28 +238,71 @@ Collection = (function() {
     });
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#inc
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Increases the collection.loading flag by 1
+  	 * @returns {number} Resulting collection.loading value
+  	 * @example
+  	 * collection.inc()
+   */
+
   Collection.prototype.inc = function() {
     return this.loading++;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#dec
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {number} Resulting collection.loading value
+  	 * @description
+  	 * Decreases the collection.loading flag by 1
+  	 * @example
+  	 * collection.dec()
+   */
 
   Collection.prototype.dec = function() {
     return this.loading--;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#isLoading
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {boolean} Whether the colletion is loading something or not
+  	 * @example
+  	 * collection.isLoading()
+   */
+
   Collection.prototype.isLoading = function() {
     return this.loading;
   };
 
-  Collection.prototype.add_withToCache = function(data, params) {
-    var paramsMark, ref;
-    this.add(data);
-    paramsMark = this.__calcParamsMark(params);
-    if ((this.cache[paramsMark] != null) && (ref = data[this.config.id_field], indexOf.call(_.pluck(this.cache[paramsMark].results, this.config.id_field), ref) < 0)) {
-      return this.cache[paramsMark].results.push(data);
-    }
-  };
 
-  Collection.prototype.add = function(data, params) {
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#add
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {object} Added item
+  	 * @description
+  	 * Adds an item to collection
+  	 * @param {object} data
+  	 * Item to be added, must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)
+  	 * @example
+  	>	collection.add({
+  	>		id: 0,
+  	>		name: 'User Name',
+  	>		email: 'email@email.com'
+  	>	})
+   */
+
+  Collection.prototype.add = function(data) {
     var item, j, len, results1;
     if (_.isArray(data)) {
       results1 = [];
@@ -189,7 +316,30 @@ Collection = (function() {
     }
   };
 
-  Collection.prototype.__addOne = function(item, params) {
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#add_withToCache
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {object} Added item
+  	 * @param {object} data
+  	 * Item to be added, must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)
+  	 * @param {object} params
+  	 * Params object that should be 
+  	 * @example
+  	 * collection.add_withToCache(itemObject)
+   */
+
+  Collection.prototype.add_withToCache = function(data, params) {
+    var paramsMark, ref;
+    this.add(data);
+    paramsMark = this.__calcParamsMark(params);
+    if ((this.cache[paramsMark] != null) && (ref = data[this.config.id_field], indexOf.call(_.pluck(this.cache[paramsMark].results, this.config.id_field), ref) < 0)) {
+      return this.cache[paramsMark].results.push(data);
+    }
+  };
+
+  Collection.prototype.__addOne = function(item) {
     var fn, j, l, len, len1, ref, ref1, ref2, results1;
     if (ref = item[this.config.id_field], indexOf.call(_.pluck(this.objById, this.config.id_field), ref) < 0) {
       ref1 = this.extendFns.add.b;

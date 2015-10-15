@@ -285,7 +285,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
   angular.forEach(NG_DOCS.sections, function(section, url) {
     $scope.sections[(NG_DOCS.html5Mode ? '' : '#/') + url] = section;
   });
-  $scope.$watch(function docsPathWatch() {return $location.path(); }, function docsPathWatchAction(path) {
+  $scope.$watch(function docsPathWatch() {return location.pathname; }, function docsPathWatchAction(path) {
     var parts = path.split('/'),
       sectionId = parts[1],
       partialId = parts[2],
