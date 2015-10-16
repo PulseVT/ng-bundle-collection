@@ -49,7 +49,7 @@ module.exports = (grunt) ->
 				tasks: ['build-examples', 'build']
 			docs:
 				files: ['<%= config.dist %>/**/*.js']
-				tasks: ['docs']
+				tasks: ['docs:serve']
 
 		coffee:
 			main:
@@ -86,14 +86,16 @@ module.exports = (grunt) ->
 				src: ['<%= config.dist %>/**/*.js']
 				title: 'Documentation'
 
-	grunt.registerTask 'docs', [
-		'clean:docs'
-		'build'
-		'ngdocs:main'
-	]
+	grunt.registerTask 'docs', (target) ->
+		tasks = []
+		if 'serve' isnt target
+			tasks.push 'clean:docs'
+		grunt.task.run tasks.concat [
+			'build'
+			'ngdocs:main'
+		]
 
 	grunt.registerTask 'build', [
-		'clean:dist'
 		'coffee:main'
 	]
 
@@ -102,6 +104,7 @@ module.exports = (grunt) ->
 	]
 
 	grunt.registerTask 'serve-examples', [
+		'clean:dist'
 		'bower-install-simple'
 		'build-examples'
 		'build'
@@ -110,7 +113,7 @@ module.exports = (grunt) ->
 	]
 
 	grunt.registerTask 'serve-docs', [
-		'docs'
+		'docs:serve'
 		'connect:docs'
 		'watch'
 	]

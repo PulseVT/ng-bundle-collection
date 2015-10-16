@@ -48,6 +48,18 @@ var Collection,
   	 * Wraps Collection class into angular factory
   	 * @requires $q
   	 * @requires $timeout
+  	 * @param {object} rest
+  	 * Restangular instance
+  	 * @param {object} config
+  	 * Configuration for collection
+  	 * @example
+  	<pre>
+  		var collection = new Collection(Restangular.all('users'), {
+  			withCaching: true,
+  			id_field: 'id',
+  			respondWithPayload: true
+  		});
+  	</pre>
    */
   return module.factory('Collection', function($q, $timeout) {
     return function(rest, config) {
@@ -55,6 +67,14 @@ var Collection,
     };
   });
 })();
+
+
+/**
+ * @ngdoc object
+ * @name Private_methods
+ * @description
+ * Private methods of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection}
+ */
 
 Collection = (function() {
   function Collection($q1, $timeout1, rest1, config1) {
@@ -118,12 +138,10 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-bundle-collection.Collection#_initConfig
-  	 * @methodOf ng-bundle-collection.Collection
+  	 * @name Private_methods#_initConfig
+  	 * @methodOf Private_methods
   	 * @description
   	 * Populating collection config with defaults
-  	 * @example
-  	 * collection._initConfig()
    */
 
 
@@ -155,12 +173,10 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-bundle-collection.Collection#_initPublicProperties
-  	 * @methodOf ng-bundle-collection.Collection
+  	 * @name Private_methods#_initPublicProperties
+  	 * @methodOf Private_methods
   	 * @description
   	 * Initialization of public properties of collection
-  	 * @example
-  	 * collection._initPublicProperties()
    */
 
 
@@ -182,10 +198,13 @@ Collection = (function() {
   	 * @name ng-bundle-collection.Collection#objById
   	 * @propertyOf ng-bundle-collection.Collection
   	 * @description
-  	 * Object, storage of collection items. Keys of object are item ids.
-  	 * The id is the {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config}`.id_field` field of each item.
-  	 * For example: 
-  	 * **item[collection.config.id_field]**
+  	 * <p>Object, storage of collection items. Keys of object are item ids.<p>
+  	 * <p>The id is the {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config}`.id_field` field of each item.</p>
+  	 * <p>E.g.: <p>
+  	<pre>
+  		collection.add(item);
+  		(collection.objId[item[collection.config.id_field]] === item) === true;
+  	</pre>
    */
 
 
@@ -289,17 +308,21 @@ Collection = (function() {
   	 * @ngdoc
   	 * @name ng-bundle-collection.Collection#add
   	 * @methodOf ng-bundle-collection.Collection
-  	 * @returns {object} Added item
+  	 * @returns {object|array} Added item or array of items
   	 * @description
-  	 * Adds an item to collection
-  	 * @param {object} data
-  	 * Item to be added, must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)
+  	 * Adds an item to collection.
+  	 * Overwrites existing item if the id-field of item exists in collection
+  	 * @param {object|array} data
+  	 * <p>Item to be added or array of items.</p>
+  	 * <p>Item must contain an id-field named the same as the config parameter {@link ng-bundle-collection.Collection.config collection.config}`.id_field` (by default it equals `'id'`)</p>
   	 * @example
-  	>	collection.add({
-  	>		id: 0,
-  	>		name: 'User Name',
-  	>		email: 'email@email.com'
-  	>	})
+  	<pre>
+  		collection.add({
+  			id: 0,
+  			name: 'User Name',
+  			email: 'email@email.com'
+  		})
+  	</pre>
    */
 
   Collection.prototype.add = function(data) {
@@ -321,23 +344,61 @@ Collection = (function() {
   	 * @ngdoc
   	 * @name ng-bundle-collection.Collection#add_withToCache
   	 * @methodOf ng-bundle-collection.Collection
-  	 * @returns {object} Added item
-  	 * @param {object} data
-  	 * Item to be added, must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)
+  	 * @returns {object|array}
+  	 * Added item or array of items
+  	 * @description
+  	 * Adds item to collection and extends cache record, specified by `Params` parameter
+  	 * @param {object|array} data
+  	 * <p>Item to be added or array of items.</p>
+  	 * <p>Item must contain an id-field named the same as the config parameter `collection.config.id_field` (by default it equals `'id'`)</p>
   	 * @param {object} params
-  	 * Params object that should be 
-  	 * @example
-  	 * collection.add_withToCache(itemObject)
+  	 * Params object that identifies which cache record should be the item added to
+  	 * @example	
+  	<pre>
+  		collection.add({
+  			id: 0,
+  			name: 'User Name',
+  			email: 'email@email.com'
+  		}, {
+  			name: 'User ',
+  			email: 'email'
+  		})
+  	</pre>
+  	This will add an item into cache record {@link ng-bundle-collection.Collection#cache collection.cache}`[JSON.stringify({
+  			name: 'User ',
+  			email: 'email'
+  	})]`
    */
 
   Collection.prototype.add_withToCache = function(data, params) {
-    var paramsMark, ref;
-    this.add(data);
+    var item, j, len, paramsMark, ref, response;
+    response = this.add(data);
     paramsMark = this.__calcParamsMark(params);
-    if ((this.cache[paramsMark] != null) && (ref = data[this.config.id_field], indexOf.call(_.pluck(this.cache[paramsMark].results, this.config.id_field), ref) < 0)) {
-      return this.cache[paramsMark].results.push(data);
+    if (!_.isArray(data)) {
+      data = [data];
     }
+    for (j = 0, len = data.length; j < len; j++) {
+      item = data[j];
+      if ((this.cache[paramsMark] != null) && (ref = item[this.config.id_field], indexOf.call(_.pluck(this.cache[paramsMark].results, this.config.id_field), ref) < 0)) {
+        this.cache[paramsMark].results.push(item);
+      }
+    }
+    return response;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__addOne
+  	 * @methodOf Private_methods
+  	 * @returns {object}
+  	 * Added item
+  	 * @description
+  	 * <p>Adds single item to collection.</p>
+  	 * <p>To add an item, please use `collection.add` or `collection.add_withToCache`</p>
+  	 * @param {object} item
+  	 * Item to be added.
+   */
 
   Collection.prototype.__addOne = function(item) {
     var fn, j, l, len, len1, ref, ref1, ref2, results1;
@@ -363,20 +424,39 @@ Collection = (function() {
     }
   };
 
-  Collection.prototype.create = function(data, scb, ecb) {
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#create
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise}
+  	 * Promise which resolves with created item or rejects with error response
+  	 * @description
+  	 * <p>Creates single item in collection and at backend using specified REST configuration..</p>
+  	 * <p>Makes `POST` request to endpoint.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * @param {object} item
+  	 * Item data
+  	 * @example
+  	<pre>
+  		var collection = new Collection(Restangular.all('users'));
+  		//This will make `POST` request to `users` endpoint.
+  		collection.create({
+  			name: 'User Name',
+  			email: 'email@email.com'
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.create = function(data) {
     var promise;
     this.inc();
     promise = this.__rest(data).post(data).then((function(_this) {
       return function(response) {
         _this.add(response);
-        if (typeof scb === "function") {
-          scb(response);
-        }
         return response;
       };
-    })(this), function(response) {
-      return typeof ecb === "function" ? ecb(response) : void 0;
-    });
+    })(this));
     promise["finally"]((function(_this) {
       return function() {
         return _this.dec();
@@ -385,20 +465,49 @@ Collection = (function() {
     return promise;
   };
 
-  Collection.prototype.update = function(data, scb, ecb) {
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#update
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PATCH` request to endpoint.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @example
+  	<pre>
+  		var users = new Collection(Restangular.all('users'), {
+  			id_field: 'specific_id_field'
+  		});
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(item){
+  			//This will make `PATCH` request to `users/1`.
+  			users.update({
+  				specific_id_field: item.specific_id_field,
+  				name: 'User Name',
+  				email: 'email@email.com'
+  			});
+  	
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.update = function(data) {
     var promise;
     this.inc();
     promise = this.__rest(data).one(data[this.config.id_field].toString()).patch(data).then((function(_this) {
       return function(response) {
         _this.update_locally(response);
-        if (typeof scb === "function") {
-          scb(response);
-        }
         return response;
       };
-    })(this), function(error) {
-      return typeof ecb === "function" ? ecb(error) : void 0;
-    });
+    })(this));
     promise["finally"]((function(_this) {
       return function() {
         return _this.dec();
@@ -406,6 +515,28 @@ Collection = (function() {
     })(this));
     return promise;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#update_locally
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {object} 
+  	 * Updated item
+  	 * @description
+  	 * <p>Updates single item in collection locally (doesnt affect backend).</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @example
+  	<pre>
+  		collection.update_locally({
+  			__id: 1,
+  			name: 'User Name',
+  			email: 'email@email.com'
+  		})
+  	</pre>
+  	This will make `PATCH` request to `users/1`.
+   */
 
   Collection.prototype.update_locally = function(item) {
     var elem, index, j, len, ref;
@@ -418,23 +549,52 @@ Collection = (function() {
         break;
       }
     }
-    return this.__callExtendFns(this.extendFns.update, item);
+    this.__callExtendFns(this.extendFns.update, item);
+    return item;
   };
 
-  Collection.prototype["delete"] = function(item, scb, ecb) {
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#delete
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise} 
+  	 * Promise which resolves with deleted item or rejects with error response
+  	 * @description
+  	 * <p>Removes single item from collection and deletes it at backend using specified REST configuration.</p>
+  	 * <p>Makes `DELETE` request to endpoint.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * @param {object} item
+  	 * Item data, must contain id-field
+  	 * @example
+  	<pre>
+  		//creating collection, with id-field 'id' by default
+  		var users = new Collection(Restangular.all('users'));
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			//This will make `DELETE` request to `users/1`.
+  			users.delete(user);
+  			//or
+  			users.delete({
+  				id: user.id
+  			});
+  
+  		});
+  	</pre>
+   */
+
+  Collection.prototype["delete"] = function(item) {
     var promise;
     this.inc();
     promise = this.__rest(item).one(item[this.config.id_field].toString()).remove().then((function(_this) {
       return function(response) {
         _this.remove(item);
-        if (typeof scb === "function") {
-          scb(response);
-        }
         return response;
       };
-    })(this), function(response) {
-      return typeof ecb === "function" ? ecb(response) : void 0;
-    });
+    })(this));
     promise["finally"]((function(_this) {
       return function() {
         return _this.dec();
@@ -442,6 +602,37 @@ Collection = (function() {
     })(this));
     return promise;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#remove
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {object} 
+  	 * Removed item
+  	 * @description
+  	 * <p>Removes single item from collection locally.</p>
+  	 * @param {object} item
+  	 * Item data, must contain id-field
+  	 * @example
+  	<pre>
+  		//creating collection, with id-field 'id' by default
+  		var users = new Collection(Restangular.all('users'));
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			//This will remove user from collection, but not from backend
+  			users.remove(user);
+  			//or
+  			users.remove({
+  				id: user.id
+  			});
+  
+  		});
+  	</pre>
+   */
 
   Collection.prototype.remove = function(item) {
     if (item == null) {
@@ -453,8 +644,39 @@ Collection = (function() {
         return elem[_this.config.id_field] === item[_this.config.id_field];
       };
     })(this));
-    return this.__callExtendFns(this.extendFns.remove, item);
+    this.__callExtendFns(this.extendFns.remove, item);
+    return item;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#clear
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @this {object} {@link ng-bundle-collection.Collection collection} instance
+  	 * @returns {object}
+  	 * this, {@link ng-bundle-collection.Collection collection} instance
+  	 * @description
+  	 * Clears collection by taking it back to initial empty state.
+  	 * @example
+  	<pre>
+  		//creating collection, with id-field 'id' by default
+  		var users = new Collection(Restangular.all('users'));
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			console.log(users.arr.length);
+  			//logs `1`
+  
+  			users.clear();
+  
+  			console.log(users.arr.length);
+  			//logs `0`
+  		});
+  	</pre>
+   */
 
   Collection.prototype.clear = function(withExtendFns) {
     var item, j, len, ref;
@@ -466,16 +688,81 @@ Collection = (function() {
       item = ref[j];
       this.remove(item);
     }
-    return this.obj = {};
+    this.obj = {};
+    return this;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#extendUpdate
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Adds function to {@link ng-bundle-collection.Collection#extendFns ng-bundle-collection.Collection#extendFns}`.update`
+  	 * @param {function} fn
+  	 * Extending function
+  	 * @example
+  	<pre>
+  		var updated_items = []
+  		//..... 
+  		collection.extendUpdate(function(item){
+  			item.is_updated = true;
+  			updated_items.push(item);
+  		});
+  	</pre>
+   */
 
   Collection.prototype.extendUpdate = function(fn) {
     return this.extendFns.update.push(fn);
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#extendRemove
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Adds function to {@link ng-bundle-collection.Collection#extendFns ng-bundle-collection.Collection#extendFns}`.remove`
+  	 * @param {function} fn
+  	 * Extending function
+  	 * @example
+  	<pre>
+  		var removed_items = []
+  		//..... 
+  		collection.extendRemove(function(item){
+  			removed_items.push(item);
+  		});
+  	</pre>
+   */
+
   Collection.prototype.extendRemove = function(fn) {
     return this.extendFns.remove.push(fn);
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#extendAdd
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Adds function to {@link ng-bundle-collection.Collection#extendFns ng-bundle-collection.Collection#extendFns}`.add` structure
+  	 * @param {object} fns
+  	 * Object, keys can be:
+  	 * - `'b'` - function will be executed before adding to collection (to `arr` and `objById`)
+  	 * - `'a'` - function will be executed after adding to collection (to `arr` and `objById`)
+  	 * Values are extending functions
+  	 * @example
+  	<pre>
+  		//for example, extendAdd can be used as a decorator for each item
+  		collection.extendAdd({
+  			b: function(item){
+  				_.extend(item, {
+  					//...
+  				});
+  			}
+  		});
+  	</pre>
+   */
 
   Collection.prototype.extendAdd = function(fns) {
     var k, results1, v;
@@ -487,34 +774,120 @@ Collection = (function() {
     return results1;
   };
 
-  Collection.prototype.extendFetch = function(fns, once) {
-    var fn, k, results1, v;
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#extendFetch
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Adds function to {@link ng-bundle-collection.Collection#extendFns ng-bundle-collection.Collection#extendFns}`.fetch` structure
+  	 * @param {object} fns
+  	 * Object, keys can be:
+  	 * - `'b'` - function will be executed before fetching
+  	 * - `'s'` - function will be executed after fetching, on success
+  	 * - `'e'` - function will be executed after fetching, on error
+  	 * - `'f'` - function will be executed after fetching, bot on success and error
+  	 * Values are extending functions
+  	 * @example
+  	<pre>
+  		//for example, extendAdd can be used as a decorator for each item
+  		collection.extendFetch({
+  			s: function(successResponse, requestParams){
+  				...
+  			},
+  			e: function(errorResponse, requestParams){
+  				...
+  			}
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.extendFetch = function(fns) {
+    var k, results1, v;
     results1 = [];
     for (k in fns) {
       v = fns[k];
-      if (once) {
-        fn = (function(extendFns, k, v) {
-          return function() {
-            v.apply(null, arguments);
-            return extendFns.fetch[k]["delete"](v);
-          };
-        })(this.extendFns, k, v);
-        fn.once = true;
-        results1.push(this.extendFns.fetch[k].push(fn));
-      } else {
-        results1.push(this.extendFns.fetch[k].push(v));
-      }
+      results1.push(this.extendFns.fetch[k].push(v));
     }
     return results1;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#at
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Takes an item from {@link ng-bundle-collection.Collection collection}`.arr` by index
+  	 * @returns {object}
+  	 * Item from collection
+  	 * @param {number} index
+  	 * Index of item in {@link ng-bundle-collection.Collection collection}`.arr`
+  	 * @example
+  	<pre>
+  		collection.create({...});
+  		//...
+  		var item = collection.at(0);
+  	</pre>
+   */
 
   Collection.prototype.at = function(index) {
     return this.arr[index];
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#by
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Takes an item from {@link ng-bundle-collection.Collection collection}`.objById` by its id
+  	 * @returns {object}
+  	 * Item from collection
+  	 * @param {number|string} id
+  	 * Id-field value of item
+  	 * @example
+  	<pre>
+  		var users = new Collection(Restangular.all('users'));
+  		//...
+  		users.create({id:0, ...});
+  		//...
+  		var user = users.by(0);
+  	</pre>
+   */
+
   Collection.prototype.by = function(id) {
     return this.objById[id];
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#fetch
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * <p>Fetching data from backend.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * @returns {promise|object}
+  	 * - Object of response if the result for given `params` is cached
+  	 * <p>*or*</p>
+  	 * - Promise which
+  	 *   - resolves with object of response
+  	 *   - rejects with object of error
+  	 * <p>after Restangular request is finished</p>
+  	 * @param {object} params
+  	 * Request params object
+  	 * @example
+  	<pre>
+  		collection.fetch({
+  			page: 1,
+  			page_size: 10,
+  			name: 'User'
+  		}).then(function(items){
+  			//...
+  		});
+  	</pre>
+   */
 
   Collection.prototype.fetch = function(params) {
     var id, paramsStr;
@@ -533,6 +906,19 @@ Collection = (function() {
       }
     }
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection.cancelAllRequests
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Cancels all current pending requests (all promises in {@link ng-bundle-collection.Collection collection}`.cache`)
+  	 * @example
+  	<pre>
+  		collection.cancelAllRequests();
+  	</pre>
+   */
 
   Collection.prototype.cancelAllRequests = function() {
     var cached, key, ref, results1;
@@ -554,6 +940,26 @@ Collection = (function() {
     return results1;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection.invalidate
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * <p>Clears {@link ng-bundle-collection.Collection collection}`.cache`</p>
+  	 * <p>Deletes cached responses where the key corresponds to params object, which **contains** passed params</p>
+  	 * @param {object|array} data
+  	 * - The params object, which determines deleted cached responses
+  	 * <p>*or*<p>
+  	 * - The array of such params objects
+  	 * @example
+  	 * <p>This deletes all cache records, whose keys correspond to params object with </p>
+  	 * <p>`'page_size' == 10` **AND** `'name' == 'asd'`</p>
+  	<pre>
+  		collection.invalidate({page_size:10, name: 'asd'});
+  	</pre>
+   */
+
   Collection.prototype.invalidate = function(data) {
     var j, len, params;
     if (_.isArray(data)) {
@@ -566,6 +972,24 @@ Collection = (function() {
     }
     return this;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private.__invalidateParams
+  	 * @methodOf Private
+  	 * @description
+  	 * <p>Deletes cached responses where the key corresponds to params object, which **contains** passed params</p>
+  	 * <p>Is called by {@link ng-bundle-collection.Collection Collection}.invalidate for each params object</p>
+  	 * @param {object} params
+  	 * The params object, which determines deleted cached responses
+  	 * @example
+  	 * <p>This deletes all cache records, whose keys correspond to params object with </p>
+  	 * <p>`'page_size' == 10` **AND** `'name' == 'asd'`</p>
+  	<pre>
+  		collection.invalidate({page_size:10, name: 'asd'});
+  	</pre>
+   */
 
   Collection.prototype.__invalidateParams = function(params) {
     var clearedKeyParams, key, keyParams, results1, valid;
@@ -584,6 +1008,16 @@ Collection = (function() {
     }
     return results1;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private.__callExtendFns
+  	 * @methodOf Private
+  	 * @description
+  	 * Invokes each extending function from array with passed params.
+  	 * Extending functions array is taken from {@link ng-bundle-collection.Collection Collection}.extendFns
+   */
 
   Collection.prototype.__callExtendFns = function(fns_arr, p1, p2, p3, p4, p5) {
     var fn, index, results1;
@@ -606,10 +1040,50 @@ Collection = (function() {
     return results1;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-collection-bundle.Collection.__callExtendFns
+  	 * @methodOf ng-collection-bundle.Collection
+  	 * @description
+  	 * <p>Sets the response mock.</p>
+  	 * <p>No requests to backend will be made if the mock is set.</p>
+  	 * @param {object} mock
+  	 * The mock which should be responded to any {@link ng-bundle-collection.Collection collection}`.fetch` request
+  	 * @param {number} mockDelay
+  	 * The number of milliseconds of timeout before responding with mock
+  	 * @example
+  	<pre>
+  		collection.__setMock([
+  			{
+  				id: 0,
+  				name: 'User1'
+  			},
+  			{
+  				id: 1,
+  				name: 'User2'
+  			}
+  		]);
+  	</pre>
+   */
+
   Collection.prototype.__setMock = function(mock, mockDelay) {
     this.mock = mock;
     this.mockDelay = mockDelay;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-collection-bundle.Collection.__removeMock
+  	 * @methodOf ng-collection-bundle.Collection
+  	 * @description
+  	 * <p>Removes current response mock.</p>
+  	 * @example
+  	<pre>
+  		collection.__removeMock();
+  	</pre>
+   */
 
   Collection.prototype.__removeMock = function() {
     this.mock = null;
