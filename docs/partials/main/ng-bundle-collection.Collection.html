@@ -18,7 +18,35 @@
 </div></td></tr><tr><td>config</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-page"><p>Configuration for collection</p>
 </div></td></tr></tbody></table></div>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><h3 id="methods_add">add(data)</h3>
+<ul class="methods"><li><h3 id="methods___removemock">__removeMock()</h3>
+<div class="__removemock"><div class="ng-bundle-collection-collection-removemock-page"><p>Removes current response mock.</p></div><h4 id="methods___removemock_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-removemock-page"><pre class="prettyprint linenums">
+collection.__removeMock();
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods___setmock">__setMock(mock, mockDelay)</h3>
+<div class="__setmock"><div class="ng-bundle-collection-collection-setmock-page"><p>Sets the response mock.</p>
+<p>No requests to backend will be made if the mock is set.</p></div><h5 id="methods___setmock_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mock</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-setmock-page"><p>The mock which should be responded to any <a href="main/ng-bundle-collection.Collection">collection</a><code>.fetch</code> request</p>
+</div></td></tr><tr><td>mockDelay</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-setmock-page"><p>The number of milliseconds of timeout before responding with mock</p>
+</div></td></tr></tbody></table><h4 id="methods___setmock_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-setmock-page"><pre class="prettyprint linenums">
+collection.__setMock([
+	{
+		id: 0,
+		name: 'User1'
+	},
+	{
+		id: 1,
+		name: 'User2'
+	}
+]);
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_add">add(data)</h3>
 <div class="add"><div class="ng-bundle-collection-collection-add-page"><p>Adds an item to collection.
 Overwrites existing item if the id-field of item exists in collection</p>
 </div><h5 id="methods_add_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Item to be added or array of items.</p>
@@ -81,6 +109,15 @@ var users = new Collection(Restangular.all('users'));
 users.create({id:0, ...});
 //...
 var user = users.by(0);
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_cancelallrequests">cancelAllRequests()</h3>
+<div class="cancelallrequests"><div class="ng-bundle-collection-collection-cancelallrequests-page"><p>Cancels all current pending requests (all promises in <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code>)</p>
+</div><h4 id="methods_cancelallrequests_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-cancelallrequests-page"><pre class="prettyprint linenums">
+collection.cancelAllRequests();
 </pre>
 </div></div>
 </div>
@@ -238,6 +275,7 @@ collection.extendUpdate(function(item){
 </li>
 <li><h3 id="methods_fetch">fetch(params)</h3>
 <div class="fetch"><div class="ng-bundle-collection-collection-fetch-page"><p>Fetching data from backend.</p>
+<p>Makes <code>GET</code> request to configured endpoint.</p>
 <p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_fetch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-fetch-page"><p>Request params object</p>
 </div></td></tr></tbody></table><h5 id="methods_fetch_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise|object</a></td><td><div class="ng-bundle-collection-collection-fetch-page"><ul>
 <li>Object of response if the result for given <code>params</code> is cached<p><em>or</em></p></li>
@@ -265,6 +303,22 @@ collection.fetch({
 </div><h5 id="methods_inc_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-inc-page"><p>Resulting collection.loading value</p>
 </div></td></tr></table><h4 id="methods_inc_example">Example</h4>
 <div class="example"><div class="ng-bundle-collection-collection-inc-page"><p>collection.inc()</p>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_invalidate">invalidate(data)</h3>
+<div class="invalidate"><div class="ng-bundle-collection-collection-invalidate-page"><p>Clears <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code></p>
+<p>Deletes cached responses where the key corresponds to params object, which <strong>contains</strong> passed params</p></div><h5 id="methods_invalidate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-invalidate-page"><ul>
+<li>The params object, which determines deleted cached responses
+<p><em>or</em><p></li>
+<li>The array of such params objects</li>
+</ul>
+</div></td></tr></tbody></table><h4 id="methods_invalidate_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-invalidate-page"><p><p>This deletes all cache records, whose keys correspond to params object with </p></p>
+<p><p><code>&#39;page_size&#39; == 10</code> <strong>AND</strong> <code>&#39;name&#39; == &#39;asd&#39;</code></p>
+      <pre class="prettyprint linenums">
+  		collection.invalidate({page_size:10, name: 'asd'});
+  	</pre>
 </div></div>
 </div>
 </li>
@@ -341,36 +395,22 @@ This will make <code>PATCH</code> request to <code>users/1</code>.</p>
 </div></div>
 </div>
 </li>
-<li><h3 id="methods_cancelallrequests">cancelAllRequests()</h3>
-<div class="cancelallrequests"><div class="ng-bundle-collection-collection-cancelallrequests-page"><p>Cancels all current pending requests (all promises in <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code>)</p>
-</div><h4 id="methods_cancelallrequests_example">Example</h4>
-<div class="example"><div class="ng-bundle-collection-collection-cancelallrequests-page"><pre class="prettyprint linenums">
-collection.cancelAllRequests();
+<li><h3 id="methods_getcached">getCached()</h3>
+<div class="getcached"><div class="ng-bundle-collection-collection-getcached-page"><p>Extracts the response for request with particular params object</p>
+</div><h5 id="methods_getcached_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-getcached-page"><p>cached response or undefined</p>
+</div></td></tr></table><h4 id="methods_getcached_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-getcached-page"><pre class="prettyprint linenums">
+var cachedResponseForFirstPage = collection.getCached({page: 1, page_size: 10});
 </pre>
 </div></div>
 </div>
 </li>
-<li><h3 id="methods_invalidate">invalidate(data)</h3>
-<div class="invalidate"><div class="ng-bundle-collection-collection-invalidate-page"><p>Clears <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code></p>
-<p>Deletes cached responses where the key corresponds to params object, which <strong>contains</strong> passed params</p></div><h5 id="methods_invalidate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-invalidate-page"><ul>
-<li>The params object, which determines deleted cached responses
-<p><em>or</em><p></li>
-<li>The array of such params objects</li>
-</ul>
-</div></td></tr></tbody></table><h4 id="methods_invalidate_example">Example</h4>
-<div class="example"><div class="ng-bundle-collection-collection-invalidate-page"><p><p>This deletes all cache records, whose keys correspond to params object with </p></p>
-<p><p><code>&#39;page_size&#39; == 10</code> <strong>AND</strong> <code>&#39;name&#39; == &#39;asd&#39;</code></p>
-      <pre class="prettyprint linenums">
-  		collection.invalidate({page_size:10, name: 'asd'});
-  	</pre>
-</div></div>
-</div>
-</li>
-<li><h3 id="methods_invalidate">invalidate()</h3>
-<div class="invalidate"><div class="ng-bundle-collection-collection-invalidate-page"><p>Clears cache (<a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code>)</p>
-</div><h4 id="methods_invalidate_example">Example</h4>
-<div class="example"><div class="ng-bundle-collection-collection-invalidate-page"><pre class="prettyprint linenums">
-collection.invalidate();
+<li><h3 id="methods_iscached">isCached()</h3>
+<div class="iscached"><div class="ng-bundle-collection-collection-iscached-page"><p>Determines whether the response for request with particular params object is cached</p>
+</div><h5 id="methods_iscached_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ng-bundle-collection-collection-iscached-page"><p>Is cached or not</p>
+</div></td></tr></table><h4 id="methods_iscached_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-iscached-page"><pre class="prettyprint linenums">
+var isFirstPageCached = collection.isCached({page: 1, page_size: 10});
 </pre>
 </div></div>
 </div>

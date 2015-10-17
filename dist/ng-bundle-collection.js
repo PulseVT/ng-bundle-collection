@@ -33,10 +33,10 @@ var Collection,
 (function() {
 
   /**
-  	 * @ngdoc overview
+  	 * @ngdoc object
   	 * @name ng-bundle-collection
   	 * @description
-  	 * Main module which contains Collection factory and class
+  	 * Main module which contains {@link ng-bundle-collection.Collection Collection} factory
    */
   var module;
   module = angular.module('ng-bundle-collection', []);
@@ -86,7 +86,7 @@ Collection = (function() {
     this.getCached = bind(this.getCached, this);
     this.isCached = bind(this.isCached, this);
     this.__initCaching = bind(this.__initCaching, this);
-    this.__initImmediateCaching = bind(this.__initImmediateCaching, this);
+    this.__initCacheClearing = bind(this.__initCacheClearing, this);
     this.__determineResponse = bind(this.__determineResponse, this);
     this.__error = bind(this.__error, this);
     this.__success = bind(this.__success, this);
@@ -120,7 +120,7 @@ Collection = (function() {
     if (this.config.withCaching) {
       this.__initCaching();
     } else {
-      this.__initImmediateCaching();
+      this.__initCacheClearing();
     }
   }
 
@@ -156,6 +156,12 @@ Collection = (function() {
   	 * Name of identification field for each collection item
   	 * @property {boolean} respondWithPayload=true
   	 * Controls whether to add payload of each request as a **`__payload`** field in response
+  	 * @property {class} model
+  	 * Decorator model class for collection items
+  	 * @property {boolean} dontCollect=false
+  	 * <p>If set to `true`, the collection wouldnt collect the responses in its `arr` and `objById` containers.</p>
+  	 * <p>This wouldnt affect caching ability, the cache will work as usual.</p>
+  	 * <p>This can be used to use collection only as fetching agent, which is useful i.e. when the data is not a collection, but the object, maybe some settings object or else.</p>
    */
 
   Collection.prototype._initConfig = function() {
@@ -867,6 +873,7 @@ Collection = (function() {
   	 * @methodOf ng-bundle-collection.Collection
   	 * @description
   	 * <p>Fetching data from backend.</p>
+  	 * <p>Makes `GET` request to configured endpoint.</p>
   	 * <p>Affects `collection.loading` flag</p>
   	 * @returns {promise|object}
   	 * - Object of response if the result for given `params` is cached
@@ -910,7 +917,7 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-bundle-collection.Collection.cancelAllRequests
+  	 * @name ng-bundle-collection.Collection#cancelAllRequests
   	 * @methodOf ng-bundle-collection.Collection
   	 * @description
   	 * Cancels all current pending requests (all promises in {@link ng-bundle-collection.Collection collection}`.cache`)
@@ -943,7 +950,7 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-bundle-collection.Collection.invalidate
+  	 * @name ng-bundle-collection.Collection#invalidate
   	 * @methodOf ng-bundle-collection.Collection
   	 * @description
   	 * <p>Clears {@link ng-bundle-collection.Collection collection}`.cache`</p>
@@ -976,8 +983,8 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name Private.__invalidateParams
-  	 * @methodOf Private
+  	 * @name Private_methods#__invalidateParams
+  	 * @methodOf Private_methods
   	 * @description
   	 * <p>Deletes cached responses where the key corresponds to params object, which **contains** passed params</p>
   	 * <p>Is called by {@link ng-bundle-collection.Collection Collection}.invalidate for each params object</p>
@@ -1012,8 +1019,8 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name Private.__callExtendFns
-  	 * @methodOf Private
+  	 * @name Private_methods#__callExtendFns
+  	 * @methodOf Private_methods
   	 * @description
   	 * Invokes each extending function from array with passed params.
   	 * Extending functions array is taken from {@link ng-bundle-collection.Collection Collection}.extendFns
@@ -1043,8 +1050,8 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-collection-bundle.Collection.__callExtendFns
-  	 * @methodOf ng-collection-bundle.Collection
+  	 * @name ng-bundle-collection.Collection#__setMock
+  	 * @methodOf ng-bundle-collection.Collection
   	 * @description
   	 * <p>Sets the response mock.</p>
   	 * <p>No requests to backend will be made if the mock is set.</p>
@@ -1075,8 +1082,8 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name ng-collection-bundle.Collection.__removeMock
-  	 * @methodOf ng-collection-bundle.Collection
+  	 * @name ng-bundle-collection.Collection#__removeMock
+  	 * @methodOf ng-bundle-collection.Collection
   	 * @description
   	 * <p>Removes current response mock.</p>
   	 * @example
@@ -1089,6 +1096,18 @@ Collection = (function() {
     this.mock = null;
     return this.mockDelay = null;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__private_fetch
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * <p>Implements the fetching action.</p>
+  	 * <p>For perform fetching via collection, please use {@link ng-bundle-collection.Collection ng-bundle-collection.Collection}`.fetch` method</p>
+  	 * @param {object} params
+  	 * Params for fetch request
+   */
 
   Collection.prototype.__private_fetch = function(params) {
     var deferred, paramsStr, paramsToSend, rest;
@@ -1135,6 +1154,22 @@ Collection = (function() {
     return this.cache[paramsStr] = deferred.promise;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__success
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * <p>Success callback for fetching action.</p>
+  	 * - Adds results to collection
+  	 * - Calls extending success ({@link ng-bundle-collection.Collection collection}`.extendFns.fetch.s`) functions
+  	 * - Calls extending final ({@link ng-bundle-collection.Collection collection}`.extendFns.fetch.f`) functions
+  	 * @param {object} response
+  	 * Success response from backend
+  	 * @param {object} params
+  	 * Params object, with which was the request done.
+   */
+
   Collection.prototype.__success = function(response, params) {
     var response_formatted;
     if (!this.config.dontCollect) {
@@ -1150,14 +1185,72 @@ Collection = (function() {
     return response_formatted;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__error
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * <p>Error callback for fetching action.</p>
+  	 * - Calls extending error ({@link ng-bundle-collection.Collection collection}`.extendFns.fetch.e`) functions
+  	 * - Calls extending final ({@link ng-bundle-collection.Collection collection}`.extendFns.fetch.f`) functions
+  	 * @param {object} response
+  	 * Error response from backend
+  	 * @param {object} params
+  	 * Params object, with which was the request done.
+   */
+
   Collection.prototype.__error = function(response, params) {
     this.__callExtendFns(this.extendFns.fetch.e, response, params);
     return this.__callExtendFns(this.extendFns.fetch.f, response, params);
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__calcParamsMark
+  	 * @methodOf Private_methods
+  	 * @returns {string}
+  	 * The string mark of params
+  	 * @description
+  	 * <p>Calculates string mark for parameters object</p>
+  	 * <p>Params mark is used for:</p>
+  	 * - marking responses for requests and determining if the response is already cached
+  	 * - marking promises and determining if the request is already pending
+  	 * @param {object} params
+  	 * Params object
+   */
+
   Collection.prototype.__calcParamsMark = function(params) {
     return JSON.stringify(params);
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__determineResponse
+  	 * @methodOf Private_methods
+  	 * @returns {object}
+  	 * Formatted response
+  	 * @description
+  	 * <p>Formats the response to fetch action from backend.</p>
+  	 * <p>The format of resulting response is:</p>
+  	 * - if the response is expected to be an `Array`, then the response is
+  	<pre>
+  		{
+  			results: [
+  				//array of items of array
+  			],
+  		}
+  	</pre>
+  	 * - if the response is expected to be an `Object`, then response is just the same as backend sent
+  	 * <p>Adds `__payload` with `params` if the {@link ng-bundle-collection.Collection collection}`.config.respondWithPayload` is `true`</p>
+  	 * <p>Each item comes decorated with {@link ng-bundle-collection.Collection collection}`.config.model`</p>
+  	 * @param {object} response
+  	 * Success response from backend
+  	 * @param {object} params
+  	 * Params object, with which was the request done.
+   */
 
   Collection.prototype.__determineResponse = function(response, params) {
     var item, results;
@@ -1215,7 +1308,17 @@ Collection = (function() {
     return response;
   };
 
-  Collection.prototype.__initImmediateCaching = function() {
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__initCacheClearing
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * <p>Adds extending function for fetch success ({@link ng-bundle-collection.Colleciton collection}`.extendFns.fetch.s`), which clears promises from cache</p>
+  	 * <p>Invoked if the cache is disabled by {@link ng-bundle-collection.Colleciton.config config}`.withCaching === false`
+   */
+
+  Collection.prototype.__initCacheClearing = function() {
     return this.extendFetch({
       s: (function(_this) {
         return function(response, params) {
@@ -1224,6 +1327,17 @@ Collection = (function() {
       })(this)
     });
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__initCaching
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * <p>Enable caching by adding extending functions for fetch success ({@link ng-bundle-collection.Colleciton collection}`.extendFns.fetch.s`)
+  	 * and for fetch error ({@link ng-bundle-collection.Colleciton collection}`.extendFns.fetch.e`)</p>
+  	 * <p>Invoked if the cache is ensabled by {@link ng-bundle-collection.Colleciton.config config}`.withCaching === true`
+   */
 
   Collection.prototype.__initCaching = function() {
     return this.extendFetch({
@@ -1240,13 +1354,51 @@ Collection = (function() {
     });
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection.isCached
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {boolean} Is cached or not
+  	 * @description
+  	 * Determines whether the response for request with particular params object is cached
+  	 * @example
+  	<pre>
+  		var isFirstPageCached = collection.isCached({page: 1, page_size: 10});
+  	</pre>
+   */
+
   Collection.prototype.isCached = function(params) {
     return this.getCached(params) != null;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection.getCached
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {object} cached response or undefined
+  	 * @description
+  	 * Extracts the response for request with particular params object
+  	 * @example
+  	<pre>
+  		var cachedResponseForFirstPage = collection.getCached({page: 1, page_size: 10});
+  	</pre>
+   */
+
   Collection.prototype.getCached = function(params) {
     return this.cache[this.__calcParamsMark(params)];
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__rest
+  	 * @methodOf Private_methods
+  	 * @returns {object} Restangular instance
+  	 * @description
+  	 * Extracts the Restangular instance which is configured to perform REST actions
+   */
 
   Collection.prototype.__rest = function(params) {
     if (_.isFunction(this.rest)) {
@@ -1257,11 +1409,32 @@ Collection = (function() {
   };
 
 
-  /*
-  	 * Static properties
+  /**
+  	 * @ngdoc object
+  	 * @name Static_methods
+  	 * @description
+  	 * Static properties of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection}
+   */
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Static_methods#instances
+  	 * @propertyOf Static_methods
+  	 * @description
+  	 * Array of all {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} instances
    */
 
   Collection.instances = [];
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Static_methods#invalidate
+  	 * @methodOf Static_methods
+  	 * @description
+  	 * Invalidates all instances (clears `cache`) of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} by calling `invalidate` methods
+   */
 
   Collection.invalidate = function() {
     var i, j, len, ref, results1;
@@ -1274,6 +1447,15 @@ Collection = (function() {
     return results1;
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name Static_methods#cancelAllRequests
+  	 * @methodOf Static_methods
+  	 * @description
+  	 * Cancels all pending requests in all instances of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} by calling `cancelAllRequests` methods
+   */
+
   Collection.cancelAllRequests = function() {
     var i, j, len, ref, results1;
     ref = this.instances;
@@ -1284,6 +1466,17 @@ Collection = (function() {
     }
     return results1;
   };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Static_methods#clear
+  	 * @methodOf Static_methods
+  	 * @description
+  	 * Clears all instances (clears `arr` and `objById`) of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} by calling `clear` methods
+  	 * @param {boolean} withExtendFns
+  	 * Whether to remove all extending functions.
+   */
 
   Collection.clear = function(withExtendFns) {
     var i, j, len, ref, results1;
