@@ -84,6 +84,8 @@ class Collection
 		@config.withCaching = yes unless @config.withCaching?
 		@config.id_field = 'id' unless @config.id_field?
 		@config.respondWithPayload = yes unless @config.respondWithPayload?
+		@config.model = ItemModel unless @config.model?
+		@config.dontCollect = no unless @config.dontCollect?
 
 
 	###*
@@ -201,6 +203,8 @@ class Collection
 	# @param {object|array} data
 	# <p>Item to be added or array of items.</p>
 	# <p>Item must contain an id-field named the same as the config parameter {@link ng-bundle-collection.Collection.config collection.config}`.id_field` (by default it equals `'id'`)</p>
+	# @param {object} params
+	# Params object of request which responded with this item or array of items.
 	# @example
 	<pre>
 		collection.add({
@@ -210,7 +214,7 @@ class Collection
 		})
 	</pre>
 	###
-	add: (data) =>
+	add: (data, params) =>
 		if _.isArray data
 			@__addOne item, params for item in data
 		else @__addOne arguments...
@@ -264,13 +268,14 @@ class Collection
 	# <p>To add an item, please use `collection.add` or `collection.add_withToCache`</p>
 	# @param {object} item
 	# Item to be added.
+	# @param {object} params
+	# Params object of request which responded with this item.
 	###
-	__addOne: (item) ->
+	__addOne: (item, params) ->
 		unless item[@config.id_field] in _.pluck @objById, @config.id_field
 			fn item for fn in @extendFns.add.b
-			item = new ItemModel item, @
 			if @config.model?
-				item = new @config.model item
+				item = new @config.model item, @
 			@arr.push item
 			@objById[item[@config.id_field]] = item
 			fn item for fn in @extendFns.add.a
@@ -328,10 +333,10 @@ class Collection
 		users.create({
 			name: 'Some User Name',
 			email: 'some-email@email.com'
-		}).then(function(item){
-			//This will make `PATCH` request to `users/1`.
+		}).then(function(user){
+			//This will make `PATCH` request to `users/:user.id`.
 			users.update({
-				specific_id_field: item.specific_id_field,
+				specific_id_field: user.specific_id_field,
 				name: 'User Name',
 				email: 'email@email.com'
 			});
@@ -365,7 +370,6 @@ class Collection
 			email: 'email@email.com'
 		})
 	</pre>
-	This will make `PATCH` request to `users/1`.
 	###
 	update_locally: (item) =>
 		@objById[item[@config.id_field]] = item
@@ -398,7 +402,7 @@ class Collection
 			name: 'Some User Name',
 			email: 'some-email@email.com'
 		}).then(function(user){
-			//This will make `DELETE` request to `users/1`.
+			//This will make `DELETE` request to `users/:user.id`.
 			users.delete(user);
 			//or
 			users.delete({
@@ -917,7 +921,7 @@ class Collection
 		response = if @config.dontCollect
 			if @config.model? and _.isArray response
 				for item in response
-					new @config.model item
+					new @config.model item, @
 			else
 				response
 		else

@@ -46,11 +46,12 @@ collection.__setMock([
 </div></div>
 </div>
 </li>
-<li><h3 id="methods_add">add(data)</h3>
+<li><h3 id="methods_add">add(data, params)</h3>
 <div class="add"><div class="ng-bundle-collection-collection-add-page"><p>Adds an item to collection.
 Overwrites existing item if the id-field of item exists in collection</p>
 </div><h5 id="methods_add_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Item to be added or array of items.</p>
-<p>Item must contain an id-field named the same as the config parameter <a href="main/ng-bundle-collection.Collection.config">collection.config</a><code>.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p></div></td></tr></tbody></table><h5 id="methods_add_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object|array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Added item or array of items</p>
+<p>Item must contain an id-field named the same as the config parameter <a href="main/ng-bundle-collection.Collection.config">collection.config</a><code>.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p></div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Params object of request which responded with this item or array of items.</p>
+</div></td></tr></tbody></table><h5 id="methods_add_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object|array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Added item or array of items</p>
 </div></td></tr></table><h4 id="methods_add_example">Example</h4>
 <div class="example"><div class="ng-bundle-collection-collection-add-page"><pre class="prettyprint linenums">
 collection.add({
@@ -185,7 +186,7 @@ collection.create({
 		name: 'Some User Name',
 		email: 'some-email@email.com'
 	}).then(function(user){
-		//This will make `DELETE` request to `users/1`.
+		//This will make `DELETE` request to `users/:user.id`.
 		users.delete(user);
 		//or
 		users.delete({
@@ -367,10 +368,10 @@ var users = new Collection(Restangular.all('users'), {
 users.create({
 	name: 'Some User Name',
 	email: 'some-email@email.com'
-}).then(function(item){
-	//This will make `PATCH` request to `users/1`.
+}).then(function(user){
+	//This will make `PATCH` request to `users/:user.id`.
 	users.update({
-		specific_id_field: item.specific_id_field,
+		specific_id_field: user.specific_id_field,
 		name: 'User Name',
 		email: 'email@email.com'
 	});
@@ -391,7 +392,6 @@ collection.update_locally({
 	email: 'email@email.com'
 })
 </pre>
-This will make <code>PATCH</code> request to <code>users/1</code>.</p>
 </div></div>
 </div>
 </li>

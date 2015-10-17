@@ -27,7 +27,7 @@ module.exports = (grunt) ->
 						]
 			docs:
 				options:
-					port: 9000
+					port: 9001
 					static: '<%= config.docs %>'
 					middleware: (connect, options) ->
 						[
@@ -116,6 +116,17 @@ module.exports = (grunt) ->
 		'docs:serve'
 		'connect:docs'
 		'watch'
+	]
+
+	grunt.registerTask 'serve', [
+		'clean:dist'
+		'bower-install-simple'
+		'build-examples'
+		'build'
+		'connect:examples'
+		'docs:serve'
+		'connect:docs'
+		'watch'	
 	]
 
 	grunt.registerTask 'default', ['serve-examples']

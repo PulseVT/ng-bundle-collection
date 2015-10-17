@@ -5,6 +5,15 @@ NG_DOCS={
   "pages": [
     {
       "section": "main",
+      "id": "ItemModel",
+      "shortName": "ItemModel",
+      "type": "object",
+      "moduleName": "ItemModel",
+      "shortDescription": "Class that represents default model for each collection item",
+      "keywords": "$scope affect agent arr backend belongs calculatemailingagent call class collection configuration controller create current custom data default delete deleted deletes email endpoint error extend extended extends fetch fields flag forget gmail id-field id_field instance invoke item itemmodel loading locally main match model ng-repeat notgoogleemail object overriding parent patch promise rejects remove removed represents request resolves response rest restangular save some-email specific_id_field super true update update_locally updated user users var written"
+    },
+    {
+      "section": "main",
       "id": "ng-bundle-collection",
       "shortName": "ng-bundle-collection",
       "type": "object",
@@ -37,7 +46,7 @@ NG_DOCS={
       "type": "object",
       "moduleName": "Private_methods",
       "shortDescription": "Private methods of ng-bundle-collection.Collection",
-      "keywords": "__addone __calcparamsmark __callextendfns __determineresponse __error __initcacheclearing __initcaching __invalidateparams __payload __private_fetch __rest __success _initconfig _initpublicproperties action actions add add_withtocache adding adds array asd backend cache cached caching callback called calls clears colleciton collection config configured correspond corresponds decorated defaults deleted deletes determines determining disabled ensabled error expected extendfns extending extracts false fetch fetching final format formatted function functions initialization instance invalidate invokes item items key main mark marking method methods model ng-bundle-collection object page_size parameters params passed pending perform populating private private_methods promises properties public records request requests respondwithpayload response responses rest restangular single string success true withcaching"
+      "keywords": "__addone __calcparamsmark __callextendfns __determineresponse __error __initcacheclearing __initcaching __invalidateparams __payload __private_fetch __rest __success _initconfig _initpublicproperties action actions add add_withtocache adding adds array asd backend cache cached caching callback called calls clears colleciton collection config configured correspond corresponds decorated defaults deleted deletes determines determining disabled ensabled error expected extendfns extending extracts false fetch fetching final format formatted function functions initialization instance invalidate invokes item items key main mark marking method methods model ng-bundle-collection object page_size parameters params passed pending perform populating private private_methods promises properties public records request requests responded respondwithpayload response responses rest restangular single string success true withcaching"
     },
     {
       "section": "main",

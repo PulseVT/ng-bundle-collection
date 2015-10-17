@@ -1,38 +1,60 @@
 <!DOCTYPE html>
 <html ng-app='ng-bundle-collection-example'>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ng-bundle-collection-example</title>
-    <link rel="icon" type="image/png" href="https://cdn1.iconfinder.com/data/icons/folders-2/24/Box-with_Folders-512.png">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style type="text/css">
-      body{
-        width: 600px;
-        margin: auto;
-        padding: 30px;
-      }
-      .todos{
-        padding-top: 30px;
-      }
-    </style>
-  </head>
-  <body ng-controller='TodosCtrl' ng-cloak>
-    <script type="text/javascript" src='bower_components/angular/angular.js'></script>
-    <script type="text/javascript" src='bower_components/lodash/lodash.js'></script>
-    <script type="text/javascript" src='bower_components/restangular/dist/restangular.js'></script>
-    <script type="text/javascript" src='dist/ng-bundle-collection.js'></script>
-    <script type="text/javascript" src="js/example.js"></script>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>ng-bundle-collection-example</title>
+		<link rel="icon" type="image/png" href="https://cdn1.iconfinder.com/data/icons/folders-2/24/Box-with_Folders-512.png">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style type="text/css">
+			body{
+				width: 600px;
+				margin: auto;
+				padding: 30px;
+			}
+			.todos{
+				padding-top: 30px;
+			}
+			.todo{
+				margin-bottom: 15px;
+			}
+			.coming{
+				background: orange;
+			}
+			.overdue{
+				background: red;
+			}
+		</style>
+	</head>
+	<body ng-controller='TodosCtrl' ng-cloak>
+		<script type="text/javascript" src='bower_components/angular/angular.js'></script>
+		<script type="text/javascript" src='bower_components/lodash/lodash.js'></script>
+		<script type="text/javascript" src='bower_components/restangular/dist/restangular.js'></script>
+		<script type="text/javascript" src='dist/ng-bundle-collection.js'></script>
+		<script type="text/javascript" src="js/example.js"></script>
 
-    <div>
-      <button ng-click='addTodo()' ng-disabled='todos.isLoading()'>Add Todo</button>
-      <span ng-if='todos.isLoading()'>Loading...</span>
-    </div>
-    <div class='todos'>
-      <div ng-repeat='todo in todos.arr'>
-        {{todo.text}} <button ng-click='todo.remove()'>Remove</button>
-      </div>
-    </div>
-  </body>
+		<div>
+			<button ng-click='addTodo()' ng-disabled='todos.isLoading()'>Add Todo</button>
+			<span ng-if='todos.isLoading()'>Loading...</span>
+		</div>
+		<div class='todos'>
+			<div ng-repeat='todo in todos.arr' todo='todo'></div>
+		</div>
+	</body>
+
+	<script type="text/ng-template" id="/todo.html">
+		<div class='todo'>
+			<div>{{todo.text}}</div>
+			<div>{{todo.deadline | date}}</div>
+			<div ng-class='{
+				coming: todo.daysToDeadline() >= 0 && todo.daysToDeadline() <= 1,
+				overdue: todo.daysToDeadline() < 0
+			}'>
+				Days To Deadline: {{todo.daysToDeadline()}}
+			</div>
+			<button ng-click='todo.remove()'>Remove</button>
+			<button ng-click='updateTodo()' ng-if='!todo.updated'>Update</button>
+		</div>
+	</script>
 </html>
