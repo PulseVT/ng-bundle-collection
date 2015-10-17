@@ -176,6 +176,7 @@ ItemModel = (function() {
   			});
   
   		});
+  	</pre>
    */
 
   ItemModel.prototype.update_locally = function(data) {

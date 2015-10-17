@@ -155,6 +155,7 @@ class ItemModel
 			});
 
 		});
+	</pre>
 	###
 	update_locally: (data) =>
 		_.extend @, data

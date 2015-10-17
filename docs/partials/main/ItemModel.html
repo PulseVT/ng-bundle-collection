@@ -109,21 +109,23 @@ users.create({
 <div class="update_locally"><div class="itemmodel-update-locally-page"><p>Updates item in collection locally (doesnt affect backend).</p></div><h5 id="methods_update_locally_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-update-locally-page"><p>Item data to be written to item</p>
 </div></td></tr></tbody></table><h5 id="methods_update_locally_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-update-locally-page"><p>Updated item</p>
 </div></td></tr></table><h4 id="methods_update_locally_example">Example</h4>
-<div class="example"><div class="itemmodel-update-locally-page"><p><pre>
-var users = new Collection(Restangular.all(&#39;users&#39;), {
-    id_field: &#39;specific_id_field&#39;
-});
-//Creating a user
-users.create({
-    name: &#39;Some User Name&#39;,
-    email: &#39;some-email@email.com&#39;
-}).then(function(user){
-    //user will have new name and email
-    user.update_locally({
-        name: &#39;User Name&#39;,
-        email: &#39;email@email.com&#39;
-    });</p>
-<p>});</p>
+<div class="example"><div class="itemmodel-update-locally-page"><pre class="prettyprint linenums">
+	var users = new Collection(Restangular.all('users'), {
+		id_field: 'specific_id_field'
+	});
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		//user will have new name and email
+		user.update_locally({
+			name: 'User Name',
+			email: 'email@email.com'
+		});
+
+	});
+</pre>
 </div></div>
 </div>
 </li>
