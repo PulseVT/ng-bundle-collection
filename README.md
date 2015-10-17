@@ -23,6 +23,7 @@ Which is the same as
 > grunt serve
 
 Example is served at `localhost:9000`
+
 Documentation is served at `localhost:9001`
 
 ## Only documentation
