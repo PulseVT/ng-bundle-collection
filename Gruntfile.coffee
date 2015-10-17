@@ -129,4 +129,4 @@ module.exports = (grunt) ->
 		'watch'	
 	]
 
-	grunt.registerTask 'default', ['serve-examples']
+	grunt.registerTask 'default', ['serve']
