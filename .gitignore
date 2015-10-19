@@ -1,6 +1,5 @@
 bower_components/*
 node_modules/*
 *.sublime*
-dist/*
 docs/*
 examples/js/*
