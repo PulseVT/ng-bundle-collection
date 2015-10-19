@@ -5,6 +5,10 @@
     "Vitaliy Tarash <vitaliy.tarash@gmail.com>"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PulseVT/ng-bundle-collection"
+  },
   "devDependencies": {
     "angular": "~1.4.7",
     "restangular": "~1.5.1"
