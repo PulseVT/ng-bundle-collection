@@ -17,7 +17,8 @@ do ->
 	# @param {object} rest
 	# Restangular instance
 	# @param {object} config
-	# Configuration for collection
+	# <p>Configuration for collection.</p>
+	# <p>Please see {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config} for available config properties.</p>
 	# @example
 	<pre>
 		var collection = new Collection(Restangular.all('users'), {
@@ -79,6 +80,8 @@ class Collection
 	# <p>If set to `true`, the collection wouldnt collect the responses in its `arr` and `objById` containers.</p>
 	# <p>This wouldnt affect caching ability, the cache will work as usual.</p>
 	# <p>This can be used to use collection only as fetching agent, which is useful i.e. when the data is not a collection, but the object, maybe some settings object or else.</p>
+	# @property {object} params
+	# Default params to be included into each get request made by {@link ng-bundle-collection.Collection ng-bundle-collection.Collection}`.fetch`
 	###
 	_initConfig: =>
 		@config.withCaching = yes unless @config.withCaching?
@@ -655,6 +658,10 @@ class Collection
 	</pre>
 	###
 	fetch: (params = {}) =>
+		# extending params with default preconfigured params
+		_.extend params, @config.params
+
+		# getting id-field (can be undefined)
 		id = params[@config.id_field]
 
 		if @objById[id]?

@@ -251,7 +251,8 @@ var Collection,
   	 * @param {object} rest
   	 * Restangular instance
   	 * @param {object} config
-  	 * Configuration for collection
+  	 * <p>Configuration for collection.</p>
+  	 * <p>Please see {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config} for available config properties.</p>
   	 * @example
   	<pre>
   		var collection = new Collection(Restangular.all('users'), {
@@ -362,6 +363,8 @@ Collection = (function() {
   	 * <p>If set to `true`, the collection wouldnt collect the responses in its `arr` and `objById` containers.</p>
   	 * <p>This wouldnt affect caching ability, the cache will work as usual.</p>
   	 * <p>This can be used to use collection only as fetching agent, which is useful i.e. when the data is not a collection, but the object, maybe some settings object or else.</p>
+  	 * @property {object} params
+  	 * Default params to be included into each get request made by {@link ng-bundle-collection.Collection ng-bundle-collection.Collection}`.fetch`
    */
 
   Collection.prototype._initConfig = function() {
@@ -1109,6 +1112,7 @@ Collection = (function() {
     if (params == null) {
       params = {};
     }
+    _.extend(params, this.config.params);
     id = params[this.config.id_field];
     if (this.objById[id] != null) {
       return this.$q.when(this.objById[id]);
