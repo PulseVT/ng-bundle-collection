@@ -27,8 +27,6 @@ do ->
 			text: 'Todo 2'
 			deadline: new Date 2015, 12, 12
 		], 1000
-		@addInterceptor
-			fetch: (response) ->
 		@
 
 	module.directive 'todo', ->
