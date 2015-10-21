@@ -24,7 +24,12 @@ do ->
 		var collection = new Collection(Restangular.all('users'), {
 			withCaching: true,
 			id_field: 'id',
-			respondWithPayload: true
+			respondWithPayload: true,
+			dontCollect: false,
+			model: SomeModelClass,
+			params: {
+				some_parameter: 'some value'
+			}
 		});
 	</pre>
 	###
@@ -77,7 +82,8 @@ class Collection
 	# @property {boolean} respondWithPayload=true
 	# Controls whether to add payload of each request as a **`__payload`** field in response
 	# @property {class} model
-	# Decorator model class for collection items
+	# <p>Decorator model class for collection items</p>
+	# <p>*Note:* this has to be a function as javascript classes can be defined only as functions. Of course, the CoffeeScript classes are welcome :)</p>
 	# @property {boolean} dontCollect=false
 	# <p>If set to `true`, the collection wouldnt collect the responses in its `arr` and `objById` containers.</p>
 	# <p>This wouldnt affect caching ability, the cache will work as usual.</p>
@@ -123,6 +129,7 @@ class Collection
 		collection.add(item);
 		(collection.objId[item[collection.config.id_field]] === item) === true;
 	</pre>
+	# *Note:* more handy and convenient way to take an item from `objById` storage is {@link ng-bundle-collection.Collection#by collection.by} method
 	###
 	###*
 	# @ngdoc
@@ -697,7 +704,7 @@ class Collection
 		var item = collection.at(0);
 	</pre>
 	###
-	at: (index) -> @arr[index]
+	at: (index) => @arr[index]
 
 	###*
 	# @ngdoc
@@ -718,7 +725,7 @@ class Collection
 		var user = users.by(0);
 	</pre>
 	###
-	by: (id) -> @objById[id]
+	by: (id) => @objById[id]
 
 	###*
 	# @ngdoc

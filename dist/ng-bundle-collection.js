@@ -258,7 +258,12 @@ var Collection,
   		var collection = new Collection(Restangular.all('users'), {
   			withCaching: true,
   			id_field: 'id',
-  			respondWithPayload: true
+  			respondWithPayload: true,
+  			dontCollect: false,
+  			model: SomeModelClass,
+  			params: {
+  				some_parameter: 'some value'
+  			}
   		});
   	</pre>
    */
@@ -298,6 +303,8 @@ Collection = (function() {
     this.invalidate = bind(this.invalidate, this);
     this.cancelAllRequests = bind(this.cancelAllRequests, this);
     this.fetch = bind(this.fetch, this);
+    this.by = bind(this.by, this);
+    this.at = bind(this.at, this);
     this.addFetchInterceptor = bind(this.addFetchInterceptor, this);
     this.addInterceptor = bind(this.addInterceptor, this);
     this.extendFetch = bind(this.extendFetch, this);
@@ -364,7 +371,8 @@ Collection = (function() {
   	 * @property {boolean} respondWithPayload=true
   	 * Controls whether to add payload of each request as a **`__payload`** field in response
   	 * @property {class} model
-  	 * Decorator model class for collection items
+  	 * <p>Decorator model class for collection items</p>
+  	 * <p>*Note:* this has to be a function as javascript classes can be defined only as functions. Of course, the CoffeeScript classes are welcome :)</p>
   	 * @property {boolean} dontCollect=false
   	 * <p>If set to `true`, the collection wouldnt collect the responses in its `arr` and `objById` containers.</p>
   	 * <p>This wouldnt affect caching ability, the cache will work as usual.</p>
@@ -426,6 +434,7 @@ Collection = (function() {
   		collection.add(item);
   		(collection.objId[item[collection.config.id_field]] === item) === true;
   	</pre>
+  	 * *Note:* more handy and convenient way to take an item from `objById` storage is {@link ng-bundle-collection.Collection#by collection.by} method
    */
 
 
