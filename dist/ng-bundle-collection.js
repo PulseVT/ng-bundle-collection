@@ -1110,14 +1110,19 @@ Collection = (function() {
    */
 
   Collection.prototype.addInterceptor = function(fns) {
-    var k, results1, v;
+    var e, k, results1, v;
     results1 = [];
     for (k in fns) {
       v = fns[k];
-      if (!_.isArray(this.interceptors[k])) {
-        throw 'Wrong interceptor type.';
-      } else {
-        results1.push(this.interceptors[k].push(v));
+      try {
+        if (!_.isArray(this.interceptors[k])) {
+          throw "Wrong interceptor type: " + k + ".";
+        } else {
+          results1.push(this.interceptors[k].push(v));
+        }
+      } catch (_error) {
+        e = _error;
+        results1.push(console.error(e));
       }
     }
     return results1;
@@ -1397,11 +1402,16 @@ Collection = (function() {
    */
 
   Collection.prototype.__callInterceptors = function(fns_arr, response) {
-    var fn, j, len;
+    var e, fn, j, len;
     for (j = 0, len = fns_arr.length; j < len; j++) {
       fn = fns_arr[j];
-      if ((response = fn(response)) == null) {
-        throw "Interceptor returned " + response;
+      try {
+        if ((response = fn(response)) == null) {
+          throw "Interceptor returned wrong response: " + response;
+        }
+      } catch (_error) {
+        e = _error;
+        console.error(e);
       }
     }
     return response;

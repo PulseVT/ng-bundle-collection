@@ -652,10 +652,13 @@ class Collection
 	###
 	addInterceptor: (fns) =>
 		for k, v of fns
-			unless _.isArray @interceptors[k]
-				throw 'Wrong interceptor type.'
-			else
-				@interceptors[k].push v
+			try
+				unless _.isArray @interceptors[k]
+					throw "Wrong interceptor type: #{k}."
+				else
+					@interceptors[k].push v
+			catch e
+				console.error e
 
 	###*
 	# @ngdoc
@@ -866,8 +869,11 @@ class Collection
 	###
 	__callInterceptors: (fns_arr, response) ->
 		for fn in fns_arr
-			unless (response = fn response)?
-				throw "Interceptor returned #{response}"
+			try
+				unless (response = fn response)?
+					throw "Interceptor returned wrong response: #{response}"
+			catch e
+				console.error e
 		response
 
 
