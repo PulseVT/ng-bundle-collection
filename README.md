@@ -9,6 +9,7 @@ A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS 
 - single source of truth for data in your app
 - caching
 - mocking of responses (for debugging or development without backend)
+- intercepting, extending, modifying, replacing responses from backend
 
 # API
 

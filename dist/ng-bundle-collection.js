@@ -298,6 +298,8 @@ Collection = (function() {
     this.invalidate = bind(this.invalidate, this);
     this.cancelAllRequests = bind(this.cancelAllRequests, this);
     this.fetch = bind(this.fetch, this);
+    this.addFetchInterceptor = bind(this.addFetchInterceptor, this);
+    this.addInterceptor = bind(this.addInterceptor, this);
     this.extendFetch = bind(this.extendFetch, this);
     this.extendAdd = bind(this.extendAdd, this);
     this.extendRemove = bind(this.extendRemove, this);
@@ -313,11 +315,15 @@ Collection = (function() {
     this.isLoading = bind(this.isLoading, this);
     this.dec = bind(this.dec, this);
     this.inc = bind(this.inc, this);
+    this._initInterceptors = bind(this._initInterceptors, this);
+    this._initExtendFns = bind(this._initExtendFns, this);
     this._initPublicProperties = bind(this._initPublicProperties, this);
     this._initConfig = bind(this._initConfig, this);
     Collection.instances.push(this);
     this._initConfig();
     this._initPublicProperties();
+    this._initExtendFns();
+    this._initInterceptors();
     if (this.config.withCaching) {
       this.__initCaching();
     } else {
@@ -440,6 +446,24 @@ Collection = (function() {
   	 * Number, flag which indicates the number of current pending requests through collection
    */
 
+  Collection.prototype._initPublicProperties = function() {
+    return _.extend(this, {
+      cache: {},
+      objById: {},
+      arr: [],
+      loading: 0
+    });
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#_initExtendFns
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * Initialization of extending functions
+   */
+
 
   /**
   	 * @ngdoc object
@@ -449,12 +473,8 @@ Collection = (function() {
   	 * Object, storage of functions which extend collection actions
    */
 
-  Collection.prototype._initPublicProperties = function() {
+  Collection.prototype._initExtendFns = function() {
     return _.extend(this, {
-      cache: {},
-      objById: {},
-      arr: [],
-      loading: 0,
       extendFns: {
         add: {
           b: [],
@@ -468,6 +488,37 @@ Collection = (function() {
           e: [],
           f: []
         }
+      }
+    });
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#_initInterceptors
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * Initialization of interceptors
+   */
+
+
+  /**
+  	 * @ngdoc object
+  	 * @name ng-bundle-collection.Collection#interceptors
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * <p>Object, storage of functions which can decorate response.</p>
+  	 * <p>The interceptors are called as a chain in the order in which they were added.</p>
+  	 * <p>Interceptors accept response as parameter and the ongoing response is replaced by the value returned from interceptor.</p>
+  	 * <p>**Important**: so, the difference between {@link ng-bundle-collection.Collection collection}`.extendFns`
+  	 * and {@link ng-bundle-collection.Collection collection}`.interceptors` is that interceptors can not only decorate the response
+  	 * with some properties or implement some extending functionality, but they can replace the response with anything.</p>
+   */
+
+  Collection.prototype._initInterceptors = function() {
+    return _.extend(this, {
+      interceptors: {
+        fetch: []
       }
     });
   };
@@ -871,6 +922,10 @@ Collection = (function() {
   	 * @name ng-bundle-collection.Collection#clear
   	 * @methodOf ng-bundle-collection.Collection
   	 * @this {object} {@link ng-bundle-collection.Collection collection} instance
+  	 * @params {object} settings
+  	 * Settings of clearing (object with boolean flags):
+  	 * - withExtendFns=false - whether to remove all configured extending functions ({@link ng-bundle-collection.Collection collection}`.extendFns`)
+  	 * - withInterceptors=false - whether to remove all {@link ng-bundle-collection.Collection collection}`.interceptors`
   	 * @returns {object}
   	 * this, {@link ng-bundle-collection.Collection collection} instance
   	 * @description
@@ -895,10 +950,13 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.clear = function(withExtendFns) {
+  Collection.prototype.clear = function(settings) {
     var item, j, len, ref;
-    if (withExtendFns) {
+    if (settings.withExtendFns) {
       this._initExtendFns();
+    }
+    if (settings.withInterceptors) {
+      this._initInterceptors();
     }
     ref = angular.copy(this.arr);
     for (j = 0, len = ref.length; j < len; j++) {
@@ -1027,6 +1085,66 @@ Collection = (function() {
       results1.push(this.extendFns.fetch[k].push(v));
     }
     return results1;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#addInterceptor
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Adds function to {@link ng-bundle-collection.Collection#interceptors ng-bundle-collection.Collection#interceptors} structure
+  	 * @param {object} fns
+  	 * Object, keys can be:
+  	 * - `'fetch'` - interceptors will be executed on fetching success
+  	 * Values are interceptors
+  	 * @example
+  	<pre>
+  		collection.addInterceptor({
+  			fetch: function(successResponse){
+  				...
+  				return modified_or_replaced_response;
+  			}
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.addInterceptor = function(fns) {
+    var k, results1, v;
+    results1 = [];
+    for (k in fns) {
+      v = fns[k];
+      if (!_.isArray(this.interceptors[k])) {
+        throw 'Wrong interceptor type.';
+      } else {
+        results1.push(this.interceptors[k].push(v));
+      }
+    }
+    return results1;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#addFetchInterceptor
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Adds function to {@link ng-bundle-collection.Collection#interceptors ng-bundle-collection.Collection#interceptors}`.fetch` chain
+  	 * @param {function} fn
+  	 * Function which will be added to fetch interceptors chain.
+  	 * @example
+  	<pre>
+  		collection.addFetchInterceptor(function(successResponse){
+  			...
+  			return modified_or_replaced_response;
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.addFetchInterceptor = function(fn) {
+    return this.addInterceptor({
+      fetch: fn
+    });
   };
 
 
@@ -1236,6 +1354,9 @@ Collection = (function() {
   	 * @description
   	 * Invokes each extending function from array with passed params.
   	 * Extending functions array is taken from {@link ng-bundle-collection.Collection Collection}.extendFns
+  	 * @param {array} fns_arr
+  	 * Array of functions to be called
+  	 * @params Other parameters
    */
 
   Collection.prototype.__callExtendFns = function(fns_arr, p1, p2, p3, p4, p5) {
@@ -1257,6 +1378,33 @@ Collection = (function() {
       }
     }
     return results1;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__callInterceptors
+  	 * @methodOf Private_methods
+  	 * @returns {object|array}
+  	 * Value which is returned from the last interceptor in chain
+  	 * @description
+  	 * Invokes each interceptor from array (chain) with passed params.
+  	 * Extending functions array is taken from {@link ng-bundle-collection.Collection Collection}.extendFns
+  	 * @param {array} fns_arr
+  	 * Array of functions to be called
+  	 * @param {object|array} response
+  	 * Response which has to be
+   */
+
+  Collection.prototype.__callInterceptors = function(fns_arr, response) {
+    var fn, j, len;
+    for (j = 0, len = fns_arr.length; j < len; j++) {
+      fn = fns_arr[j];
+      if ((response = fn(response)) == null) {
+        throw "Interceptor returned " + response;
+      }
+    }
+    return response;
   };
 
 
@@ -1384,6 +1532,7 @@ Collection = (function() {
 
   Collection.prototype.__success = function(response, params) {
     var response_formatted;
+    response = this.__callInterceptors(this.interceptors.fetch, response);
     if (!this.config.dontCollect) {
       if ((response != null ? response.results : void 0) != null) {
         this.add(response.results);
@@ -1509,7 +1658,7 @@ Collection = (function() {
               });
             }
           } else {
-            return this.objById[response[this.config.id_field]];
+            return this.objById[response[this.config.id_field]] || response;
           }
         }
       }
@@ -1686,17 +1835,19 @@ Collection = (function() {
   	 * @methodOf Static_methods
   	 * @description
   	 * Clears all instances (clears `arr` and `objById`) of {@link ng-bundle-collection.Collection ng-bundle-collection.Collection} by calling `clear` methods
-  	 * @param {boolean} withExtendFns
-  	 * Whether to remove all extending functions.
+  	 * @param {object} settings
+  	 * Settings of clearing (object with boolean flags):
+  	 * - withExtendFns=false - whether to remove all configured extending functions ({@link ng-bundle-collection.Collection collection}`.extendFns`)
+  	 * - withInterceptors=false - whether to remove all {@link ng-bundle-collection.Collection collection}`.interceptors`
    */
 
-  Collection.clear = function(withExtendFns) {
+  Collection.clear = function(settings) {
     var i, j, len, ref, results1;
     ref = this.instances;
     results1 = [];
     for (j = 0, len = ref.length; j < len; j++) {
       i = ref[j];
-      results1.push(i.clear(withExtendFns));
+      results1.push(i.clear(settings));
     }
     return results1;
   };
