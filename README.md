@@ -8,8 +8,9 @@ A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS 
 - CRUD for collection items
 - single source of truth for data in your app
 - caching
-- mocking of responses (for debugging or development without backend)
 - intercepting, extending, modifying, replacing responses from backend
+- non-backend work mode (as a collection of local items)
+- mocking of responses (for debugging or development without backend)
 
 # API
 

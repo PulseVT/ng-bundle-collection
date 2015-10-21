@@ -254,6 +254,7 @@ var Collection,
   	 * <p>Configuration for collection.</p>
   	 * <p>Please see {@link ng-bundle-collection.Collection.config ng-bundle-collection.Collection.config} for available config properties.</p>
   	 * @example
+  	 * <p>Creating collection:</p>
   	<pre>
   		var collection = new Collection(Restangular.all('users'), {
   			withCaching: true,
@@ -265,6 +266,46 @@ var Collection,
   				some_parameter: 'some value'
   			}
   		});
+  	</pre>
+  	 * <p>Collection can be wrapped with a service and be used as a single source of truth in your application:</p>
+  	<pre>
+  		var module = angular.module('App', []);
+  
+  		module.service('users', function(Collection, Restangular){
+  			return new Collection(Restangular.all('users'), {
+  				//... config
+  			});
+  		});
+  	</pre>
+  	 * <p>You also can use ng-bundle-collection as a **local** collection (without work with backend) of any items to leverage the local api</p>
+  	<pre>
+  		//For example, items collection for some select
+  		var selectItems = new Collection;
+  		selectItems.add([
+  			{id: 23, name: 'Option 1', color: 'red'},
+  			{id: 24, name: 'Option 2', color: 'red', default: true},
+  			{id: 25, name: 'Option 3', color: 'black'},
+  		);
+  
+  		//...
+  
+  		console.log(selectItems.at(1));
+  		//{id: 24, name: 'Option 2', color: 'red', default: true}
+  
+  		console.log(selectItems.by(24));
+  		//{id: 24, name: 'Option 2', color: 'red', default: true}
+  
+  		console.log(selectItems.where({color: 'red'}));
+  		//[{id: 23, name: 'Option 1', color: 'red'}, {id: 24, name: 'Option 2', color: 'red', default: true}]
+  
+  		console.log(selectItems.singleWhere({default: true}));
+  		//{id: 24, name: 'Option 2', color: 'red', default: true}
+  
+  		console.log(selectItems.arr);
+  		//array of collection items
+  
+  		console.log(selectItems.objById);
+  		//object with collection items with keys as items ids
   	</pre>
    */
   return module.factory('Collection', function($q, $timeout) {
@@ -303,6 +344,8 @@ Collection = (function() {
     this.invalidate = bind(this.invalidate, this);
     this.cancelAllRequests = bind(this.cancelAllRequests, this);
     this.fetch = bind(this.fetch, this);
+    this.singleWhere = bind(this.singleWhere, this);
+    this.where = bind(this.where, this);
     this.by = bind(this.by, this);
     this.at = bind(this.at, this);
     this.addFetchInterceptor = bind(this.addFetchInterceptor, this);
@@ -1207,6 +1250,51 @@ Collection = (function() {
 
   Collection.prototype.by = function(id) {
     return this.objById[id];
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#where
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * <p>Searches in collection for the items which have particular fields with particular values</p>
+  	 * <p>Uses {@link https://lodash.com/ lodash} method `where`
+  	 * @returns {array}
+  	 * Array of items which contain all the fields with specified values
+  	 * @param {object} obj
+  	 * Object with fields which items should match to be found
+  	 * @example
+  	<pre>
+  		collection.where({level: 25, first_name: 'Andrew'});
+  	</pre>
+   */
+
+  Collection.prototype.where = function(obj) {
+    return _.where(this.arr, obj);
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#singleWhere
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * <p>Searches in collection for the single item which has particular fields with particular values</p>
+  	 * <p>Uses {@link https://lodash.com/ lodash} method `findWhere`
+  	 * @returns {object}
+  	 * <p>Item which contains all the fields with specified values.</p>
+  	 * <p>*Note:* If there is multiple items that match, the first occurence in {@link ng-bundle-collection.Collection collection}`.arr` will be returned</p>
+  	 * @param {object} obj
+  	 * Object with fields which the item should match to be found
+  	 * @example
+  	<pre>
+  		collection.singleWhere({level: 25, first_name: 'Andrew'});
+  	</pre>
+   */
+
+  Collection.prototype.singleWhere = function(obj) {
+    return _.findWhere(this.arr, obj);
   };
 
 
