@@ -1332,6 +1332,7 @@ Collection = (function() {
     if (params == null) {
       params = {};
     }
+    params = angular.copy(params);
     _.extend(params, this.config.params);
     id = params[this.config.id_field];
     if (this.objById[id] != null) {
