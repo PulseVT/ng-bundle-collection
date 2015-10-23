@@ -837,6 +837,8 @@ class Collection
 	</pre>
 	###
 	fetch: (params = {}) =>
+		# preventing params mixing if the same params object is passed to different collections
+		params = angular.copy params
 		# extending params with default preconfigured params
 		_.extend params, @config.params
 
