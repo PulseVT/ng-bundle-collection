@@ -955,12 +955,14 @@ class Collection
 	# @param {array} fns_arr
 	# Array of functions to be called
 	# @param {object|array} response
-	# Response which has to be 
+	# Response which has to be
+	# @param {object} params
+	# Params object with which was the request made
 	###
-	__callInterceptors: (fns_arr, response) ->
+	__callInterceptors: (fns_arr, response, params) ->
 		for fn in fns_arr
 			try
-				unless (response = fn response)?
+				unless (response = fn response, params)?
 					throw "Interceptor returned wrong response: #{response}"
 			catch e
 				console.error e
@@ -1064,7 +1066,7 @@ class Collection
 	# Params object, with which was the request done.
 	###
 	__success: (response, params) =>
-		response = @__callInterceptors @interceptors.fetch, response
+		response = @__callInterceptors @interceptors.fetch, response, params
 		unless @config.dontCollect
 			if response?.results?
 				@add response.results

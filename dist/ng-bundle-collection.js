@@ -1497,14 +1497,16 @@ Collection = (function() {
   	 * Array of functions to be called
   	 * @param {object|array} response
   	 * Response which has to be
+  	 * @param {object} params
+  	 * Params object with which was the request made
    */
 
-  Collection.prototype.__callInterceptors = function(fns_arr, response) {
+  Collection.prototype.__callInterceptors = function(fns_arr, response, params) {
     var e, fn, j, len;
     for (j = 0, len = fns_arr.length; j < len; j++) {
       fn = fns_arr[j];
       try {
-        if ((response = fn(response)) == null) {
+        if ((response = fn(response, params)) == null) {
           throw "Interceptor returned wrong response: " + response;
         }
       } catch (_error) {
@@ -1640,7 +1642,7 @@ Collection = (function() {
 
   Collection.prototype.__success = function(response, params) {
     var response_formatted;
-    response = this.__callInterceptors(this.interceptors.fetch, response);
+    response = this.__callInterceptors(this.interceptors.fetch, response, params);
     if (!this.config.dontCollect) {
       if ((response != null ? response.results : void 0) != null) {
         this.add(response.results);
