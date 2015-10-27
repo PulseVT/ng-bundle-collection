@@ -7,8 +7,8 @@
  * <p>Can be extended by custom item model</p>
  * @param {object} item
  * Object that represents item data
- * @param {object} collection
- * Collection instance to which the item belongs
+ * @param {object} methods
+ * Collection-level methods from the instance to which the item belongs
  * @example
 <pre>
 	//custom user model
@@ -40,8 +40,8 @@ var ItemModel,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 ItemModel = (function() {
-  function ItemModel(item, collection) {
-    this.collection = collection;
+  function ItemModel(item, methods) {
+    this.methods = methods;
     this.save = bind(this.save, this);
     this.update_locally = bind(this.update_locally, this);
     this.update = bind(this.update, this);
@@ -77,7 +77,7 @@ ItemModel = (function() {
    */
 
   ItemModel.prototype.remove = function() {
-    return this.collection.remove(this);
+    return this.methods.remove(this);
   };
 
 
@@ -107,7 +107,7 @@ ItemModel = (function() {
    */
 
   ItemModel.prototype["delete"] = function() {
-    return this.collection["delete"](this);
+    return this.methods["delete"](this);
   };
 
 
@@ -219,7 +219,7 @@ ItemModel = (function() {
    */
 
   ItemModel.prototype.save = function() {
-    return this.collection.update(this);
+    return this.methods.update(this);
   };
 
   return ItemModel;
@@ -360,6 +360,8 @@ Collection = (function() {
     this.update_locally = bind(this.update_locally, this);
     this.update = bind(this.update, this);
     this.create = bind(this.create, this);
+    this.__wrapWithModel = bind(this.__wrapWithModel, this);
+    this.__addOne = bind(this.__addOne, this);
     this.add_withToCache = bind(this.add_withToCache, this);
     this.add = bind(this.add, this);
     this.isLoading = bind(this.isLoading, this);
@@ -731,7 +733,7 @@ Collection = (function() {
         fn(item);
       }
       if (this.config.model != null) {
-        item = new this.config.model(item, this);
+        item = this.__wrapWithModel(item);
       }
       this.arr.push(item);
       this.objById[item[this.config.id_field]] = item;
@@ -743,6 +745,27 @@ Collection = (function() {
       }
       return results1;
     }
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__wrapWithModel
+  	 * @methodOf Private_methods
+  	 * @returns {object}
+  	 * Wrapped item
+  	 * @description
+  	 * <p>Wraps an item with {@link ng-bundle-collection.Collection.config config}`.model`</p>
+  	 * @param {object} item
+  	 * Item to be wrapped.
+   */
+
+  Collection.prototype.__wrapWithModel = function(item) {
+    return new this.config.model(item, {
+      update: this.update,
+      "delete": this["delete"],
+      remove: this.remove
+    });
   };
 
 
@@ -1496,7 +1519,7 @@ Collection = (function() {
   	 * @param {array} fns_arr
   	 * Array of functions to be called
   	 * @param {object|array} response
-  	 * Response which has to be
+  	 * Response from previous interceptor or otiginal response
   	 * @param {object} params
   	 * Params object with which was the request made
    */
@@ -1732,7 +1755,7 @@ Collection = (function() {
           results1 = [];
           for (j = 0, len = response.length; j < len; j++) {
             item = response[j];
-            results1.push(new this.config.model(item, this));
+            results1.push(this.__wrapWithModel(item));
           }
           return results1;
         } else {

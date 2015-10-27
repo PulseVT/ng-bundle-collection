@@ -6,8 +6,8 @@
 # <p>Can be extended by custom item model</p>
 # @param {object} item
 # Object that represents item data
-# @param {object} collection
-# Collection instance to which the item belongs
+# @param {object} methods
+# Collection-level methods from the instance to which the item belongs
 # @example
 <pre>
 	//custom user model
@@ -36,7 +36,7 @@
 </pre>
 ###
 class ItemModel
-	constructor: (item, @collection) ->
+	constructor: (item, @methods) ->
 		_.extend @, item
 
 	###*
@@ -64,7 +64,7 @@ class ItemModel
 	</pre>
 	###
 	remove: =>
-		@collection.remove @
+		@methods.remove @
 
 	###*
 	# @ngdoc
@@ -91,7 +91,7 @@ class ItemModel
 	</pre>
 	###
 	delete: =>
-		@collection.delete @
+		@methods.delete @
 
 	###*
 	# @ngdoc
@@ -194,4 +194,4 @@ class ItemModel
 	</pre>
 	###
 	save: =>
-		@collection.update @
+		@methods.update @

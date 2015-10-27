@@ -358,14 +358,33 @@ class Collection
 	# @param {object} params
 	# Params object of request which responded with this item.
 	###
-	__addOne: (item, params) ->
+	__addOne: (item, params) =>
 		unless item[@config.id_field] in _.pluck @objById, @config.id_field
 			fn item for fn in @extendFns.add.b
 			if @config.model?
-				item = new @config.model item, @
+				item = @__wrapWithModel item
 			@arr.push item
 			@objById[item[@config.id_field]] = item
 			fn item for fn in @extendFns.add.a
+
+
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__wrapWithModel
+	# @methodOf Private_methods
+	# @returns {object}
+	# Wrapped item
+	# @description
+	# <p>Wraps an item with {@link ng-bundle-collection.Collection.config config}`.model`</p>
+	# @param {object} item
+	# Item to be wrapped.
+	###
+	__wrapWithModel: (item) =>
+		new @config.model item,
+			update: @update
+			delete: @delete
+			remove: @remove
 
 
 	###*
@@ -955,7 +974,7 @@ class Collection
 	# @param {array} fns_arr
 	# Array of functions to be called
 	# @param {object|array} response
-	# Response which has to be
+	# Response from previous interceptor or otiginal response
 	# @param {object} params
 	# Params object with which was the request made
 	###
@@ -1139,7 +1158,7 @@ class Collection
 		response = if @config.dontCollect
 			if @config.model? and _.isArray response
 				for item in response
-					new @config.model item, @
+					@__wrapWithModel item
 			else
 				response
 		else
