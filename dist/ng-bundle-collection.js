@@ -342,6 +342,8 @@ Collection = (function() {
     this.__setMock = bind(this.__setMock, this);
     this.__invalidateParams = bind(this.__invalidateParams, this);
     this.invalidate = bind(this.invalidate, this);
+    this.resolveRequest = bind(this.resolveRequest, this);
+    this.cancelRequest = bind(this.cancelRequest, this);
     this.cancelAllRequests = bind(this.cancelAllRequests, this);
     this.fetch = bind(this.fetch, this);
     this.singleWhere = bind(this.singleWhere, this);
@@ -1377,30 +1379,90 @@ Collection = (function() {
   	 * @methodOf ng-bundle-collection.Collection
   	 * @description
   	 * Cancels all current pending requests (all promises in {@link ng-bundle-collection.Collection collection}`.cache`)
+  	 * @param {object} rejection
+  	 * The response which has to be passed to error callback after rejection
   	 * @example
   	<pre>
-  		collection.cancelAllRequests();
+  		collection.cancelAllRequests({
+  			error: 'Backend responded with 200 but the response contains error.'
+  		});
   	</pre>
    */
 
-  Collection.prototype.cancelAllRequests = function() {
+  Collection.prototype.cancelAllRequests = function(rejection) {
     var cached, key, ref, results1;
+    if (rejection == null) {
+      rejection = {};
+    }
     ref = this.cache;
     results1 = [];
     for (key in ref) {
       cached = ref[key];
       if (cached != null) {
         if (cached.__selfReject != null) {
-          cached.__selfReject({
-            cancelled: true
-          });
-          results1.push(delete this.cache[key]);
+          results1.push(cached.__selfReject(rejection));
         } else {
           results1.push(void 0);
         }
       }
     }
     return results1;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#cancelRequest
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Cancels the particular pending request (a corresponding promise in {@link ng-bundle-collection.Collection collection}`.cache`)
+  	 * @param {object} params
+  	 * Params object for which the request should be cancelled
+  	 * @param {object} rejection
+  	 * The response which has to be passed to error callback after rejection
+  	 * @example
+  	<pre>
+  		collection.cancelRequest({
+  			page: 1,
+  			page_size: 10
+  		}, {
+  			error: 'Backend responded with 200 but the response contains error.'
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.cancelRequest = function(params, rejection) {
+    if (rejection == null) {
+      rejection = {};
+    }
+    return this.getCached(params).__selfReject(rejection);
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#resolveRequest
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Resolves the particular pending request (a corresponding promise in {@link ng-bundle-collection.Collection collection}`.cache`)
+  	 * @param {object} params
+  	 * Params object for which the request should be cancelled
+  	 * @param {object} resolving
+  	 * The response which has to be passed to success callback after resolving
+  	 * @example
+  	<pre>
+  		collection.resolveRequest({
+  			page: 1,
+  			page_size: 10
+  		}, [...]);
+  	</pre>
+   */
+
+  Collection.prototype.resolveRequest = function(params, resolving) {
+    if (resolving == null) {
+      resolving = {};
+    }
+    return this.getCached(params).__selfResolve(resolving);
   };
 
 
@@ -1641,8 +1703,28 @@ Collection = (function() {
     }
     deferred.promise["finally"](this.dec);
     _.extend(deferred.promise, {
-      __selfResolve: deferred.resolve,
-      __selfReject: deferred.reject
+      __selfResolve: (function(_this) {
+        return function(deferred, params) {
+          return function(resolving) {
+            _.extend(resolving, {
+              forcibly_resolved: true
+            });
+            deferred.resolve(resolving);
+            return _this.__success(resolving, params);
+          };
+        };
+      })(this)(deferred, params),
+      __selfReject: (function(_this) {
+        return function(deferred, params) {
+          return function(rejection) {
+            _.extend(rejection, {
+              forcibly_cancelled: true
+            });
+            deferred.reject(rejection);
+            return _this.__error(rejection, params);
+          };
+        };
+      })(this)(deferred, params)
     });
     return this.cache[paramsStr] = deferred.promise;
   };
@@ -1666,6 +1748,9 @@ Collection = (function() {
   Collection.prototype.__success = function(response, params) {
     var response_formatted;
     response = this.__callInterceptors(this.interceptors.fetch, response, params);
+    if (!this.getCached(params)) {
+      return;
+    }
     if (!this.config.dontCollect) {
       if ((response != null ? response.results : void 0) != null) {
         this.add(response.results);

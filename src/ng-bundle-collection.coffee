@@ -883,16 +883,63 @@ class Collection
 	# @methodOf ng-bundle-collection.Collection
 	# @description
 	# Cancels all current pending requests (all promises in {@link ng-bundle-collection.Collection collection}`.cache`)
+	# @param {object} rejection
+	# The response which has to be passed to error callback after rejection
 	# @example
 	<pre>
-		collection.cancelAllRequests();
+		collection.cancelAllRequests({
+			error: 'Backend responded with 200 but the response contains error.'
+		});
 	</pre>
 	###
-	cancelAllRequests: =>
+	cancelAllRequests: (rejection={}) =>
 		for key, cached of @cache when cached?
 			if cached.__selfReject?
-				cached.__selfReject cancelled: yes
-				delete @cache[key]
+				cached.__selfReject rejection
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#cancelRequest
+	# @methodOf ng-bundle-collection.Collection
+	# @description
+	# Cancels the particular pending request (a corresponding promise in {@link ng-bundle-collection.Collection collection}`.cache`)
+	# @param {object} params
+	# Params object for which the request should be cancelled
+	# @param {object} rejection
+	# The response which has to be passed to error callback after rejection
+	# @example
+	<pre>
+		collection.cancelRequest({
+			page: 1,
+			page_size: 10
+		}, {
+			error: 'Backend responded with 200 but the response contains error.'
+		});
+	</pre>
+	###
+	cancelRequest: (params, rejection={}) =>
+		@getCached(params).__selfReject rejection
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#resolveRequest
+	# @methodOf ng-bundle-collection.Collection
+	# @description
+	# Resolves the particular pending request (a corresponding promise in {@link ng-bundle-collection.Collection collection}`.cache`)
+	# @param {object} params
+	# Params object for which the request should be cancelled
+	# @param {object} resolving
+	# The response which has to be passed to success callback after resolving
+	# @example
+	<pre>
+		collection.resolveRequest({
+			page: 1,
+			page_size: 10
+		}, [...]);
+	</pre>
+	###
+	resolveRequest: (params, resolving={}) =>
+		@getCached(params).__selfResolve resolving
 
 	###*
 	# @ngdoc
@@ -1066,8 +1113,16 @@ class Collection
 					deferred.reject response
 		deferred.promise.finally @dec
 		_.extend deferred.promise,
-			__selfResolve: deferred.resolve
-			__selfReject: deferred.reject
+			__selfResolve: do (deferred, params) =>
+				(resolving) =>
+					_.extend resolving, forcibly_resolved: yes
+					deferred.resolve resolving
+					@__success resolving, params
+			__selfReject: do (deferred, params) =>
+				(rejection) =>
+					_.extend rejection, forcibly_cancelled: yes
+					deferred.reject rejection
+					@__error rejection, params
 		@cache[paramsStr] = deferred.promise
 
 	###*
@@ -1086,6 +1141,12 @@ class Collection
 	###
 	__success: (response, params) =>
 		response = @__callInterceptors @interceptors.fetch, response, params
+
+		# The cache for this params should be Promise.
+		# If it doesnt exist, it means that one of interceptors rejected that promise and it was deleted from cache,
+		# we have to cancel success callback
+		return unless @getCached params
+
 		unless @config.dontCollect
 			if response?.results?
 				@add response.results
