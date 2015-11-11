@@ -17,16 +17,12 @@ module.exports = (grunt) ->
 			examples:
 				options:
 					port: 9000
-					base: [
-						'<%= config.examples %>'
-						'<%= config.docs %>'
-					]
 					debug: yes
 					middleware: (connect, options) ->
 						[
-							modrewrite [ '!(\\..+)$ /example.html [L]' ]
+							modrewrite [ '!(\\..+)$ /index.html [L]' ]
 							serveStatic '.'
-						].concat (serveStatic path.toString() for path in options.base)
+						]
 			docs:
 				options:
 					port: 9001
@@ -52,6 +48,9 @@ module.exports = (grunt) ->
 			docs:
 				files: ['<%= config.dist %>/**/*.js']
 				tasks: ['docs:serve']
+			index:
+				files: ['<%= config.examples %>/example.html']
+				tasks: ['copy:index']
 
 		coffee:
 			main:
@@ -88,6 +87,11 @@ module.exports = (grunt) ->
 				src: ['<%= config.dist %>/**/*.js']
 				title: 'Documentation'
 
+		copy:
+			index:
+				src: '<%= config.examples %>/example.html'
+				dest: 'index.html'
+
 	grunt.registerTask 'docs', (target) ->
 		tasks = []
 		if 'serve' isnt target
@@ -99,6 +103,7 @@ module.exports = (grunt) ->
 
 	grunt.registerTask 'build', [
 		'coffee:main'
+		'copy:index'
 	]
 
 	grunt.registerTask 'build-examples', [

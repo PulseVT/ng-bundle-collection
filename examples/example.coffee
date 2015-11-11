@@ -17,6 +17,7 @@ do ->
 		'ng-bundle-collection'
 		'restangular'
 		'ui.bootstrap'
+		'ui.router'
 	]
 
 	module.service 'todos', (Collection, Restangular) ->
