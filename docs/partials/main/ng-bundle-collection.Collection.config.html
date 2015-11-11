@@ -1,0 +1,37 @@
+<a href="https://github.com/PulseVT/ng-bundle-collection/edit/master/dist/ng-bundle-collection.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><h1><code ng:non-bindable="">config</code>
+<div><span class="hint">service in module <code ng:non-bindable="">ng-bundle-collection.Collection</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="ng-bundle-collection-collection-config-page"><p>Configuration object of <a href="main/ng-bundle-collection.Collection">ng-bundle-collection.Collection</a> instances</p>
+</div></div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_withcaching=true">withCaching=true</h3>
+<div class="withcaching=true"><div class="ng-bundle-collection-collection-config-page"><p>Controls whether to initialize caching mechanism for collection</p>
+</div></div>
+</li>
+<li><h3 id="properties_id_field="id"">id_field="id"</h3>
+<div class="id_field="id""><div class="ng-bundle-collection-collection-config-page"><p>Name of identification field for each collection item</p>
+</div></div>
+</li>
+<li><h3 id="properties_respondwithpayload=true">respondWithPayload=true</h3>
+<div class="respondwithpayload=true"><div class="ng-bundle-collection-collection-config-page"><p>Controls whether to add payload of each request as a <strong><code>__payload</code></strong> field in response</p>
+</div></div>
+</li>
+<li><h3 id="properties_model">model</h3>
+<div class="model"><div class="ng-bundle-collection-collection-config-page"><p>Decorator model class for collection items</p>
+<p><em>Note:</em> this has to be a function as javascript classes can be defined only as functions. Of course, the CoffeeScript classes are welcome :)</p></div></div>
+</li>
+<li><h3 id="properties_dontcollect=false">dontCollect=false</h3>
+<div class="dontcollect=false"><div class="ng-bundle-collection-collection-config-page"><p>If set to <code>true</code>, the collection wouldnt collect the responses in its <code>arr</code> and <code>objById</code> containers.</p>
+<p>This wouldnt affect caching ability, the cache will work as usual.</p>
+<p>This can be used to use collection only as fetching agent, which is useful i.e. when the data is not a collection, but the object, maybe some settings object or else.</p></div></div>
+</li>
+<li><h3 id="properties_params">params</h3>
+<div class="params"><div class="ng-bundle-collection-collection-config-page"><p>Default params to be included into each get request made by <a href="main/ng-bundle-collection.Collection">ng-bundle-collection.Collection</a><code>.fetch</code></p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>
