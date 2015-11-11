@@ -14,6 +14,8 @@ A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS 
 
 # API
 
+Please watch documentation [here](http://pulsevt.github.io/ng-bundle-collection/), under `Docs` tab
+
 # Build & Serve
 ## Comprehensive
 To build, serve example and documentation, run
