@@ -24,9 +24,9 @@ Which is the same as
 
 > grunt serve
 
-Example is served at `localhost:9000`
+Example + docs is served at `localhost:9000` (switch using navbar)
 
-Documentation is served at `localhost:9001`
+Pure Documentation is served at `localhost:9001`
 
 ## Only documentation
 

@@ -17,14 +17,16 @@ module.exports = (grunt) ->
 			examples:
 				options:
 					port: 9000
-					base: '<%= config.examples %>'
+					base: [
+						'<%= config.examples %>'
+						'<%= config.docs %>'
+					]
 					debug: yes
 					middleware: (connect, options) ->
 						[
 							modrewrite [ '!(\\..+)$ /example.html [L]' ]
 							serveStatic '.'
-							serveStatic options.base.toString()
-						]
+						].concat (serveStatic path.toString() for path in options.base)
 			docs:
 				options:
 					port: 9001

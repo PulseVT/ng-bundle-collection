@@ -5,10 +5,13 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>ng-bundle-collection-example</title>
 		<link rel="icon" type="image/png" href="https://cdn1.iconfinder.com/data/icons/folders-2/24/Box-with_Folders-512.png">
+		<link rel="stylesheet" type="text/css" href='bower_components/bootstrap-bower/css/bootstrap.min.css'>
+		<link rel="stylesheet" type="text/css" href='bower_components/bootstrap-bower/css/bootstrap-theme.min.css'>
+		<link rel="stylesheet" type="text/css" href='bower_components/angular-bootstrap/ui-bootstrap-csp.css'>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style type="text/css">
-			body{
+			.example{
 				width: 600px;
 				margin: auto;
 				padding: 30px;
@@ -31,16 +34,27 @@
 		<script type="text/javascript" src='bower_components/angular/angular.js'></script>
 		<script type="text/javascript" src='bower_components/lodash/lodash.js'></script>
 		<script type="text/javascript" src='bower_components/restangular/dist/restangular.js'></script>
+		<script type="text/javascript" src='bower_components/angular-bootstrap/ui-bootstrap.min.js'></script>
+		<script type="text/javascript" src='bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js'></script>
 		<script type="text/javascript" src='dist/ng-bundle-collection.js'></script>
 		<script type="text/javascript" src="js/example.js"></script>
 
-		<div>
-			<button ng-click='addTodo()' ng-disabled='todos.isLoading()'>Add Todo</button>
-			<span ng-if='todos.isLoading()'>Loading...</span>
-		</div>
-		<div class='todos'>
-			<div ng-repeat='todo in todos.arr' todo='todo'></div>
-		</div>
+		<uib-tabset>
+			<uib-tab heading='Example'>
+				<div class='example'>
+					<div>
+						<button ng-click='addTodo()' ng-disabled='todos.isLoading()'>Add Todo</button>
+						<span ng-if='todos.isLoading()'>Loading...</span>
+					</div>
+					<div class='todos'>
+						<div ng-repeat='todo in todos.arr' todo='todo'></div>
+					</div>
+				</div>
+			</uib-tab>
+			<uib-tab heading='Docs'>
+				<iframe src='../docs/index.html' width='100%' height='700'></iframe>
+			</uib-tab>
+		</uib-tabset>
 	</body>
 
 	<script type="text/ng-template" id="/todo.html">

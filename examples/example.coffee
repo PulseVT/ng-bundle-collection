@@ -13,7 +13,11 @@ do ->
 			Math.round (deadline - now) / @msInDay
 
 
-	module = angular.module 'ng-bundle-collection-example', ['ng-bundle-collection', 'restangular']
+	module = angular.module 'ng-bundle-collection-example', [
+		'ng-bundle-collection'
+		'restangular'
+		'ui.bootstrap'
+	]
 
 	module.service 'todos', (Collection, Restangular) ->
 		_.extend @, new Collection Restangular.all('todos'),
