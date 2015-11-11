@@ -12,6 +12,8 @@
   "devDependencies": {
     "angular": "~1.4.7",
     "restangular": "~1.5.1",
+    "bootstrap-bower": "~3.0.0",
+    "angular-bootstrap": "~0.14.3",
     "angular-ui-router": "~0.2.15"
   },
   "main": "dist/ng-bundle-collection.js",

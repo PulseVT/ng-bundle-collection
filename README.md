@@ -14,6 +14,8 @@ A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS 
 
 # API
 
+Please watch documentation [here](http://pulsevt.github.io/ng-bundle-collection/), under `Docs` tab
+
 # Build & Serve
 ## Comprehensive
 To build, serve example and documentation, run
@@ -24,9 +26,9 @@ Which is the same as
 
 > grunt serve
 
-Example is served at `localhost:9000`
+Example + docs is served at `localhost:9000` (switch using navbar)
 
-Documentation is served at `localhost:9001`
+Pure Documentation is served at `localhost:9001`
 
 ## Only documentation
 
