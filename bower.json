@@ -11,7 +11,8 @@
   },
   "devDependencies": {
     "angular": "~1.4.7",
-    "restangular": "~1.5.1"
+    "restangular": "~1.5.1",
+    "angular-ui-router": "~0.2.15"
   },
   "main": "dist/ng-bundle-collection.js",
   "homepage": "https://github.com/PulseVT/ng-bundle-collection",
