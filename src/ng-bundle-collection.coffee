@@ -460,11 +460,12 @@ class Collection
 
 	__update: (data, method) =>
 		@inc()
+		rest = @__rest data
 		data = @__extractPayload data
 		if data.params?
 			params = data.params
 			delete data.params
-		promise = @__rest(data).one(data[@config.id_field].toString())[method](data, params).then (response) =>
+		promise = rest.one(data[@config.id_field].toString())[method](data, params).then (response) =>
 			@update_locally response
 			response
 		promise.finally => @dec()
