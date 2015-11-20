@@ -337,7 +337,7 @@ class Collection
 	###
 	add_withToCache: (data, params) =>
 		response = @add data
-		paramsMark = @__calcParamsMark params
+		paramsMark = @__calcCacheMark params
 		data = [data] unless _.isArray data
 		for item in data
 			if @cache[paramsMark]? and item[@config.id_field] not in _.pluck @cache[paramsMark].results, @config.id_field
@@ -411,7 +411,7 @@ class Collection
 	###
 	create: (data) =>
 		@inc()
-		promise = @__rest(data).post(data).then (response) =>
+		promise = @__rest(data).post(@__extractPayload data).then (response) =>
 			@add response
 			response
 		promise.finally => @dec()
@@ -452,7 +452,7 @@ class Collection
 	###
 	update: (data) =>
 		@inc()
-		promise = @__rest(data).one(data[@config.id_field].toString()).patch(data).then (response) =>
+		promise = @__rest(data).one(data[@config.id_field].toString()).patch(@__extractPayload data).then (response) =>
 			@update_locally response
 			response
 		promise.finally => @dec()
@@ -855,7 +855,7 @@ class Collection
 		});
 	</pre>
 	###
-	fetch: (params = {}) =>
+	fetch: (params = {}, subconfig) =>
 		# preventing params mixing if the same params object is passed to different collections
 		params = angular.copy params
 		# extending params with default preconfigured params
@@ -867,7 +867,7 @@ class Collection
 		if @objById[id]?
 			@$q.when @objById[id]
 		else
-			paramsStr = @__calcParamsMark params
+			paramsStr = @__calcCacheMark params
 			if @cache[paramsStr]?
 				# request is pending with such params, e.g. __private_fetch is now working being called with such params
 				# or
@@ -875,7 +875,7 @@ class Collection
 				@$q.when @cache[paramsStr]
 			else
 				# no request with such params was made, just fetching data
-				@__private_fetch params
+				@__private_fetch params, subconfig
 
 	###*
 	# @ngdoc
@@ -1040,11 +1040,11 @@ class Collection
 	# @param {object} params
 	# Params for fetch request
 	###
-	__private_fetch: (params) =>
+	__private_fetch: (params, subconfig) =>
 		@inc()
 		@__callExtendFns @extendFns.fetch.b, params
-		rest = @__rest params
-		paramsStr = @__calcParamsMark params
+		rest = @__rest params, subconfig
+		paramsStr = @__calcCacheMark params
 		deferred = @$q.defer()
 		if @mock #if mock is set, then answer with mock instead of making request
 			@$timeout =>
@@ -1052,7 +1052,7 @@ class Collection
 				deferred.resolve @mock
 			, @mockDelay or @defaultMockDelay
 		else
-			paramsToSend = params
+			paramsToSend = @__extractPayload params
 			if params[@config.id_field]?
 				rest = rest.one params[@config.id_field].toString()
 				paramsToSend = _.omit paramsToSend, @config.id_field
@@ -1115,19 +1115,19 @@ class Collection
 
 	###*
 	# @ngdoc
-	# @name Private_methods#__calcParamsMark
+	# @name Private_methods#__calcCacheMark
 	# @methodOf Private_methods
 	# @returns {string}
 	# The string mark of params
 	# @description
-	# <p>Calculates string mark for parameters object</p>
+	# <p>Calculates string mark for cache entry</p>
 	# <p>Params mark is used for:</p>
 	# - marking responses for requests and determining if the response is already cached
 	# - marking promises and determining if the request is already pending
 	# @param {object} params
 	# Params object
 	###
-	__calcParamsMark: (params) -> JSON.stringify params
+	__calcCacheMark: (params) -> JSON.stringify params
 
 	###*
 	# @ngdoc
@@ -1189,7 +1189,7 @@ class Collection
 	###
 	__initCacheClearing: =>
 		@extendFetch
-			s: (response, params) => delete @cache[@__calcParamsMark params]
+			s: (response, params) => delete @cache[@__calcCacheMark params]
 
 	###*
 	# @ngdoc
@@ -1202,9 +1202,9 @@ class Collection
 	###
 	__initCaching: =>
 		@extendFetch
-			# b: (params) => @cache[@__calcParamsMark params] = no
-			s: (response, params, method) => @cache[@__calcParamsMark params] = angular.copy response #@__determineResponse response, params, method
-			e: (response, params) => delete @cache[@__calcParamsMark params]
+			# b: (params) => @cache[@__calcCacheMark params] = no
+			s: (response, params, method) => @cache[@__calcCacheMark params] = angular.copy response #@__determineResponse response, params, method
+			e: (response, params) => delete @cache[@__calcCacheMark params]
 		# setInterval @invalidate, @rest.__invalidate_interval
 
 	###*
@@ -1233,7 +1233,7 @@ class Collection
 		var cachedResponseForFirstPage = collection.getCached({page: 1, page_size: 10});
 	</pre>
 	###
-	getCached: (params) => @cache[@__calcParamsMark params]
+	getCached: (params) => @cache[@__calcCacheMark params]
 
 	###*
 	# @ngdoc
@@ -1244,7 +1244,20 @@ class Collection
 	# Extracts the Restangular instance which is configured to perform REST actions
 	###
 	__rest: (params) =>
-		if _.isFunction @rest then @rest params else @rest
+		rest = if _.isFunction @rest then @rest params else @rest
+		rest = rest.one params.__subconfig.url if params.__subconfig?.url?
+		rest
+
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__payload
+	# @methodOf Private_methods
+	# @returns {object} Extracted payload
+	# @description
+	# Extracts payload from data to be passed to rest call by removing config fields
+	###
+	__extractPayload: (data) => _.omit data, '__subconfig'
 
 
 	###*
