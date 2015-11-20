@@ -465,7 +465,7 @@ class Collection
 		if data.params?
 			params = data.params
 			delete data.params
-		promise = rest.one(data[@config.id_field].toString())[method](data, params).then (response) =>
+		promise = rest[method](data, params).then (response) =>
 			@update_locally response
 			response
 		promise.finally => @dec()
@@ -533,7 +533,7 @@ class Collection
 	###
 	delete: (item) =>
 		@inc()
-		promise = @__rest(item).one(item[@config.id_field].toString()).remove().then (response) =>
+		promise = @__rest(item).remove().then (response) =>
 			@remove item
 			response
 		promise.finally => @dec()
@@ -1065,11 +1065,7 @@ class Collection
 				deferred.resolve @mock
 			, @mockDelay or @defaultMockDelay
 		else
-			paramsToSend = @__extractPayload params
-			if params[@config.id_field]?
-				rest = rest.one params[@config.id_field].toString()
-				paramsToSend = _.omit paramsToSend, @config.id_field
-			rest.customGET('', paramsToSend).then (response) =>
+			rest.customGET('', @__extractPayload params).then (response) =>
 				deferred.resolve @__success response, params
 			, (response) =>
 				if response.status is 304
@@ -1259,7 +1255,7 @@ class Collection
 	__rest: (params) =>
 		rest = if _.isFunction @rest then @rest params else @rest
 		if params[@config.id_field]?
-			rest = rest.one params[@config.id_field]
+			rest = rest.one params[@config.id_field].toString()
 			delete params[@config.id_field]
 		rest = rest.one params.__subconfig.url if params.__subconfig?.url?
 		rest

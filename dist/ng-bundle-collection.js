@@ -868,7 +868,7 @@ Collection = (function() {
       params = data.params;
       delete data.params;
     }
-    promise = rest.one(data[this.config.id_field].toString())[method](data, params).then((function(_this) {
+    promise = rest[method](data, params).then((function(_this) {
       return function(response) {
         _this.update_locally(response);
         return response;
@@ -954,7 +954,7 @@ Collection = (function() {
   Collection.prototype["delete"] = function(item) {
     var promise;
     this.inc();
-    promise = this.__rest(item).one(item[this.config.id_field].toString()).remove().then((function(_this) {
+    promise = this.__rest(item).remove().then((function(_this) {
       return function(response) {
         _this.remove(item);
         return response;
@@ -1625,7 +1625,7 @@ Collection = (function() {
    */
 
   Collection.prototype.__private_fetch = function(params, subconfig) {
-    var deferred, paramsStr, paramsToSend, rest;
+    var deferred, paramsStr, rest;
     this.inc();
     this.__callExtendFns(this.extendFns.fetch.b, params);
     rest = this.__rest(params, subconfig);
@@ -1639,12 +1639,7 @@ Collection = (function() {
         };
       })(this), this.mockDelay || this.defaultMockDelay);
     } else {
-      paramsToSend = this.__extractPayload(params);
-      if (params[this.config.id_field] != null) {
-        rest = rest.one(params[this.config.id_field].toString());
-        paramsToSend = _.omit(paramsToSend, this.config.id_field);
-      }
-      rest.customGET('', paramsToSend).then((function(_this) {
+      rest.customGET('', this.__extractPayload(params)).then((function(_this) {
         return function(response) {
           return deferred.resolve(_this.__success(response, params));
         };
@@ -1919,6 +1914,10 @@ Collection = (function() {
   Collection.prototype.__rest = function(params) {
     var ref, rest;
     rest = _.isFunction(this.rest) ? this.rest(params) : this.rest;
+    if (params[this.config.id_field] != null) {
+      rest = rest.one(params[this.config.id_field].toString());
+      delete params[this.config.id_field];
+    }
     if (((ref = params.__subconfig) != null ? ref.url : void 0) != null) {
       rest = rest.one(params.__subconfig.url);
     }
@@ -1936,7 +1935,7 @@ Collection = (function() {
    */
 
   Collection.prototype.__extractPayload = function(data) {
-    return _.omit(data, '__subconfig');
+    return _.omit(data, '__subconfig', this.config.id_field);
   };
 
 
