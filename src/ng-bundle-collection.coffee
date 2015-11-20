@@ -450,9 +450,19 @@ class Collection
 		});
 	</pre>
 	###
-	update: (data) =>
+	put: (data) => @__update data, 'put'
+
+	patch: (data) => @__update data, 'patch'
+
+	update: => @patch arguments...
+
+	__update: (data, method) =>
 		@inc()
-		promise = @__rest(data).one(data[@config.id_field].toString()).patch(@__extractPayload data).then (response) =>
+		data = @__extractPayload data
+		if data.params?
+			params = data.params
+			delete data.params
+		promise = @__rest(data).one(data[@config.id_field].toString())[method](data, params).then (response) =>
 			@update_locally response
 			response
 		promise.finally => @dec()
