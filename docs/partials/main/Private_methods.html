@@ -1,0 +1,137 @@
+<a href="https://github.com/PulseVT/ng-bundle-collection/edit/master/dist/ng-bundle-collection.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><h1><code ng:non-bindable="">Private_methods</code>
+<div><span class="hint"></span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="private-methods-page"><p>Private methods of <a href="main/ng-bundle-collection.Collection">ng-bundle-collection.Collection</a></p>
+</div></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L726" class="view-source icon-eye-open"> </a><h3 id="methods___addone">__addOne(item, params)</h3>
+<div class="__addone"><div class="private-methods-addone-page"><p>Adds single item to collection.</p>
+<p>To add an item, please use <code>collection.add</code> or <code>collection.add_withToCache</code></p></div><h5 id="methods___addone_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-addone-page"><p>Item to be added.</p>
+</div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-addone-page"><p>Params object of request which responded with this item.</p>
+</div></td></tr></tbody></table><h5 id="methods___addone_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-addone-page"><p>Added item</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1717" class="view-source icon-eye-open"> </a><h3 id="methods___calcparamsmark">__calcParamsMark(params)</h3>
+<div class="__calcparamsmark"><div class="private-methods-calcparamsmark-page"><p><p>Calculates string mark for parameters object</p></p>
+<p><p>Params mark is used for:</p></p>
+<ul>
+<li>marking responses for requests and determining if the response is already cached</li>
+<li>marking promises and determining if the request is already pending</li>
+</ul>
+</div><h5 id="methods___calcparamsmark_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-calcparamsmark-page"><p>Params object</p>
+</div></td></tr></tbody></table><h5 id="methods___calcparamsmark_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="private-methods-calcparamsmark-page"><p>The string mark of params</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1487" class="view-source icon-eye-open"> </a><h3 id="methods___callextendfns">__callExtendFns(fns_arr)</h3>
+<div class="__callextendfns"><div class="private-methods-callextendfns-page"><p>Invokes each extending function from array with passed params.
+Extending functions array is taken from <a href="main/ng-bundle-collection.Collection">Collection</a>.extendFns</p>
+</div><h5 id="methods___callextendfns_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns_arr</td><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="private-methods-callextendfns-page"><p>Array of functions to be called</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1526" class="view-source icon-eye-open"> </a><h3 id="methods___callinterceptors">__callInterceptors(fns_arr, response, params)</h3>
+<div class="__callinterceptors"><div class="private-methods-callinterceptors-page"><p>Invokes each interceptor from array (chain) with passed params.
+Extending functions array is taken from <a href="main/ng-bundle-collection.Collection">Collection</a>.extendFns</p>
+</div><h5 id="methods___callinterceptors_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns_arr</td><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="private-methods-callinterceptors-page"><p>Array of functions to be called</p>
+</div></td></tr><tr><td>response</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="private-methods-callinterceptors-page"><p>Response from previous interceptor or otiginal response</p>
+</div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-callinterceptors-page"><p>Params object with which was the request made</p>
+</div></td></tr></tbody></table><h5 id="methods___callinterceptors_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object|array</a></td><td><div class="private-methods-callinterceptors-page"><p>Value which is returned from the last interceptor in chain</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1748" class="view-source icon-eye-open"> </a><h3 id="methods___determineresponse">__determineResponse(response, params)</h3>
+<div class="__determineresponse"><div class="private-methods-determineresponse-page"><p>Formats the response to fetch action from backend.</p>
+<p>The format of resulting response is:</p>
+- if the response is expected to be an <code>Array</code>, then the response is
+      <pre class="prettyprint linenums">
+  		{
+  			results: [
+  				//array of items of array
+  			],
+  		}
+  	</pre>
+- if the response is expected to be an <code>Object</code>, then response is just the same as backend sent
+<p>Adds <code>__payload</code> with <code>params</code> if the <a href="main/ng-bundle-collection.Collection">collection</a><code>.config.respondWithPayload</code> is <code>true</code></p>
+<p>Each item comes decorated with <a href="main/ng-bundle-collection.Collection">collection</a><code>.config.model</code></p></div><h5 id="methods___determineresponse_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>response</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-determineresponse-page"><p>Success response from backend</p>
+</div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-determineresponse-page"><p>Params object, with which was the request done.</p>
+</div></td></tr></tbody></table><h5 id="methods___determineresponse_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-determineresponse-page"><p>Formatted response</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1696" class="view-source icon-eye-open"> </a><h3 id="methods___error">__error(response, params)</h3>
+<div class="__error"><div class="private-methods-error-page"><p><p>Error callback for fetching action.</p></p>
+<ul>
+<li>Calls extending error (<a href="main/ng-bundle-collection.Collection">collection</a><code>.extendFns.fetch.e</code>) functions</li>
+<li>Calls extending final (<a href="main/ng-bundle-collection.Collection">collection</a><code>.extendFns.fetch.f</code>) functions</li>
+</ul>
+</div><h5 id="methods___error_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>response</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-error-page"><p>Error response from backend</p>
+</div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-error-page"><p>Params object, with which was the request done.</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1814" class="view-source icon-eye-open"> </a><h3 id="methods___initcacheclearing">__initCacheClearing()</h3>
+<div class="__initcacheclearing"><div class="private-methods-initcacheclearing-page"><p><p>Adds extending function for fetch success (<a href="main/ng-bundle-collection.Colleciton">collection</a><code>.extendFns.fetch.s</code>), which clears promises from cache</p></p>
+<p><p>Invoked if the cache is disabled by <a href="main/ng-bundle-collection.Colleciton.config">config</a><code>.withCaching === false</code></p>
+</div></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1835" class="view-source icon-eye-open"> </a><h3 id="methods___initcaching">__initCaching()</h3>
+<div class="__initcaching"><div class="private-methods-initcaching-page"><p><p>Enable caching by adding extending functions for fetch success (<a href="main/ng-bundle-collection.Colleciton">collection</a><code>.extendFns.fetch.s</code>)
+and for fetch error (<a href="main/ng-bundle-collection.Colleciton">collection</a><code>.extendFns.fetch.e</code>)</p></p>
+<p><p>Invoked if the cache is ensabled by <a href="main/ng-bundle-collection.Colleciton.config">config</a><code>.withCaching === true</code></p>
+</div></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1456" class="view-source icon-eye-open"> </a><h3 id="methods___invalidateparams">__invalidateParams(params)</h3>
+<div class="__invalidateparams"><div class="private-methods-invalidateparams-page"><p>Deletes cached responses where the key corresponds to params object, which <strong>contains</strong> passed params</p>
+<p>Is called by <a href="main/ng-bundle-collection.Collection">Collection</a>.invalidate for each params object</p></div><h5 id="methods___invalidateparams_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-invalidateparams-page"><p>The params object, which determines deleted cached responses</p>
+</div></td></tr></tbody></table><h4 id="methods___invalidateparams_example">Example</h4>
+<div class="example"><div class="private-methods-invalidateparams-page"><p><p>This deletes all cache records, whose keys correspond to params object with </p></p>
+<p><p><code>&#39;page_size&#39; == 10</code> <strong>AND</strong> <code>&#39;name&#39; == &#39;asd&#39;</code></p>
+      <pre class="prettyprint linenums">
+  		collection.invalidate({page_size:10, name: 'asd'});
+  	</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1604" class="view-source icon-eye-open"> </a><h3 id="methods___private_fetch">__private_fetch(params)</h3>
+<div class="__private_fetch"><div class="private-methods-private-fetch-page"><p>Implements the fetching action.</p>
+<p>For perform fetching via collection, please use <a href="main/ng-bundle-collection.Collection">ng-bundle-collection.Collection</a><code>.fetch</code> method</p></div><h5 id="methods___private_fetch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-private-fetch-page"><p>Params for fetch request</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1896" class="view-source icon-eye-open"> </a><h3 id="methods___rest">__rest()</h3>
+<div class="__rest"><div class="private-methods-rest-page"><p>Extracts the Restangular instance which is configured to perform REST actions</p>
+</div><h5 id="methods___rest_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-rest-page"><p>Restangular instance</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1665" class="view-source icon-eye-open"> </a><h3 id="methods___success">__success(response, params)</h3>
+<div class="__success"><div class="private-methods-success-page"><p><p>Success callback for fetching action.</p></p>
+<ul>
+<li>Adds results to collection</li>
+<li>Calls extending success (<a href="main/ng-bundle-collection.Collection">collection</a><code>.extendFns.fetch.s</code>) functions</li>
+<li>Calls extending final (<a href="main/ng-bundle-collection.Collection">collection</a><code>.extendFns.fetch.f</code>) functions</li>
+</ul>
+</div><h5 id="methods___success_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>response</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-success-page"><p>Success response from backend</p>
+</div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-success-page"><p>Params object, with which was the request done.</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L762" class="view-source icon-eye-open"> </a><h3 id="methods___wrapwithmodel">__wrapWithModel(item)</h3>
+<div class="__wrapwithmodel"><div class="private-methods-wrapwithmodel-page"><p>Wraps an item with <a href="main/ng-bundle-collection.Collection.config">config</a><code>.model</code></p></div><h5 id="methods___wrapwithmodel_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-wrapwithmodel-page"><p>Item to be wrapped.</p>
+</div></td></tr></tbody></table><h5 id="methods___wrapwithmodel_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="private-methods-wrapwithmodel-page"><p>Wrapped item</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L405" class="view-source icon-eye-open"> </a><h3 id="methods__initconfig">_initConfig()</h3>
+<div class="_initconfig"><div class="private-methods-initconfig-page"><p>Populating collection config with defaults</p>
+</div></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L520" class="view-source icon-eye-open"> </a><h3 id="methods__initextendfns">_initExtendFns()</h3>
+<div class="_initextendfns"><div class="private-methods-initextendfns-page"><p>Initialization of extending functions</p>
+</div></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L557" class="view-source icon-eye-open"> </a><h3 id="methods__initinterceptors">_initInterceptors()</h3>
+<div class="_initinterceptors"><div class="private-methods-initinterceptors-page"><p>Initialization of interceptors</p>
+</div></div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L455" class="view-source icon-eye-open"> </a><h3 id="methods__initpublicproperties">_initPublicProperties()</h3>
+<div class="_initpublicproperties"><div class="private-methods-initpublicproperties-page"><p>Initialization of public properties of collection</p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>

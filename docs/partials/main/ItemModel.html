@@ -1,0 +1,161 @@
+<a href="https://github.com/PulseVT/ng-bundle-collection/edit/master/dist/ng-bundle-collection.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><h1><code ng:non-bindable="">ItemModel</code>
+<div><span class="hint"></span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="itemmodel-page"><p>Class that represents default model for each collection item</p>
+<p>Can be extended by custom item model</p></div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">ItemModel(item, methods);</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-page"><p>Object that represents item data</p>
+</div></td></tr><tr><td>methods</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-page"><p>Collection-level methods from the instance to which the item belongs</p>
+</div></td></tr></tbody></table></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L108" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete()</h3>
+<div class="delete"><div class="itemmodel-delete-page"><p>Removes item from collection and deletes it at backend using specified REST configuration.</p>
+<p>Makes <code>DELETE</code> request to endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="itemmodel-delete-page"><p>Promise which resolves with deleted item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_delete_example">Example</h4>
+<div class="example"><div class="itemmodel-delete-page"><pre class="prettyprint linenums">
+//creating collection, with id-field 'id' by default
+var users = new Collection(Restangular.all('users'));
+//Creating a user
+users.create({
+	name: 'Some User Name',
+	email: 'some-email@email.com'
+}).then(function(user){
+	//This will make `DELETE` request to `users/:user.id`.
+	user.delete();
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L78" class="view-source icon-eye-open"> </a><h3 id="methods_remove">remove(item)</h3>
+<div class="remove"><div class="itemmodel-remove-page"><p>Removes the item from collection locally.</p></div><h5 id="methods_remove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-remove-page"><p>Item data, must contain id-field</p>
+</div></td></tr></tbody></table><h5 id="methods_remove_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-remove-page"><p>Removed item</p>
+</div></td></tr></table><h4 id="methods_remove_example">Example</h4>
+<div class="example"><div class="itemmodel-remove-page"><pre class="prettyprint linenums">
+//creating collection, with id-field 'id' by default
+var users = new Collection(Restangular.all('users'));
+//Creating a user
+users.create({
+	name: 'Some User Name',
+	email: 'some-email@email.com'
+}).then(function(user){
+	//This will remove user from collection, but not from backend
+	user.remove();
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L220" class="view-source icon-eye-open"> </a><h3 id="methods_save">save()</h3>
+<div class="save"><div class="itemmodel-save-page"><p>Saves the current item state at backend using specified REST configuration.</p>
+<p>Makes <code>PATCH</code> request to endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_save_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="itemmodel-save-page"><p>Promise which resolves with updated item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_save_example">Example</h4>
+<div class="example"><div class="itemmodel-save-page"><pre class="prettyprint linenums">
+	var users = new Collection(Restangular.all('users'), {
+		id_field: 'specific_id_field'
+	});
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		_.extend(user, {
+			name: 'User Name',
+			email: 'email@email.com'
+		});
+
+		//...
+		user.flag = true
+
+		//This will make `PATCH` request to `users/:user.id`.
+		user.save();
+	});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L145" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(data)</h3>
+<div class="update"><div class="itemmodel-update-page"><p>Updates item in collection and at backend using specified REST configuration.</p>
+<p>Makes <code>PATCH</code> request to endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-update-page"><p>Object with fields that should be updated or added</p>
+</div></td></tr></tbody></table><h5 id="methods_update_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="itemmodel-update-page"><p>Promise which resolves with updated item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_update_example">Example</h4>
+<div class="example"><div class="itemmodel-update-page"><pre class="prettyprint linenums">
+	var users = new Collection(Restangular.all('users'), {
+		id_field: 'specific_id_field'
+	});
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		//This will make `PATCH` request to `users/:user.id`.
+		user.update({
+			name: 'User Name',
+			email: 'email@email.com'
+		});
+
+	});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L181" class="view-source icon-eye-open"> </a><h3 id="methods_update_locally">update_locally(item)</h3>
+<div class="update_locally"><div class="itemmodel-update-locally-page"><p>Updates item in collection locally (doesnt affect backend).</p></div><h5 id="methods_update_locally_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-update-locally-page"><p>Item data to be written to item</p>
+</div></td></tr></tbody></table><h5 id="methods_update_locally_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="itemmodel-update-locally-page"><p>Updated item</p>
+</div></td></tr></table><h4 id="methods_update_locally_example">Example</h4>
+<div class="example"><div class="itemmodel-update-locally-page"><pre class="prettyprint linenums">
+	var users = new Collection(Restangular.all('users'), {
+		id_field: 'specific_id_field'
+	});
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		//user will have new name and email
+		user.update_locally({
+			name: 'User Name',
+			email: 'email@email.com'
+		});
+
+	});
+</pre>
+</div></div>
+</div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="itemmodel-page"><pre class="prettyprint linenums">
+//custom user model
+class User extends ItemModel
+	constructor: -&gt;
+		//!important. if overriding default constructor, dont forget to specify `super` call to invoke parent constructor
+		super
+		//constructor
+		if this.calculateMailingAgent() isnt 'gmail'
+			this.notGoogleEmail = yes
+
+	calculateMailingAgent: =&gt;
+		this.email.match(/\@(.*)\./)[1]
+
+//somewhere in controller...
+$scope.users = new Collection Restangular.all('users'), model: User
+$scope.users.fetch()
+
+//HTML
+&lt;ul&gt;
+	&lt;li ng-repeat='user users.arr'&gt;
+		&lt;div&gt;Name: {{user.name}}&lt;/div&gt;
+		&lt;div&gt;Mailing agent: {{user.calculateMailingAgent()}}&lt;/div&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+</div></div>
+</div>

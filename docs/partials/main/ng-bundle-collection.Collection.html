@@ -1,0 +1,581 @@
+<a href="https://github.com/PulseVT/ng-bundle-collection/edit/master/dist/ng-bundle-collection.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><h1><code ng:non-bindable="">Collection</code>
+<div><span class="hint">service in module <code ng:non-bindable="">ng-bundle-collection</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="ng-bundle-collection-collection-page"><p>Wraps Collection class into angular factory</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="main/ng.$q">$q</a></code>
+</li>
+<li><code ng:non-bindable=""><a href="main/ng.$timeout">$timeout</a></code>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">Collection(rest, config);</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>rest</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-page"><p>Restangular instance</p>
+</div></td></tr><tr><td>config</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-page"><p>Configuration for collection.</p>
+<p>Please see <a href="main/ng-bundle-collection.Collection.config">ng-bundle-collection.Collection.config</a> for available config properties.</p></div></td></tr></tbody></table></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1587" class="view-source icon-eye-open"> </a><h3 id="methods___removemock">__removeMock()</h3>
+<div class="__removemock"><div class="ng-bundle-collection-collection-removemock-page"><p>Removes current response mock.</p></div><h4 id="methods___removemock_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-removemock-page"><pre class="prettyprint linenums">
+collection.__removeMock();
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1569" class="view-source icon-eye-open"> </a><h3 id="methods___setmock">__setMock(mock, mockDelay)</h3>
+<div class="__setmock"><div class="ng-bundle-collection-collection-setmock-page"><p>Sets the response mock.</p>
+<p>No requests to backend will be made if the mock is set.</p></div><h5 id="methods___setmock_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mock</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-setmock-page"><p>The mock which should be responded to any <a href="main/ng-bundle-collection.Collection">collection</a><code>.fetch</code> request</p>
+</div></td></tr><tr><td>mockDelay</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-setmock-page"><p>The number of milliseconds of timeout before responding with mock</p>
+</div></td></tr></tbody></table><h4 id="methods___setmock_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-setmock-page"><pre class="prettyprint linenums">
+collection.__setMock([
+	{
+		id: 0,
+		name: 'User1'
+	},
+	{
+		id: 1,
+		name: 'User2'
+	}
+]);
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L649" class="view-source icon-eye-open"> </a><h3 id="methods_add">add(data, params)</h3>
+<div class="add"><div class="ng-bundle-collection-collection-add-page"><p>Adds an item to collection.
+Overwrites existing item if the id-field of item exists in collection</p>
+</div><h5 id="methods_add_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Item to be added or array of items.</p>
+<p>Item must contain an id-field named the same as the config parameter <a href="main/ng-bundle-collection.Collection.config">collection.config</a><code>.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p></div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Params object of request which responded with this item or array of items.</p>
+</div></td></tr></tbody></table><h5 id="methods_add_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object|array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Added item or array of items</p>
+</div></td></tr></table><h4 id="methods_add_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-add-page"><pre class="prettyprint linenums">
+collection.add({
+	id: 0,
+	name: 'User Name',
+	email: 'email@email.com'
+})
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1223" class="view-source icon-eye-open"> </a><h3 id="methods_addfetchinterceptor">addFetchInterceptor(fn)</h3>
+<div class="addfetchinterceptor"><div class="ng-bundle-collection-collection-addfetchinterceptor-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#interceptors">ng-bundle-collection.Collection#interceptors</a><code>.fetch</code> chain</p>
+</div><h5 id="methods_addfetchinterceptor_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="ng-bundle-collection-collection-addfetchinterceptor-page"><p>Function which will be added to fetch interceptors chain.</p>
+</div></td></tr></tbody></table><h4 id="methods_addfetchinterceptor_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-addfetchinterceptor-page"><pre class="prettyprint linenums">
+collection.addFetchInterceptor(function(successResponse){
+	...
+	return modified_or_replaced_response;
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1186" class="view-source icon-eye-open"> </a><h3 id="methods_addinterceptor">addInterceptor(fns)</h3>
+<div class="addinterceptor"><div class="ng-bundle-collection-collection-addinterceptor-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#interceptors">ng-bundle-collection.Collection#interceptors</a> structure</p>
+</div><h5 id="methods_addinterceptor_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-addinterceptor-page"><p>Object, keys can be:</p>
+<ul>
+<li><code>&#39;fetch&#39;</code> - interceptors will be executed on fetching success
+Values are interceptors</li>
+</ul>
+</div></td></tr></tbody></table><h4 id="methods_addinterceptor_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-addinterceptor-page"><pre class="prettyprint linenums">
+collection.addInterceptor({
+	fetch: function(successResponse){
+		...
+		return modified_or_replaced_response;
+	}
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L694" class="view-source icon-eye-open"> </a><h3 id="methods_add_withtocache">add_withToCache(data, params)</h3>
+<div class="add_withtocache"><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Adds item to collection and extends cache record, specified by <code>Params</code> parameter</p>
+</div><h5 id="methods_add_withtocache_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Item to be added or array of items.</p>
+<p>Item must contain an id-field named the same as the config parameter <code>collection.config.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p></div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Params object that identifies which cache record should be the item added to</p>
+</div></td></tr></tbody></table><h5 id="methods_add_withtocache_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object|array</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Added item or array of items</p>
+</div></td></tr></table><h4 id="methods_add_withtocache_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-add-withtocache-page"><pre class="prettyprint linenums">
+collection.add({
+	id: 0,
+	name: 'User Name',
+	email: 'email@email.com'
+}, {
+	name: 'User ',
+	email: 'email'
+})
+</pre>
+This will add an item into cache record <a href="main/ng-bundle-collection.Collection#cache">collection.cache</a><code>[JSON.stringify({
+    name: &#39;User &#39;,
+    email: &#39;email&#39;
+})]</code></p>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1248" class="view-source icon-eye-open"> </a><h3 id="methods_at">at(index)</h3>
+<div class="at"><div class="ng-bundle-collection-collection-at-page"><p>Takes an item from <a href="main/ng-bundle-collection.Collection">collection</a><code>.arr</code> by index</p>
+</div><h5 id="methods_at_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>index</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-at-page"><p>Index of item in <a href="main/ng-bundle-collection.Collection">collection</a><code>.arr</code></p>
+</div></td></tr></tbody></table><h5 id="methods_at_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-at-page"><p>Item from collection</p>
+</div></td></tr></table><h4 id="methods_at_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-at-page"><pre class="prettyprint linenums">
+collection.create({...});
+//...
+var item = collection.at(0);
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1273" class="view-source icon-eye-open"> </a><h3 id="methods_by">by(id)</h3>
+<div class="by"><div class="ng-bundle-collection-collection-by-page"><p>Takes an item from <a href="main/ng-bundle-collection.Collection">collection</a><code>.objById</code> by its id</p>
+</div><h5 id="methods_by_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="ng-bundle-collection-collection-by-page"><p>Id-field value of item</p>
+</div></td></tr></tbody></table><h5 id="methods_by_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-by-page"><p>Item from collection</p>
+</div></td></tr></table><h4 id="methods_by_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-by-page"><pre class="prettyprint linenums">
+var users = new Collection(Restangular.all('users'));
+//...
+users.create({id:0, ...});
+//...
+var user = users.by(0);
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1385" class="view-source icon-eye-open"> </a><h3 id="methods_cancelallrequests">cancelAllRequests()</h3>
+<div class="cancelallrequests"><div class="ng-bundle-collection-collection-cancelallrequests-page"><p>Cancels all current pending requests (all promises in <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code>)</p>
+</div><h4 id="methods_cancelallrequests_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-cancelallrequests-page"><pre class="prettyprint linenums">
+collection.cancelAllRequests();
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1027" class="view-source icon-eye-open"> </a><h3 id="methods_clear">clear()</h3>
+<div class="clear"><div class="ng-bundle-collection-collection-clear-page"><p>Clears collection by taking it back to initial empty state.</p>
+</div><h5 id="methods_clear_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-clear-page"><p>this, <a href="main/ng-bundle-collection.Collection">collection</a> instance</p>
+</div></td></tr></table><h4 id="methods_clear_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-clear-page"><pre class="prettyprint linenums">
+	//creating collection, with id-field 'id' by default
+	var users = new Collection(Restangular.all('users'));
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		console.log(users.arr.length);
+		//logs `1`
+
+		users.clear();
+
+		console.log(users.arr.length);
+		//logs `0`
+	});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L794" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(item)</h3>
+<div class="create"><div class="ng-bundle-collection-collection-create-page"><p>Creates single item in collection and at backend using specified REST configuration..</p>
+<p>Makes <code>POST</code> request to endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_create_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-create-page"><p>Item data</p>
+</div></td></tr></tbody></table><h5 id="methods_create_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="ng-bundle-collection-collection-create-page"><p>Promise which resolves with created item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_create_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-create-page"><pre class="prettyprint linenums">
+var collection = new Collection(Restangular.all('users'));
+//This will make `POST` request to `users` endpoint.
+collection.create({
+	name: 'User Name',
+	email: 'email@email.com'
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L607" class="view-source icon-eye-open"> </a><h3 id="methods_dec">dec()</h3>
+<div class="dec"><div class="ng-bundle-collection-collection-dec-page"><p>Decreases the collection.loading flag by 1</p>
+</div><h5 id="methods_dec_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-dec-page"><p>Resulting collection.loading value</p>
+</div></td></tr></table><h4 id="methods_dec_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-dec-page"><p>collection.dec()</p>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L931" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(item)</h3>
+<div class="delete"><div class="ng-bundle-collection-collection-delete-page"><p>Removes single item from collection and deletes it at backend using specified REST configuration.</p>
+<p>Makes <code>DELETE</code> request to endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-delete-page"><p>Item data, must contain id-field</p>
+</div></td></tr></tbody></table><h5 id="methods_delete_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="ng-bundle-collection-collection-delete-page"><p>Promise which resolves with deleted item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_delete_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-delete-page"><pre class="prettyprint linenums">
+	//creating collection, with id-field 'id' by default
+	var users = new Collection(Restangular.all('users'));
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		//This will make `DELETE` request to `users/:user.id`.
+		users.delete(user);
+		//or
+		users.delete({
+			id: user.id
+		});
+
+	});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1116" class="view-source icon-eye-open"> </a><h3 id="methods_extendadd">extendAdd(fns)</h3>
+<div class="extendadd"><div class="ng-bundle-collection-collection-extendadd-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.add</code> structure</p>
+</div><h5 id="methods_extendadd_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-extendadd-page"><p>Object, keys can be:</p>
+<ul>
+<li><code>&#39;b&#39;</code> - function will be executed before adding to collection (to <code>arr</code> and <code>objById</code>)</li>
+<li><code>&#39;a&#39;</code> - function will be executed after adding to collection (to <code>arr</code> and <code>objById</code>)
+Values are extending functions</li>
+</ul>
+</div></td></tr></tbody></table><h4 id="methods_extendadd_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-extendadd-page"><pre class="prettyprint linenums">
+//for example, extendAdd can be used as a decorator for each item
+collection.extendAdd({
+	b: function(item){
+		_.extend(item, {
+			//...
+		});
+	}
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1154" class="view-source icon-eye-open"> </a><h3 id="methods_extendfetch">extendFetch(fns)</h3>
+<div class="extendfetch"><div class="ng-bundle-collection-collection-extendfetch-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.fetch</code> structure</p>
+</div><h5 id="methods_extendfetch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-extendfetch-page"><p>Object, keys can be:</p>
+<ul>
+<li><code>&#39;b&#39;</code> - function will be executed before fetching</li>
+<li><code>&#39;s&#39;</code> - function will be executed after fetching, on success</li>
+<li><code>&#39;e&#39;</code> - function will be executed after fetching, on error</li>
+<li><code>&#39;f&#39;</code> - function will be executed after fetching, bot on success and error
+Values are extending functions</li>
+</ul>
+</div></td></tr></tbody></table><h4 id="methods_extendfetch_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-extendfetch-page"><pre class="prettyprint linenums">
+//for example, extendAdd can be used as a decorator for each item
+collection.extendFetch({
+	s: function(successResponse, requestParams){
+		...
+	},
+	e: function(errorResponse, requestParams){
+		...
+	}
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1087" class="view-source icon-eye-open"> </a><h3 id="methods_extendremove">extendRemove(fn)</h3>
+<div class="extendremove"><div class="ng-bundle-collection-collection-extendremove-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.remove</code></p>
+</div><h5 id="methods_extendremove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="ng-bundle-collection-collection-extendremove-page"><p>Extending function</p>
+</div></td></tr></tbody></table><h4 id="methods_extendremove_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-extendremove-page"><pre class="prettyprint linenums">
+var removed_items = []
+//..... 
+collection.extendRemove(function(item){
+	removed_items.push(item);
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1064" class="view-source icon-eye-open"> </a><h3 id="methods_extendupdate">extendUpdate(fn)</h3>
+<div class="extendupdate"><div class="ng-bundle-collection-collection-extendupdate-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.update</code></p>
+</div><h5 id="methods_extendupdate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="ng-bundle-collection-collection-extendupdate-page"><p>Extending function</p>
+</div></td></tr></tbody></table><h4 id="methods_extendupdate_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-extendupdate-page"><pre class="prettyprint linenums">
+var updated_items = []
+//..... 
+collection.extendUpdate(function(item){
+	item.is_updated = true;
+	updated_items.push(item);
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1352" class="view-source icon-eye-open"> </a><h3 id="methods_fetch">fetch(params)</h3>
+<div class="fetch"><div class="ng-bundle-collection-collection-fetch-page"><p>Fetching data from backend.</p>
+<p>Makes <code>GET</code> request to configured endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_fetch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-fetch-page"><p>Request params object</p>
+</div></td></tr></tbody></table><h5 id="methods_fetch_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise|object</a></td><td><div class="ng-bundle-collection-collection-fetch-page"><ul>
+<li>Object of response if the result for given <code>params</code> is cached<p><em>or</em></p></li>
+<li>Promise which<ul>
+<li>resolves with object of response</li>
+<li>rejects with object of error<p>after Restangular request is finished</p></li>
+</ul>
+</li>
+</ul>
+</div></td></tr></table><h4 id="methods_fetch_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-fetch-page"><pre class="prettyprint linenums">
+collection.fetch({
+	page: 1,
+	page_size: 10,
+	name: 'User'
+}).then(function(items){
+	//...
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L591" class="view-source icon-eye-open"> </a><h3 id="methods_inc">inc()</h3>
+<div class="inc"><div class="ng-bundle-collection-collection-inc-page"><p>Increases the collection.loading flag by 1</p>
+</div><h5 id="methods_inc_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-inc-page"><p>Resulting collection.loading value</p>
+</div></td></tr></table><h4 id="methods_inc_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-inc-page"><p>collection.inc()</p>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1425" class="view-source icon-eye-open"> </a><h3 id="methods_invalidate">invalidate(data)</h3>
+<div class="invalidate"><div class="ng-bundle-collection-collection-invalidate-page"><p>Clears <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code></p>
+<p>Deletes cached responses where the key corresponds to params object, which <strong>contains</strong> passed params</p></div><h5 id="methods_invalidate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-invalidate-page"><ul>
+<li>The params object, which determines deleted cached responses
+<p><em>or</em><p></li>
+<li>The array of such params objects</li>
+</ul>
+</div></td></tr></tbody></table><h4 id="methods_invalidate_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-invalidate-page"><p><p>This deletes all cache records, whose keys correspond to params object with </p></p>
+<p><p><code>&#39;page_size&#39; == 10</code> <strong>AND</strong> <code>&#39;name&#39; == &#39;asd&#39;</code></p>
+      <pre class="prettyprint linenums">
+  		collection.invalidate({page_size:10, name: 'asd'});
+  	</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L621" class="view-source icon-eye-open"> </a><h3 id="methods_isloading">isLoading()</h3>
+<div class="isloading"><h5 id="methods_isloading_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ng-bundle-collection-collection-isloading-page"><p>Whether the colletion is loading something or not</p>
+</div></td></tr></table><h4 id="methods_isloading_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-isloading-page"><p>collection.isLoading()</p>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L979" class="view-source icon-eye-open"> </a><h3 id="methods_remove">remove(item)</h3>
+<div class="remove"><div class="ng-bundle-collection-collection-remove-page"><p>Removes single item from collection locally.</p></div><h5 id="methods_remove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-remove-page"><p>Item data, must contain id-field</p>
+</div></td></tr></tbody></table><h5 id="methods_remove_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-remove-page"><p>Removed item</p>
+</div></td></tr></table><h4 id="methods_remove_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-remove-page"><pre class="prettyprint linenums">
+	//creating collection, with id-field 'id' by default
+	var users = new Collection(Restangular.all('users'));
+	//Creating a user
+	users.create({
+		name: 'Some User Name',
+		email: 'some-email@email.com'
+	}).then(function(user){
+		//This will remove user from collection, but not from backend
+		users.remove(user);
+		//or
+		users.remove({
+			id: user.id
+		});
+
+	});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1318" class="view-source icon-eye-open"> </a><h3 id="methods_singlewhere">singleWhere(obj)</h3>
+<div class="singlewhere"><div class="ng-bundle-collection-collection-singlewhere-page"><p><p>Searches in collection for the single item which has particular fields with particular values</p></p>
+<p><p>Uses <a href="https://lodash.com/">lodash</a> method <code>findWhere</code></p>
+</div><h5 id="methods_singlewhere_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>obj</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-singlewhere-page"><p>Object with fields which the item should match to be found</p>
+</div></td></tr></tbody></table><h5 id="methods_singlewhere_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-singlewhere-page"><p>Item which contains all the fields with specified values.</p>
+<p><em>Note:</em> If there is multiple items that match, the first occurence in <a href="main/ng-bundle-collection.Collection">collection</a><code>.arr</code> will be returned</p></div></td></tr></table><h4 id="methods_singlewhere_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-singlewhere-page"><pre class="prettyprint linenums">
+collection.singleWhere({level: 25, first_name: 'Andrew'});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L845" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(item)</h3>
+<div class="update"><div class="ng-bundle-collection-collection-update-page"><p>Updates single item in collection and at backend using specified REST configuration.</p>
+<p>Makes <code>PATCH</code> request to endpoint.</p>
+<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-page"><p>Item data to be written to existing item</p>
+</div></td></tr></tbody></table><h5 id="methods_update_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="ng-bundle-collection-collection-update-page"><p>Promise which resolves with updated item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_update_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-update-page"><pre class="prettyprint linenums">
+var users = new Collection(Restangular.all('users'), {
+	id_field: 'specific_id_field'
+});
+//Creating a user
+users.create({
+	name: 'Some User Name',
+	email: 'some-email@email.com'
+}).then(function(user){
+	//This will make `PATCH` request to `users/:user.id`.
+	users.update({
+		specific_id_field: user.specific_id_field,
+		name: 'User Name',
+		email: 'email@email.com'
+	});
+
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L883" class="view-source icon-eye-open"> </a><h3 id="methods_update_locally">update_locally(item)</h3>
+<div class="update_locally"><div class="ng-bundle-collection-collection-update-locally-page"><p>Updates single item in collection locally (doesnt affect backend).</p></div><h5 id="methods_update_locally_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-locally-page"><p>Item data to be written to existing item</p>
+</div></td></tr></tbody></table><h5 id="methods_update_locally_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-locally-page"><p>Updated item</p>
+</div></td></tr></table><h4 id="methods_update_locally_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-update-locally-page"><pre class="prettyprint linenums">
+collection.update_locally({
+	__id: 1,
+	name: 'User Name',
+	email: 'email@email.com'
+})
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1295" class="view-source icon-eye-open"> </a><h3 id="methods_where">where(obj)</h3>
+<div class="where"><div class="ng-bundle-collection-collection-where-page"><p><p>Searches in collection for the items which have particular fields with particular values</p></p>
+<p><p>Uses <a href="https://lodash.com/">lodash</a> method <code>where</code></p>
+</div><h5 id="methods_where_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>obj</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-where-page"><p>Object with fields which items should match to be found</p>
+</div></td></tr></tbody></table><h5 id="methods_where_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-where-page"><p>Array of items which contain all the fields with specified values</p>
+</div></td></tr></table><h4 id="methods_where_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-where-page"><pre class="prettyprint linenums">
+collection.where({level: 25, first_name: 'Andrew'});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1882" class="view-source icon-eye-open"> </a><h3 id="methods_getcached">getCached()</h3>
+<div class="getcached"><div class="ng-bundle-collection-collection-getcached-page"><p>Extracts the response for request with particular params object</p>
+</div><h5 id="methods_getcached_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-getcached-page"><p>cached response or undefined</p>
+</div></td></tr></table><h4 id="methods_getcached_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-getcached-page"><pre class="prettyprint linenums">
+var cachedResponseForFirstPage = collection.getCached({page: 1, page_size: 10});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1864" class="view-source icon-eye-open"> </a><h3 id="methods_iscached">isCached()</h3>
+<div class="iscached"><div class="ng-bundle-collection-collection-iscached-page"><p>Determines whether the response for request with particular params object is cached</p>
+</div><h5 id="methods_iscached_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ng-bundle-collection-collection-iscached-page"><p>Is cached or not</p>
+</div></td></tr></table><h4 id="methods_iscached_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-iscached-page"><pre class="prettyprint linenums">
+var isFirstPageCached = collection.isCached({page: 1, page_size: 10});
+</pre>
+</div></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_arr">arr</h3>
+<div class="arr"><div class="ng-bundle-collection-collection-arr-page"><p>Array, storage of collection items.</p>
+</div></div>
+</li>
+<li><h3 id="properties_cache">cache</h3>
+<div class="cache"><div class="ng-bundle-collection-collection-cache-page"><p>Object, storage of cached responses:</p>
+<ul>
+<li>Keys of cache are stringified params for request.</li>
+<li>Values of cache are ones of:<ul>
+<li>promises of pending requests</li>
+<li>responses of requests</li>
+</ul>
+</li>
+</ul>
+</div></div>
+</li>
+<li><h3 id="properties_defaultmockdelay">defaultMockDelay</h3>
+<div class="defaultmockdelay"><div class="ng-bundle-collection-collection-defaultmockdelay-page"><p>Number of milliseconds for responding with mock</p>
+</div></div>
+</li>
+<li><h3 id="properties_extendfns">extendFns</h3>
+<div class="extendfns"><div class="ng-bundle-collection-collection-extendfns-page"><p>Object, storage of functions which extend collection actions</p>
+</div></div>
+</li>
+<li><h3 id="properties_interceptors">interceptors</h3>
+<div class="interceptors"><div class="ng-bundle-collection-collection-interceptors-page"><p>Object, storage of functions which can decorate response.</p>
+<p>The interceptors are called as a chain in the order in which they were added.</p>
+<p>Interceptors accept response as parameter and the ongoing response is replaced by the value returned from interceptor.</p>
+<p><strong>Important</strong>: so, the difference between <a href="main/ng-bundle-collection.Collection">collection</a><code>.extendFns</code>
+and <a href="main/ng-bundle-collection.Collection">collection</a><code>.interceptors</code> is that interceptors can not only decorate the response
+with some properties or implement some extending functionality, but they can replace the response with anything.</p></div></div>
+</li>
+<li><h3 id="properties_loading">loading</h3>
+<div class="loading"><div class="ng-bundle-collection-collection-loading-page"><p>Number, flag which indicates the number of current pending requests through collection</p>
+</div></div>
+</li>
+<li><h3 id="properties_objbyid">objById</h3>
+<div class="objbyid"><div class="ng-bundle-collection-collection-objbyid-page"><p><p>Object, storage of collection items. Keys of object are item ids.<p></p>
+<p><p>The id is the <a href="main/ng-bundle-collection.Collection.config">ng-bundle-collection.Collection.config</a><code>.id_field</code> field of each item.</p></p>
+<p><p>E.g.: <p>
+      <pre class="prettyprint linenums">
+  		collection.add(item);
+  		(collection.objId[item[collection.config.id_field]] === item) === true;
+  	</pre>
+<em>Note:</em> more handy and convenient way to take an item from <code>objById</code> storage is <a href="main/ng-bundle-collection.Collection#by">collection.by</a> method</p>
+</div></div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="ng-bundle-collection-collection-page"><p><p>Creating collection:</p>
+<pre class="prettyprint linenums">
+	var collection = new Collection(Restangular.all('users'), {
+		withCaching: true,
+		id_field: 'id',
+		respondWithPayload: true,
+		dontCollect: false,
+		model: SomeModelClass,
+		params: {
+			some_parameter: 'some value'
+		}
+	});
+</pre>
+<p><p>Collection can be wrapped with a service and be used as a single source of truth in your application:</p>
+<pre class="prettyprint linenums">
+	var module = angular.module('App', []);
+
+	module.service('users', function(Collection, Restangular){
+		return new Collection(Restangular.all('users'), {
+			//... config
+		});
+	});
+</pre>
+<p><p>You also can use ng-bundle-collection as a <strong>local</strong> collection (without work with backend) of any items to leverage the local api</p>
+<pre class="prettyprint linenums">
+	//For example, items collection for some select
+	var selectItems = new Collection;
+	selectItems.add([
+		{id: 23, name: 'Option 1', color: 'red'},
+		{id: 24, name: 'Option 2', color: 'red', default: true},
+		{id: 25, name: 'Option 3', color: 'black'},
+	);
+
+	//...
+
+	console.log(selectItems.at(1));
+	//{id: 24, name: 'Option 2', color: 'red', default: true}
+
+	console.log(selectItems.by(24));
+	//{id: 24, name: 'Option 2', color: 'red', default: true}
+
+	console.log(selectItems.where({color: 'red'}));
+	//[{id: 23, name: 'Option 1', color: 'red'}, {id: 24, name: 'Option 2', color: 'red', default: true}]
+
+	console.log(selectItems.singleWhere({default: true}));
+	//{id: 24, name: 'Option 2', color: 'red', default: true}
+
+	console.log(selectItems.arr);
+	//array of collection items
+
+	console.log(selectItems.objById);
+	//object with collection items with keys as items ids
+</pre>
+</div></div>
+</div>
