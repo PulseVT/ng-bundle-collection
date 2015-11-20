@@ -860,15 +860,9 @@ Collection = (function() {
   };
 
   Collection.prototype.__update = function(data, method) {
-    var params, promise, rest;
+    var promise;
     this.inc();
-    rest = this.__rest(data);
-    data = this.__extractPayload(data);
-    if (data.params != null) {
-      params = data.params;
-      delete data.params;
-    }
-    promise = rest[method](data, params).then((function(_this) {
+    promise = this.__rest(data)[method](this.__extractPayload(data)).then((function(_this) {
       return function(response) {
         _this.update_locally(response);
         return response;
