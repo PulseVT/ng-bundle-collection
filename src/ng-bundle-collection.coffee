@@ -1258,6 +1258,9 @@ class Collection
 	###
 	__rest: (params) =>
 		rest = if _.isFunction @rest then @rest params else @rest
+		if params[@config.id_field]?
+			rest = rest.one params[@config.id_field]
+			delete params[@config.id_field]
 		rest = rest.one params.__subconfig.url if params.__subconfig?.url?
 		rest
 
@@ -1270,7 +1273,8 @@ class Collection
 	# @description
 	# Extracts payload from data to be passed to rest call by removing config fields
 	###
-	__extractPayload: (data) => _.omit data, '__subconfig'
+	__extractPayload: (data) =>
+		_.omit data, '__subconfig', @config.id_field
 
 
 	###*
