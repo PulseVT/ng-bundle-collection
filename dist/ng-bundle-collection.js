@@ -801,7 +801,9 @@ Collection = (function() {
     this.inc();
     promise = this.__rest(data).post(this.__extractPayload(data)).then((function(_this) {
       return function(response) {
-        _this.add(response);
+        if (!_this.config.dontCollect) {
+          _this.add(response);
+        }
         return response;
       };
     })(this));
@@ -864,7 +866,9 @@ Collection = (function() {
     this.inc();
     promise = this.__rest(data)[method](this.__extractPayload(data)).then((function(_this) {
       return function(response) {
-        _this.update_locally(response);
+        if (!_this.config.dontCollect) {
+          _this.update_locally(response);
+        }
         return response;
       };
     })(this));
@@ -950,7 +954,9 @@ Collection = (function() {
     this.inc();
     promise = this.__rest(item).remove().then((function(_this) {
       return function(response) {
-        _this.remove(item);
+        if (!_this.config.dontCollect) {
+          _this.remove(item);
+        }
         return response;
       };
     })(this));

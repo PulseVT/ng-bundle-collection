@@ -414,7 +414,7 @@ class Collection
 	create: (data) =>
 		@inc()
 		promise = @__rest(data).post(@__extractPayload data).then (response) =>
-			@add response
+			@add response unless @config.dontCollect
 			response
 		promise.finally => @dec()
 		promise
@@ -461,7 +461,7 @@ class Collection
 	__update: (data, method) =>
 		@inc()
 		promise = @__rest(data)[method](@__extractPayload data).then (response) =>
-			@update_locally response
+			@update_locally response unless @config.dontCollect
 			response
 		promise.finally => @dec()
 		promise
@@ -529,7 +529,7 @@ class Collection
 	delete: (item) =>
 		@inc()
 		promise = @__rest(item).remove().then (response) =>
-			@remove item
+			@remove item unless @config.dontCollect
 			response
 		promise.finally => @dec()
 		promise
