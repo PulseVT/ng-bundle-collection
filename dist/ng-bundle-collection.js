@@ -329,6 +329,7 @@ Collection = (function() {
     this.$timeout = $timeout1;
     this.rest = rest1;
     this.config = config1 != null ? config1 : {};
+    this.__extractPayload = bind(this.__extractPayload, this);
     this.__rest = bind(this.__rest, this);
     this.getCached = bind(this.getCached, this);
     this.isCached = bind(this.isCached, this);
@@ -358,7 +359,10 @@ Collection = (function() {
     this.remove = bind(this.remove, this);
     this["delete"] = bind(this["delete"], this);
     this.update_locally = bind(this.update_locally, this);
+    this.__update = bind(this.__update, this);
     this.update = bind(this.update, this);
+    this.patch = bind(this.patch, this);
+    this.put = bind(this.put, this);
     this.create = bind(this.create, this);
     this.__wrapWithModel = bind(this.__wrapWithModel, this);
     this.__addOne = bind(this.__addOne, this);
@@ -695,7 +699,7 @@ Collection = (function() {
   Collection.prototype.add_withToCache = function(data, params) {
     var item, j, len, paramsMark, ref, response;
     response = this.add(data);
-    paramsMark = this.__calcParamsMark(params);
+    paramsMark = this.__calcCacheMark(params);
     if (!_.isArray(data)) {
       data = [data];
     }
@@ -795,7 +799,7 @@ Collection = (function() {
   Collection.prototype.create = function(data) {
     var promise;
     this.inc();
-    promise = this.__rest(data).post(data).then((function(_this) {
+    promise = this.__rest(data).post(this.__extractPayload(data)).then((function(_this) {
       return function(response) {
         _this.add(response);
         return response;
@@ -843,10 +847,27 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.update = function(data) {
-    var promise;
+  Collection.prototype.put = function(data) {
+    return this.__update(data, 'put');
+  };
+
+  Collection.prototype.patch = function(data) {
+    return this.__update(data, 'patch');
+  };
+
+  Collection.prototype.update = function() {
+    return this.patch.apply(this, arguments);
+  };
+
+  Collection.prototype.__update = function(data, method) {
+    var params, promise;
     this.inc();
-    promise = this.__rest(data).one(data[this.config.id_field].toString()).patch(data).then((function(_this) {
+    data = this.__extractPayload(data);
+    if (data.params != null) {
+      params = data.params;
+      delete data.params;
+    }
+    promise = this.__rest(data).one(data[this.config.id_field].toString())[method](data, params).then((function(_this) {
       return function(response) {
         _this.update_locally(response);
         return response;
@@ -1350,7 +1371,7 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.fetch = function(params) {
+  Collection.prototype.fetch = function(params, subconfig) {
     var id, paramsStr;
     if (params == null) {
       params = {};
@@ -1361,11 +1382,11 @@ Collection = (function() {
     if (this.objById[id] != null) {
       return this.$q.when(this.objById[id]);
     } else {
-      paramsStr = this.__calcParamsMark(params);
+      paramsStr = this.__calcCacheMark(params);
       if (this.cache[paramsStr] != null) {
         return this.$q.when(this.cache[paramsStr]);
       } else {
-        return this.__private_fetch(params);
+        return this.__private_fetch(params, subconfig);
       }
     }
   };
@@ -1602,12 +1623,12 @@ Collection = (function() {
   	 * Params for fetch request
    */
 
-  Collection.prototype.__private_fetch = function(params) {
+  Collection.prototype.__private_fetch = function(params, subconfig) {
     var deferred, paramsStr, paramsToSend, rest;
     this.inc();
     this.__callExtendFns(this.extendFns.fetch.b, params);
-    rest = this.__rest(params);
-    paramsStr = this.__calcParamsMark(params);
+    rest = this.__rest(params, subconfig);
+    paramsStr = this.__calcCacheMark(params);
     deferred = this.$q.defer();
     if (this.mock) {
       this.$timeout((function(_this) {
@@ -1617,7 +1638,7 @@ Collection = (function() {
         };
       })(this), this.mockDelay || this.defaultMockDelay);
     } else {
-      paramsToSend = params;
+      paramsToSend = this.__extractPayload(params);
       if (params[this.config.id_field] != null) {
         rest = rest.one(params[this.config.id_field].toString());
         paramsToSend = _.omit(paramsToSend, this.config.id_field);
@@ -1702,12 +1723,12 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name Private_methods#__calcParamsMark
+  	 * @name Private_methods#__calcCacheMark
   	 * @methodOf Private_methods
   	 * @returns {string}
   	 * The string mark of params
   	 * @description
-  	 * <p>Calculates string mark for parameters object</p>
+  	 * <p>Calculates string mark for cache entry</p>
   	 * <p>Params mark is used for:</p>
   	 * - marking responses for requests and determining if the response is already cached
   	 * - marking promises and determining if the request is already pending
@@ -1715,7 +1736,7 @@ Collection = (function() {
   	 * Params object
    */
 
-  Collection.prototype.__calcParamsMark = function(params) {
+  Collection.prototype.__calcCacheMark = function(params) {
     return JSON.stringify(params);
   };
 
@@ -1816,7 +1837,7 @@ Collection = (function() {
     return this.extendFetch({
       s: (function(_this) {
         return function(response, params) {
-          return delete _this.cache[_this.__calcParamsMark(params)];
+          return delete _this.cache[_this.__calcCacheMark(params)];
         };
       })(this)
     });
@@ -1837,12 +1858,12 @@ Collection = (function() {
     return this.extendFetch({
       s: (function(_this) {
         return function(response, params, method) {
-          return _this.cache[_this.__calcParamsMark(params)] = angular.copy(response);
+          return _this.cache[_this.__calcCacheMark(params)] = angular.copy(response);
         };
       })(this),
       e: (function(_this) {
         return function(response, params) {
-          return delete _this.cache[_this.__calcParamsMark(params)];
+          return delete _this.cache[_this.__calcCacheMark(params)];
         };
       })(this)
     });
@@ -1881,7 +1902,7 @@ Collection = (function() {
    */
 
   Collection.prototype.getCached = function(params) {
-    return this.cache[this.__calcParamsMark(params)];
+    return this.cache[this.__calcCacheMark(params)];
   };
 
 
@@ -1895,11 +1916,26 @@ Collection = (function() {
    */
 
   Collection.prototype.__rest = function(params) {
-    if (_.isFunction(this.rest)) {
-      return this.rest(params);
-    } else {
-      return this.rest;
+    var ref, rest;
+    rest = _.isFunction(this.rest) ? this.rest(params) : this.rest;
+    if (((ref = params.__subconfig) != null ? ref.url : void 0) != null) {
+      rest = rest.one(params.__subconfig.url);
     }
+    return rest;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__payload
+  	 * @methodOf Private_methods
+  	 * @returns {object} Extracted payload
+  	 * @description
+  	 * Extracts payload from data to be passed to rest call by removing config fields
+   */
+
+  Collection.prototype.__extractPayload = function(data) {
+    return _.omit(data, '__subconfig');
   };
 
 
