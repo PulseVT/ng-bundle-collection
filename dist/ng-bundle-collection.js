@@ -329,6 +329,8 @@ Collection = (function() {
     this.$timeout = $timeout1;
     this.rest = rest1;
     this.config = config1 != null ? config1 : {};
+    this.__extractHeaders = bind(this.__extractHeaders, this);
+    this.__extractParams = bind(this.__extractParams, this);
     this.__extractPayload = bind(this.__extractPayload, this);
     this.__rest = bind(this.__rest, this);
     this.getCached = bind(this.getCached, this);
@@ -797,9 +799,12 @@ Collection = (function() {
    */
 
   Collection.prototype.create = function(data) {
-    var promise;
+    var body, headers, params, promise;
     this.inc();
-    promise = this.__rest(data).post(this.__extractPayload(data)).then((function(_this) {
+    body = this.__extractPayload(data);
+    params = this.__extractParams(data);
+    headers = this.__extractHeaders(data);
+    promise = this.__rest(data).customPOST(body, null, params, headers).then((function(_this) {
       return function(response) {
         if (!_this.config.dontCollect) {
           _this.add(response);
@@ -818,14 +823,93 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#put
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PUT` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Aliases: `update`*</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @example
+  	<pre>
+  		var users = new Collection(Restangular.all('users'), {
+  			id_field: 'specific_id_field'
+  		});
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			//This will make `PATCH` request to `users/:user.id`.
+  			users.put({
+  				specific_id_field: user.specific_id_field,
+  				name: 'User Name',
+  				email: 'email@email.com'
+  			});
+  	
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.put = function(data) {
+    return this.__update(data, 'put');
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#patch
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Aliases: `update`*</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @example
+  	<pre>
+  		var users = new Collection(Restangular.all('users'), {
+  			id_field: 'specific_id_field'
+  		});
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			//This will make `PATCH` request to `users/:user.id`.
+  			users.patch({
+  				specific_id_field: user.specific_id_field,
+  				name: 'User Name',
+  				email: 'email@email.com'
+  			});
+  	
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.patch = function(data) {
+    return this.__update(data, 'patch');
+  };
+
+
+  /**
+  	 * @ngdoc
   	 * @name ng-bundle-collection.Collection#update
   	 * @methodOf ng-bundle-collection.Collection
   	 * @returns {promise} 
   	 * Promise which resolves with updated item or rejects with error response
   	 * @description
   	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
-  	 * <p>Makes `PATCH` request to endpoint.</p>
+  	 * <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
   	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Aliases: `patch`*</p>
   	 * @param {object} item
   	 * Item data to be written to existing item
   	 * @example
@@ -849,22 +933,35 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.put = function(data) {
-    return this.__update(data, 'put');
-  };
-
-  Collection.prototype.patch = function(data) {
-    return this.__update(data, 'patch');
-  };
-
   Collection.prototype.update = function() {
     return this.patch.apply(this, arguments);
   };
 
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__update
+  	 * @methodOf Private_methods
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PATCH` or `PUT` request to endpoint.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Is used by public methods `put`, `patch`, `update`*</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @param {string} method
+  	 * Method to be done for updating. Can be 'put' or 'patch'.
+   */
+
   Collection.prototype.__update = function(data, method) {
-    var promise;
+    var body, headers, params, promise;
     this.inc();
-    promise = this.__rest(data)[method](this.__extractPayload(data)).then((function(_this) {
+    body = this.__extractPayload(data);
+    params = this.__extractParams(data);
+    headers = this.__extractHeaders(data);
+    promise = this.__rest(data).customOperation(method, null, params, headers, body).then((function(_this) {
       return function(response) {
         if (!_this.config.dontCollect) {
           _this.update_locally(response);
@@ -950,9 +1047,11 @@ Collection = (function() {
    */
 
   Collection.prototype["delete"] = function(item) {
-    var promise;
+    var headers, params, promise;
     this.inc();
-    promise = this.__rest(item).remove().then((function(_this) {
+    params = this.__extractParams(item);
+    headers = this.__extractHeaders(item);
+    promise = this.__rest(item).remove(params, headers).then((function(_this) {
       return function(response) {
         if (!_this.config.dontCollect) {
           _this.remove(item);
@@ -1927,7 +2026,7 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name Private_methods#__payload
+  	 * @name Private_methods#__extractPayload
   	 * @methodOf Private_methods
   	 * @returns {object} Extracted payload
   	 * @description
@@ -1935,7 +2034,35 @@ Collection = (function() {
    */
 
   Collection.prototype.__extractPayload = function(data) {
-    return _.omit(data, '__subconfig', this.config.id_field);
+    return _.omit(data, this.config.id_field, '__subconfig', '__params', '__headers');
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__extractParams
+  	 * @methodOf Private_methods
+  	 * @returns {object} Extracted url params
+  	 * @description
+  	 * Extracts url params to be passed to rest call by removing config fields
+   */
+
+  Collection.prototype.__extractParams = function(data) {
+    return data.__params;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__extractHeaders
+  	 * @methodOf Private_methods
+  	 * @returns {object} Extracted headers
+  	 * @description
+  	 * Extracts headers to be passed with rest call by removing config fields
+   */
+
+  Collection.prototype.__extractHeaders = function(data) {
+    return data.__headers;
   };
 
 

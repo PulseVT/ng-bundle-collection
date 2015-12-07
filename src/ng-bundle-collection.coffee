@@ -413,12 +413,85 @@ class Collection
 	###
 	create: (data) =>
 		@inc()
-		promise = @__rest(data).post(@__extractPayload data).then (response) =>
+		body = @__extractPayload data
+		params = @__extractParams data
+		headers = @__extractHeaders data
+		promise = @__rest(data).customPOST(body, null, params, headers).then (response) =>
 			@add response unless @config.dontCollect
 			response
 		promise.finally => @dec()
 		promise
 
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#put
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {promise} 
+	# Promise which resolves with updated item or rejects with error response
+	# @description
+	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
+	# <p>Makes `PUT` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+	# <p>Affects `collection.loading` flag</p>
+	# <p>*Aliases: `update`*</p>
+	# @param {object} item
+	# Item data to be written to existing item
+	# @example
+	<pre>
+		var users = new Collection(Restangular.all('users'), {
+			id_field: 'specific_id_field'
+		});
+		//Creating a user
+		users.create({
+			name: 'Some User Name',
+			email: 'some-email@email.com'
+		}).then(function(user){
+			//This will make `PATCH` request to `users/:user.id`.
+			users.put({
+				specific_id_field: user.specific_id_field,
+				name: 'User Name',
+				email: 'email@email.com'
+			});
+	
+		});
+	</pre>
+	###
+	put: (data) => @__update data, 'put'
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#patch
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {promise} 
+	# Promise which resolves with updated item or rejects with error response
+	# @description
+	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
+	# <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+	# <p>Affects `collection.loading` flag</p>
+	# <p>*Aliases: `update`*</p>
+	# @param {object} item
+	# Item data to be written to existing item
+	# @example
+	<pre>
+		var users = new Collection(Restangular.all('users'), {
+			id_field: 'specific_id_field'
+		});
+		//Creating a user
+		users.create({
+			name: 'Some User Name',
+			email: 'some-email@email.com'
+		}).then(function(user){
+			//This will make `PATCH` request to `users/:user.id`.
+			users.patch({
+				specific_id_field: user.specific_id_field,
+				name: 'User Name',
+				email: 'email@email.com'
+			});
+	
+		});
+	</pre>
+	###
+	patch: (data) => @__update data, 'patch'
 
 	###*
 	# @ngdoc
@@ -428,8 +501,9 @@ class Collection
 	# Promise which resolves with updated item or rejects with error response
 	# @description
 	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
-	# <p>Makes `PATCH` request to endpoint.</p>
+	# <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
 	# <p>Affects `collection.loading` flag</p>
+	# <p>*Aliases: `patch`*</p>
 	# @param {object} item
 	# Item data to be written to existing item
 	# @example
@@ -452,15 +526,30 @@ class Collection
 		});
 	</pre>
 	###
-	put: (data) => @__update data, 'put'
-
-	patch: (data) => @__update data, 'patch'
-
 	update: => @patch arguments...
 
+	###*
+	# @ngdoc
+	# @name Private_methods#__update
+	# @methodOf Private_methods
+	# @returns {promise} 
+	# Promise which resolves with updated item or rejects with error response
+	# @description
+	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
+	# <p>Makes `PATCH` or `PUT` request to endpoint.</p>
+	# <p>Affects `collection.loading` flag</p>
+	# <p>*Is used by public methods `put`, `patch`, `update`*</p>
+	# @param {object} item
+	# Item data to be written to existing item
+	# @param {string} method
+	# Method to be done for updating. Can be 'put' or 'patch'.
+	###
 	__update: (data, method) =>
 		@inc()
-		promise = @__rest(data)[method](@__extractPayload data).then (response) =>
+		body = @__extractPayload data
+		params = @__extractParams data
+		headers = @__extractHeaders data
+		promise = @__rest(data).customOperation(method, null, params, headers, body).then (response) =>
 			@update_locally response unless @config.dontCollect
 			response
 		promise.finally => @dec()
@@ -528,7 +617,9 @@ class Collection
 	###
 	delete: (item) =>
 		@inc()
-		promise = @__rest(item).remove().then (response) =>
+		params = @__extractParams item
+		headers = @__extractHeaders item
+		promise = @__rest(item).remove(params, headers).then (response) =>
 			@remove item unless @config.dontCollect
 			response
 		promise.finally => @dec()
@@ -1258,14 +1349,36 @@ class Collection
 
 	###*
 	# @ngdoc
-	# @name Private_methods#__payload
+	# @name Private_methods#__extractPayload
 	# @methodOf Private_methods
 	# @returns {object} Extracted payload
 	# @description
 	# Extracts payload from data to be passed to rest call by removing config fields
 	###
 	__extractPayload: (data) =>
-		_.omit data, '__subconfig', @config.id_field
+		_.omit data,  @config.id_field, '__subconfig', '__params', '__headers'
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__extractParams
+	# @methodOf Private_methods
+	# @returns {object} Extracted url params
+	# @description
+	# Extracts url params to be passed to rest call by removing config fields
+	###
+	__extractParams: (data) =>
+		data.__params
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__extractHeaders
+	# @methodOf Private_methods
+	# @returns {object} Extracted headers
+	# @description
+	# Extracts headers to be passed with rest call by removing config fields
+	###
+	__extractHeaders: (data) =>
+		data.__headers
 
 
 	###*
