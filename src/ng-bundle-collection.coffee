@@ -188,12 +188,35 @@ class Collection
 	# @description
 	# Number, flag which indicates the number of current pending requests through collection
 	###
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#promises
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Promises container. All requests promises are consolidated into promises of this container.
+	# Contains fields:
+	# - `global` (all requests)
+	# - `fetch` (get requests)
+	# - `put` (put requests)
+	# - `patch` (patch requests)
+	# - `update` (put+patch requests)
+	# - `create` (post requests)
+	# - `delete` (delete requests)
+	###
 	_initPublicProperties: =>
 		_.extend @,
 			cache: {}
 			objById: {}
 			arr: []
 			loading: 0
+			promises:
+				global: null
+				fetch: null
+				put: null
+				patch: null
+				update: null
+				create: null
+				delete: null
 
 	###*
 	# @ngdoc
@@ -420,6 +443,8 @@ class Collection
 			@add response unless @config.dontCollect
 			response
 		promise.finally => @dec()
+		@promises.create = @$q.when(@promises.create).then -> promise
+		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
 
 
@@ -553,6 +578,9 @@ class Collection
 			@update_locally response unless @config.dontCollect
 			response
 		promise.finally => @dec()
+		@promises[method] = @$q.when(@promises[method]).then -> promise
+		@promises.update = @$q.when(@promises.update).then -> promise
+		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
 
 	###*
@@ -623,6 +651,8 @@ class Collection
 			@remove item unless @config.dontCollect
 			response
 		promise.finally => @dec()
+		@promises.delete = @$q.when(@promises.delete).then -> promise
+		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
 
 	###*
@@ -1163,6 +1193,8 @@ class Collection
 		_.extend deferred.promise,
 			__selfResolve: deferred.resolve
 			__selfReject: deferred.reject
+		@promises.fetch = @$q.when(@promises.fetch).then -> deferred.promise
+		@promises.global = @$q.when(@promises.global).then -> deferred.promise
 		@cache[paramsStr] = deferred.promise
 
 	###*

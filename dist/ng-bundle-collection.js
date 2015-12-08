@@ -506,12 +506,38 @@ Collection = (function() {
   	 * Number, flag which indicates the number of current pending requests through collection
    */
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#promises
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Promises container. All requests promises are consolidated into promises of this container.
+  	 * Contains fields:
+  	 * - `global` (all requests)
+  	 * - `fetch` (get requests)
+  	 * - `put` (put requests)
+  	 * - `patch` (patch requests)
+  	 * - `update` (put+patch requests)
+  	 * - `create` (post requests)
+  	 * - `delete` (delete requests)
+   */
+
   Collection.prototype._initPublicProperties = function() {
     return _.extend(this, {
       cache: {},
       objById: {},
       arr: [],
-      loading: 0
+      loading: 0,
+      promises: {
+        global: null,
+        fetch: null,
+        put: null,
+        patch: null,
+        update: null,
+        create: null,
+        "delete": null
+      }
     });
   };
 
@@ -817,6 +843,12 @@ Collection = (function() {
         return _this.dec();
       };
     })(this));
+    this.promises.create = this.$q.when(this.promises.create).then(function() {
+      return promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return promise;
+    });
     return promise;
   };
 
@@ -974,6 +1006,15 @@ Collection = (function() {
         return _this.dec();
       };
     })(this));
+    this.promises[method] = this.$q.when(this.promises[method]).then(function() {
+      return promise;
+    });
+    this.promises.update = this.$q.when(this.promises.update).then(function() {
+      return promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return promise;
+    });
     return promise;
   };
 
@@ -1064,6 +1105,12 @@ Collection = (function() {
         return _this.dec();
       };
     })(this));
+    this.promises["delete"] = this.$q.when(this.promises["delete"]).then(function() {
+      return promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return promise;
+    });
     return promise;
   };
 
@@ -1759,6 +1806,12 @@ Collection = (function() {
     _.extend(deferred.promise, {
       __selfResolve: deferred.resolve,
       __selfReject: deferred.reject
+    });
+    this.promises.fetch = this.$q.when(this.promises.fetch).then(function() {
+      return deferred.promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return deferred.promise;
     });
     return this.cache[paramsStr] = deferred.promise;
   };
