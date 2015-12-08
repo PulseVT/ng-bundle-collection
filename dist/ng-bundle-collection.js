@@ -530,13 +530,13 @@ Collection = (function() {
       arr: [],
       loading: 0,
       promises: {
-        global: null,
-        fetch: null,
-        put: null,
-        patch: null,
-        update: null,
-        create: null,
-        "delete": null
+        global: this.$q.when(),
+        fetch: this.$q.when(),
+        put: this.$q.when(),
+        patch: this.$q.when(),
+        update: this.$q.when(),
+        create: this.$q.when(),
+        "delete": this.$q.when()
       }
     });
   };

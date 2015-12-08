@@ -210,13 +210,13 @@ class Collection
 			arr: []
 			loading: 0
 			promises:
-				global: null
-				fetch: null
-				put: null
-				patch: null
-				update: null
-				create: null
-				delete: null
+				global: @$q.when()
+				fetch: @$q.when()
+				put: @$q.when()
+				patch: @$q.when()
+				update: @$q.when()
+				create: @$q.when()
+				delete: @$q.when()
 
 	###*
 	# @ngdoc
