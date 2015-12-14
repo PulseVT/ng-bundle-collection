@@ -92,6 +92,7 @@ class Collection
 
 		@_initConfig()
 		@_initPublicProperties()
+		@_initProgressExposing()
 		@_initExtendFns()
 		@_initInterceptors()
 
@@ -217,6 +218,23 @@ class Collection
 				update: @$q.when()
 				create: @$q.when()
 				delete: @$q.when()
+
+	###*
+	# @ngdoc
+	# @name Private_methods#_initProgressExposing
+	# @methodOf Private_methods
+	# @description
+	# Binding to call extenal functions config.inc and config.dec when local increasement or decreasement of loading flag is happened
+	###
+	_initProgressExposing: =>
+		if _.isFunction @config.inc
+			@inc = _.wrap @inc, (original) =>
+				original()
+				@config.inc()
+		if _.isFunction @config.dec
+			@dec = _.wrap @dec, (original) =>
+				original()
+				@config.dec()
 
 	###*
 	# @ngdoc

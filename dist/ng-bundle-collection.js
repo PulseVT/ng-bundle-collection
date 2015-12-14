@@ -375,11 +375,13 @@ Collection = (function() {
     this.inc = bind(this.inc, this);
     this._initInterceptors = bind(this._initInterceptors, this);
     this._initExtendFns = bind(this._initExtendFns, this);
+    this._initProgressExposing = bind(this._initProgressExposing, this);
     this._initPublicProperties = bind(this._initPublicProperties, this);
     this._initConfig = bind(this._initConfig, this);
     Collection.instances.push(this);
     this._initConfig();
     this._initPublicProperties();
+    this._initProgressExposing();
     this._initExtendFns();
     this._initInterceptors();
     if (this.config.withCaching) {
@@ -539,6 +541,34 @@ Collection = (function() {
         "delete": this.$q.when()
       }
     });
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#_initProgressExposing
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * Binding to call extenal functions config.inc and config.dec when local increasement or decreasement of loading flag is happened
+   */
+
+  Collection.prototype._initProgressExposing = function() {
+    if (_.isFunction(this.config.inc)) {
+      this.inc = _.wrap(this.inc, (function(_this) {
+        return function(original) {
+          original();
+          return _this.config.inc();
+        };
+      })(this));
+    }
+    if (_.isFunction(this.config.dec)) {
+      return this.dec = _.wrap(this.dec, (function(_this) {
+        return function(original) {
+          original();
+          return _this.config.dec();
+        };
+      })(this));
+    }
   };
 
 
