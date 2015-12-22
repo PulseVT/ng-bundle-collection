@@ -1548,13 +1548,13 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.fetch = function(params, subconfig) {
-    var id, paramsStr;
-    if (params == null) {
-      params = {};
+  Collection.prototype.fetch = function(_params, subconfig) {
+    var id, params, paramsStr;
+    if (_params == null) {
+      _params = {};
     }
-    params = angular.copy(params);
-    _.extend(params, this.config.params);
+    params = angular.copy(this.config.params);
+    _.extend(params, _params);
     id = params[this.config.id_field];
     if (this.objById[id] != null) {
       return this.$q.when(this.objById[id]);

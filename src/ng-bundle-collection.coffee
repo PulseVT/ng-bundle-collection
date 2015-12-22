@@ -1002,11 +1002,11 @@ class Collection
 		});
 	</pre>
 	###
-	fetch: (params = {}, subconfig) =>
+	fetch: (_params = {}, subconfig) =>
 		# preventing params mixing if the same params object is passed to different collections
-		params = angular.copy params
-		# extending params with default preconfigured params
-		_.extend params, @config.params
+		params = angular.copy @config.params
+		# extending default preconfigured params with custom, passed to this function
+		_.extend params, _params
 
 		# getting id-field (can be undefined)
 		id = params[@config.id_field]
