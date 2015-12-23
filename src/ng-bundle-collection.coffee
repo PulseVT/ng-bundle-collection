@@ -76,9 +76,13 @@ do ->
 		//object with collection items with keys as items ids
 	</pre>
 	###
-	module.factory 'Collection', ($q, $timeout) ->
-		(rest, config) ->
-			new Collection $q, $timeout, rest, config
+	module.factory 'Collection', [
+		'$q'
+		'$timeout'
+		($q, $timeout) ->
+			(rest, config) ->
+				new Collection $q, $timeout, rest, config
+	]
 
 ###*
 # @ngdoc object

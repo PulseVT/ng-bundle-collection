@@ -308,11 +308,13 @@ var Collection,
   		//object with collection items with keys as items ids
   	</pre>
    */
-  return module.factory('Collection', function($q, $timeout) {
-    return function(rest, config) {
-      return new Collection($q, $timeout, rest, config);
-    };
-  });
+  return module.factory('Collection', [
+    '$q', '$timeout', function($q, $timeout) {
+      return function(rest, config) {
+        return new Collection($q, $timeout, rest, config);
+      };
+    }
+  ]);
 })();
 
 
