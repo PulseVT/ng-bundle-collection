@@ -1011,7 +1011,7 @@ class Collection
 	###
 	fetch: (_params = {}, subconfig) =>
 		# preventing params mixing if the same params object is passed to different collections
-		params = angular.copy @config.params
+		params = angular.copy @config.params or {}
 		# extending default preconfigured params with custom, passed to this function
 		_.extend params, _params
 
