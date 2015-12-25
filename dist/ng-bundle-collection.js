@@ -825,11 +825,15 @@ Collection = (function() {
    */
 
   Collection.prototype.__wrapWithModel = function(item) {
-    return new this.config.model(item, {
-      update: this.update,
-      "delete": this["delete"],
-      remove: this.remove
-    });
+    if (_.isFunction(this.config.model)) {
+      return new this.config.model(item, {
+        update: this.update,
+        "delete": this["delete"],
+        remove: this.remove
+      });
+    } else {
+      return item;
+    }
   };
 
 

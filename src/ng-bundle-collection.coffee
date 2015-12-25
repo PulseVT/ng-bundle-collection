@@ -428,10 +428,13 @@ class Collection
 	# Item to be wrapped.
 	###
 	__wrapWithModel: (item) =>
-		new @config.model item,
-			update: @update
-			delete: @delete
-			remove: @remove
+		if _.isFunction @config.model
+			new @config.model item,
+				update: @update
+				delete: @delete
+				remove: @remove
+		else
+			item
 
 
 	###*
