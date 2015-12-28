@@ -1,3 +1,5 @@
+#1.0.9
+
 do ->
 	###*
 	# @ngdoc object
@@ -74,9 +76,13 @@ do ->
 		//object with collection items with keys as items ids
 	</pre>
 	###
-	module.factory 'Collection', ($q, $timeout) ->
-		(rest, config) ->
-			new Collection $q, $timeout, rest, config
+	module.factory 'Collection', [
+		'$q'
+		'$timeout'
+		($q, $timeout) ->
+			(rest, config) ->
+				new Collection $q, $timeout, rest, config
+	]
 
 ###*
 # @ngdoc object
@@ -90,6 +96,7 @@ class Collection
 
 		@_initConfig()
 		@_initPublicProperties()
+		@_initProgressExposing()
 		@_initExtendFns()
 		@_initInterceptors()
 
@@ -186,12 +193,52 @@ class Collection
 	# @description
 	# Number, flag which indicates the number of current pending requests through collection
 	###
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#promises
+	# @propertyOf ng-bundle-collection.Collection
+	# @description
+	# Promises container. All requests promises are consolidated into promises of this container.
+	# Contains fields:
+	# - `global` (all requests)
+	# - `fetch` (get requests)
+	# - `put` (put requests)
+	# - `patch` (patch requests)
+	# - `update` (put+patch requests)
+	# - `create` (post requests)
+	# - `delete` (delete requests)
+	###
 	_initPublicProperties: =>
 		_.extend @,
 			cache: {}
 			objById: {}
 			arr: []
 			loading: 0
+			promises:
+				global: @$q.when()
+				fetch: @$q.when()
+				put: @$q.when()
+				patch: @$q.when()
+				update: @$q.when()
+				create: @$q.when()
+				delete: @$q.when()
+
+	###*
+	# @ngdoc
+	# @name Private_methods#_initProgressExposing
+	# @methodOf Private_methods
+	# @description
+	# Binding to call extenal functions config.inc and config.dec when local increasement or decreasement of loading flag is happened
+	###
+	_initProgressExposing: =>
+		if _.isFunction @config.inc
+			@inc = _.wrap @inc, (original) =>
+				original()
+				@config.inc()
+		if _.isFunction @config.dec
+			@dec = _.wrap @dec, (original) =>
+				original()
+				@config.dec()
 
 	###*
 	# @ngdoc
@@ -381,10 +428,13 @@ class Collection
 	# Item to be wrapped.
 	###
 	__wrapWithModel: (item) =>
-		new @config.model item,
-			update: @update
-			delete: @delete
-			remove: @remove
+		if _.isFunction @config.model
+			new @config.model item,
+				update: @update
+				delete: @delete
+				remove: @remove
+		else
+			item
 
 
 	###*
@@ -411,12 +461,87 @@ class Collection
 	###
 	create: (data) =>
 		@inc()
-		promise = @__rest(data).post(@__extractPayload data).then (response) =>
-			@add response
+		body = @__extractPayload data
+		params = @__extractParams data
+		headers = @__extractHeaders data
+		promise = @__rest(data).customPOST(body, null, params, headers).then (response) =>
+			@add response unless @config.dontCollect
 			response
 		promise.finally => @dec()
+		@promises.create = @$q.when(@promises.create).then -> promise
+		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
 
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#put
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {promise} 
+	# Promise which resolves with updated item or rejects with error response
+	# @description
+	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
+	# <p>Makes `PUT` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+	# <p>Affects `collection.loading` flag</p>
+	# <p>*Aliases: `update`*</p>
+	# @param {object} item
+	# Item data to be written to existing item
+	# @example
+	<pre>
+		var users = new Collection(Restangular.all('users'), {
+			id_field: 'specific_id_field'
+		});
+		//Creating a user
+		users.create({
+			name: 'Some User Name',
+			email: 'some-email@email.com'
+		}).then(function(user){
+			//This will make `PATCH` request to `users/:user.id`.
+			users.put({
+				specific_id_field: user.specific_id_field,
+				name: 'User Name',
+				email: 'email@email.com'
+			});
+	
+		});
+	</pre>
+	###
+	put: (data) => @__update data, 'put'
+
+	###*
+	# @ngdoc
+	# @name ng-bundle-collection.Collection#patch
+	# @methodOf ng-bundle-collection.Collection
+	# @returns {promise} 
+	# Promise which resolves with updated item or rejects with error response
+	# @description
+	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
+	# <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+	# <p>Affects `collection.loading` flag</p>
+	# <p>*Aliases: `update`*</p>
+	# @param {object} item
+	# Item data to be written to existing item
+	# @example
+	<pre>
+		var users = new Collection(Restangular.all('users'), {
+			id_field: 'specific_id_field'
+		});
+		//Creating a user
+		users.create({
+			name: 'Some User Name',
+			email: 'some-email@email.com'
+		}).then(function(user){
+			//This will make `PATCH` request to `users/:user.id`.
+			users.patch({
+				specific_id_field: user.specific_id_field,
+				name: 'User Name',
+				email: 'email@email.com'
+			});
+	
+		});
+	</pre>
+	###
+	patch: (data) => @__update data, 'patch'
 
 	###*
 	# @ngdoc
@@ -426,8 +551,9 @@ class Collection
 	# Promise which resolves with updated item or rejects with error response
 	# @description
 	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
-	# <p>Makes `PATCH` request to endpoint.</p>
+	# <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
 	# <p>Affects `collection.loading` flag</p>
+	# <p>*Aliases: `patch`*</p>
 	# @param {object} item
 	# Item data to be written to existing item
 	# @example
@@ -450,12 +576,36 @@ class Collection
 		});
 	</pre>
 	###
-	update: (data) =>
+	update: => @patch arguments...
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__update
+	# @methodOf Private_methods
+	# @returns {promise} 
+	# Promise which resolves with updated item or rejects with error response
+	# @description
+	# <p>Updates single item in collection and at backend using specified REST configuration.</p>
+	# <p>Makes `PATCH` or `PUT` request to endpoint.</p>
+	# <p>Affects `collection.loading` flag</p>
+	# <p>*Is used by public methods `put`, `patch`, `update`*</p>
+	# @param {object} item
+	# Item data to be written to existing item
+	# @param {string} method
+	# Method to be done for updating. Can be 'put' or 'patch'.
+	###
+	__update: (data, method) =>
 		@inc()
-		promise = @__rest(data).one(data[@config.id_field].toString()).patch(@__extractPayload data).then (response) =>
-			@update_locally response
+		body = @__extractPayload data
+		params = @__extractParams data
+		headers = @__extractHeaders data
+		promise = @__rest(data).customOperation(method, null, params, headers, body).then (response) =>
+			@update_locally response unless @config.dontCollect
 			response
 		promise.finally => @dec()
+		@promises[method] = @$q.when(@promises[method]).then -> promise
+		@promises.update = @$q.when(@promises.update).then -> promise
+		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
 
 	###*
@@ -520,10 +670,14 @@ class Collection
 	###
 	delete: (item) =>
 		@inc()
-		promise = @__rest(item).one(item[@config.id_field].toString()).remove().then (response) =>
-			@remove item
+		params = @__extractParams item
+		headers = @__extractHeaders item
+		promise = @__rest(item).remove(params, headers).then (response) =>
+			@remove item unless @config.dontCollect
 			response
 		promise.finally => @dec()
+		@promises.delete = @$q.when(@promises.delete).then -> promise
+		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
 
 	###*
@@ -855,11 +1009,11 @@ class Collection
 		});
 	</pre>
 	###
-	fetch: (params = {}, subconfig) =>
+	fetch: (_params = {}, subconfig) =>
 		# preventing params mixing if the same params object is passed to different collections
-		params = angular.copy params
-		# extending params with default preconfigured params
-		_.extend params, @config.params
+		params = angular.copy @config.params or {}
+		# extending default preconfigured params with custom, passed to this function
+		_.extend params, _params
 
 		# getting id-field (can be undefined)
 		id = params[@config.id_field]
@@ -1052,11 +1206,7 @@ class Collection
 				deferred.resolve @mock
 			, @mockDelay or @defaultMockDelay
 		else
-			paramsToSend = @__extractPayload params
-			if params[@config.id_field]?
-				rest = rest.one params[@config.id_field].toString()
-				paramsToSend = _.omit paramsToSend, @config.id_field
-			rest.customGET('', paramsToSend).then (response) =>
+			rest.customGET('', @__extractPayload params).then (response) =>
 				deferred.resolve @__success response, params
 			, (response) =>
 				if response.status is 304
@@ -1068,6 +1218,8 @@ class Collection
 		_.extend deferred.promise,
 			__selfResolve: deferred.resolve
 			__selfReject: deferred.reject
+		@promises.fetch = @$q.when(@promises.fetch).then -> deferred.promise
+		@promises.global = @$q.when(@promises.global).then -> deferred.promise
 		@cache[paramsStr] = deferred.promise
 
 	###*
@@ -1245,19 +1397,45 @@ class Collection
 	###
 	__rest: (params) =>
 		rest = if _.isFunction @rest then @rest params else @rest
+		if params[@config.id_field]?
+			rest = rest.one params[@config.id_field].toString()
+			delete params[@config.id_field]
 		rest = rest.one params.__subconfig.url if params.__subconfig?.url?
 		rest
 
 
 	###*
 	# @ngdoc
-	# @name Private_methods#__payload
+	# @name Private_methods#__extractPayload
 	# @methodOf Private_methods
 	# @returns {object} Extracted payload
 	# @description
 	# Extracts payload from data to be passed to rest call by removing config fields
 	###
-	__extractPayload: (data) => _.omit data, '__subconfig'
+	__extractPayload: (data) =>
+		_.omit data,  @config.id_field, '__subconfig', '__params', '__headers'
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__extractParams
+	# @methodOf Private_methods
+	# @returns {object} Extracted url params
+	# @description
+	# Extracts url params to be passed to rest call by removing config fields
+	###
+	__extractParams: (data) =>
+		data.__params
+
+	###*
+	# @ngdoc
+	# @name Private_methods#__extractHeaders
+	# @methodOf Private_methods
+	# @returns {object} Extracted headers
+	# @description
+	# Extracts headers to be passed with rest call by removing config fields
+	###
+	__extractHeaders: (data) =>
+		data.__headers
 
 
 	###*

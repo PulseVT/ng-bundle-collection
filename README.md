@@ -8,6 +8,7 @@ A handy [Restangular](https://github.com/mgonto/restangular)-oriented AngularJS 
 - CRUD for collection items
 - single source of truth for data in your app
 - caching
+- requests consolidation - if collection got the same request which is currently pending, it will be bound to promise of already pending request. This helps to avoid sending identical requests before the response is cached. This will work also if caching is off
 - intercepting, extending, modifying, replacing responses from backend
 - non-backend work mode (as a collection of local items)
 - mocking of responses (for debugging or development without backend)

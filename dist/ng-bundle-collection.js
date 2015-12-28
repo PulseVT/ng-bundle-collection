@@ -308,11 +308,13 @@ var Collection,
   		//object with collection items with keys as items ids
   	</pre>
    */
-  return module.factory('Collection', function($q, $timeout) {
-    return function(rest, config) {
-      return new Collection($q, $timeout, rest, config);
-    };
-  });
+  return module.factory('Collection', [
+    '$q', '$timeout', function($q, $timeout) {
+      return function(rest, config) {
+        return new Collection($q, $timeout, rest, config);
+      };
+    }
+  ]);
 })();
 
 
@@ -329,6 +331,9 @@ Collection = (function() {
     this.$timeout = $timeout1;
     this.rest = rest1;
     this.config = config1 != null ? config1 : {};
+    this.__extractHeaders = bind(this.__extractHeaders, this);
+    this.__extractParams = bind(this.__extractParams, this);
+    this.__extractPayload = bind(this.__extractPayload, this);
     this.__rest = bind(this.__rest, this);
     this.getCached = bind(this.getCached, this);
     this.isCached = bind(this.isCached, this);
@@ -358,7 +363,10 @@ Collection = (function() {
     this.remove = bind(this.remove, this);
     this["delete"] = bind(this["delete"], this);
     this.update_locally = bind(this.update_locally, this);
+    this.__update = bind(this.__update, this);
     this.update = bind(this.update, this);
+    this.patch = bind(this.patch, this);
+    this.put = bind(this.put, this);
     this.create = bind(this.create, this);
     this.__wrapWithModel = bind(this.__wrapWithModel, this);
     this.__addOne = bind(this.__addOne, this);
@@ -369,11 +377,13 @@ Collection = (function() {
     this.inc = bind(this.inc, this);
     this._initInterceptors = bind(this._initInterceptors, this);
     this._initExtendFns = bind(this._initExtendFns, this);
+    this._initProgressExposing = bind(this._initProgressExposing, this);
     this._initPublicProperties = bind(this._initPublicProperties, this);
     this._initConfig = bind(this._initConfig, this);
     Collection.instances.push(this);
     this._initConfig();
     this._initPublicProperties();
+    this._initProgressExposing();
     this._initExtendFns();
     this._initInterceptors();
     if (this.config.withCaching) {
@@ -500,13 +510,67 @@ Collection = (function() {
   	 * Number, flag which indicates the number of current pending requests through collection
    */
 
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#promises
+  	 * @propertyOf ng-bundle-collection.Collection
+  	 * @description
+  	 * Promises container. All requests promises are consolidated into promises of this container.
+  	 * Contains fields:
+  	 * - `global` (all requests)
+  	 * - `fetch` (get requests)
+  	 * - `put` (put requests)
+  	 * - `patch` (patch requests)
+  	 * - `update` (put+patch requests)
+  	 * - `create` (post requests)
+  	 * - `delete` (delete requests)
+   */
+
   Collection.prototype._initPublicProperties = function() {
     return _.extend(this, {
       cache: {},
       objById: {},
       arr: [],
-      loading: 0
+      loading: 0,
+      promises: {
+        global: this.$q.when(),
+        fetch: this.$q.when(),
+        put: this.$q.when(),
+        patch: this.$q.when(),
+        update: this.$q.when(),
+        create: this.$q.when(),
+        "delete": this.$q.when()
+      }
     });
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#_initProgressExposing
+  	 * @methodOf Private_methods
+  	 * @description
+  	 * Binding to call extenal functions config.inc and config.dec when local increasement or decreasement of loading flag is happened
+   */
+
+  Collection.prototype._initProgressExposing = function() {
+    if (_.isFunction(this.config.inc)) {
+      this.inc = _.wrap(this.inc, (function(_this) {
+        return function(original) {
+          original();
+          return _this.config.inc();
+        };
+      })(this));
+    }
+    if (_.isFunction(this.config.dec)) {
+      return this.dec = _.wrap(this.dec, (function(_this) {
+        return function(original) {
+          original();
+          return _this.config.dec();
+        };
+      })(this));
+    }
   };
 
 
@@ -695,7 +759,7 @@ Collection = (function() {
   Collection.prototype.add_withToCache = function(data, params) {
     var item, j, len, paramsMark, ref, response;
     response = this.add(data);
-    paramsMark = this.__calcParamsMark(params);
+    paramsMark = this.__calcCacheMark(params);
     if (!_.isArray(data)) {
       data = [data];
     }
@@ -761,11 +825,15 @@ Collection = (function() {
    */
 
   Collection.prototype.__wrapWithModel = function(item) {
-    return new this.config.model(item, {
-      update: this.update,
-      "delete": this["delete"],
-      remove: this.remove
-    });
+    if (_.isFunction(this.config.model)) {
+      return new this.config.model(item, {
+        update: this.update,
+        "delete": this["delete"],
+        remove: this.remove
+      });
+    } else {
+      return item;
+    }
   };
 
 
@@ -793,11 +861,16 @@ Collection = (function() {
    */
 
   Collection.prototype.create = function(data) {
-    var promise;
+    var body, headers, params, promise;
     this.inc();
-    promise = this.__rest(data).post(data).then((function(_this) {
+    body = this.__extractPayload(data);
+    params = this.__extractParams(data);
+    headers = this.__extractHeaders(data);
+    promise = this.__rest(data).customPOST(body, null, params, headers).then((function(_this) {
       return function(response) {
-        _this.add(response);
+        if (!_this.config.dontCollect) {
+          _this.add(response);
+        }
         return response;
       };
     })(this));
@@ -806,7 +879,91 @@ Collection = (function() {
         return _this.dec();
       };
     })(this));
+    this.promises.create = this.$q.when(this.promises.create).then(function() {
+      return promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return promise;
+    });
     return promise;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#put
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PUT` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Aliases: `update`*</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @example
+  	<pre>
+  		var users = new Collection(Restangular.all('users'), {
+  			id_field: 'specific_id_field'
+  		});
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			//This will make `PATCH` request to `users/:user.id`.
+  			users.put({
+  				specific_id_field: user.specific_id_field,
+  				name: 'User Name',
+  				email: 'email@email.com'
+  			});
+  	
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.put = function(data) {
+    return this.__update(data, 'put');
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ng-bundle-collection.Collection#patch
+  	 * @methodOf ng-bundle-collection.Collection
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Aliases: `update`*</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @example
+  	<pre>
+  		var users = new Collection(Restangular.all('users'), {
+  			id_field: 'specific_id_field'
+  		});
+  		//Creating a user
+  		users.create({
+  			name: 'Some User Name',
+  			email: 'some-email@email.com'
+  		}).then(function(user){
+  			//This will make `PATCH` request to `users/:user.id`.
+  			users.patch({
+  				specific_id_field: user.specific_id_field,
+  				name: 'User Name',
+  				email: 'email@email.com'
+  			});
+  	
+  		});
+  	</pre>
+   */
+
+  Collection.prototype.patch = function(data) {
+    return this.__update(data, 'patch');
   };
 
 
@@ -818,8 +975,9 @@ Collection = (function() {
   	 * Promise which resolves with updated item or rejects with error response
   	 * @description
   	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
-  	 * <p>Makes `PATCH` request to endpoint.</p>
+  	 * <p>Makes `PATCH` request to endpoint by calling {@link Private_methods Private_methods}`.__update` method.</p>
   	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Aliases: `patch`*</p>
   	 * @param {object} item
   	 * Item data to be written to existing item
   	 * @example
@@ -843,12 +1001,39 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.update = function(data) {
-    var promise;
+  Collection.prototype.update = function() {
+    return this.patch.apply(this, arguments);
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__update
+  	 * @methodOf Private_methods
+  	 * @returns {promise} 
+  	 * Promise which resolves with updated item or rejects with error response
+  	 * @description
+  	 * <p>Updates single item in collection and at backend using specified REST configuration.</p>
+  	 * <p>Makes `PATCH` or `PUT` request to endpoint.</p>
+  	 * <p>Affects `collection.loading` flag</p>
+  	 * <p>*Is used by public methods `put`, `patch`, `update`*</p>
+  	 * @param {object} item
+  	 * Item data to be written to existing item
+  	 * @param {string} method
+  	 * Method to be done for updating. Can be 'put' or 'patch'.
+   */
+
+  Collection.prototype.__update = function(data, method) {
+    var body, headers, params, promise;
     this.inc();
-    promise = this.__rest(data).one(data[this.config.id_field].toString()).patch(data).then((function(_this) {
+    body = this.__extractPayload(data);
+    params = this.__extractParams(data);
+    headers = this.__extractHeaders(data);
+    promise = this.__rest(data).customOperation(method, null, params, headers, body).then((function(_this) {
       return function(response) {
-        _this.update_locally(response);
+        if (!_this.config.dontCollect) {
+          _this.update_locally(response);
+        }
         return response;
       };
     })(this));
@@ -857,6 +1042,15 @@ Collection = (function() {
         return _this.dec();
       };
     })(this));
+    this.promises[method] = this.$q.when(this.promises[method]).then(function() {
+      return promise;
+    });
+    this.promises.update = this.$q.when(this.promises.update).then(function() {
+      return promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return promise;
+    });
     return promise;
   };
 
@@ -930,11 +1124,15 @@ Collection = (function() {
    */
 
   Collection.prototype["delete"] = function(item) {
-    var promise;
+    var headers, params, promise;
     this.inc();
-    promise = this.__rest(item).one(item[this.config.id_field].toString()).remove().then((function(_this) {
+    params = this.__extractParams(item);
+    headers = this.__extractHeaders(item);
+    promise = this.__rest(item).remove(params, headers).then((function(_this) {
       return function(response) {
-        _this.remove(item);
+        if (!_this.config.dontCollect) {
+          _this.remove(item);
+        }
         return response;
       };
     })(this));
@@ -943,6 +1141,12 @@ Collection = (function() {
         return _this.dec();
       };
     })(this));
+    this.promises["delete"] = this.$q.when(this.promises["delete"]).then(function() {
+      return promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return promise;
+    });
     return promise;
   };
 
@@ -1350,22 +1554,22 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.fetch = function(params) {
-    var id, paramsStr;
-    if (params == null) {
-      params = {};
+  Collection.prototype.fetch = function(_params, subconfig) {
+    var id, params, paramsStr;
+    if (_params == null) {
+      _params = {};
     }
-    params = angular.copy(params);
-    _.extend(params, this.config.params);
+    params = angular.copy(this.config.params || {});
+    _.extend(params, _params);
     id = params[this.config.id_field];
     if (this.objById[id] != null) {
       return this.$q.when(this.objById[id]);
     } else {
-      paramsStr = this.__calcParamsMark(params);
+      paramsStr = this.__calcCacheMark(params);
       if (this.cache[paramsStr] != null) {
         return this.$q.when(this.cache[paramsStr]);
       } else {
-        return this.__private_fetch(params);
+        return this.__private_fetch(params, subconfig);
       }
     }
   };
@@ -1602,12 +1806,12 @@ Collection = (function() {
   	 * Params for fetch request
    */
 
-  Collection.prototype.__private_fetch = function(params) {
-    var deferred, paramsStr, paramsToSend, rest;
+  Collection.prototype.__private_fetch = function(params, subconfig) {
+    var deferred, paramsStr, rest;
     this.inc();
     this.__callExtendFns(this.extendFns.fetch.b, params);
-    rest = this.__rest(params);
-    paramsStr = this.__calcParamsMark(params);
+    rest = this.__rest(params, subconfig);
+    paramsStr = this.__calcCacheMark(params);
     deferred = this.$q.defer();
     if (this.mock) {
       this.$timeout((function(_this) {
@@ -1617,12 +1821,7 @@ Collection = (function() {
         };
       })(this), this.mockDelay || this.defaultMockDelay);
     } else {
-      paramsToSend = params;
-      if (params[this.config.id_field] != null) {
-        rest = rest.one(params[this.config.id_field].toString());
-        paramsToSend = _.omit(paramsToSend, this.config.id_field);
-      }
-      rest.customGET('', paramsToSend).then((function(_this) {
+      rest.customGET('', this.__extractPayload(params)).then((function(_this) {
         return function(response) {
           return deferred.resolve(_this.__success(response, params));
         };
@@ -1643,6 +1842,12 @@ Collection = (function() {
     _.extend(deferred.promise, {
       __selfResolve: deferred.resolve,
       __selfReject: deferred.reject
+    });
+    this.promises.fetch = this.$q.when(this.promises.fetch).then(function() {
+      return deferred.promise;
+    });
+    this.promises.global = this.$q.when(this.promises.global).then(function() {
+      return deferred.promise;
     });
     return this.cache[paramsStr] = deferred.promise;
   };
@@ -1702,12 +1907,12 @@ Collection = (function() {
 
   /**
   	 * @ngdoc
-  	 * @name Private_methods#__calcParamsMark
+  	 * @name Private_methods#__calcCacheMark
   	 * @methodOf Private_methods
   	 * @returns {string}
   	 * The string mark of params
   	 * @description
-  	 * <p>Calculates string mark for parameters object</p>
+  	 * <p>Calculates string mark for cache entry</p>
   	 * <p>Params mark is used for:</p>
   	 * - marking responses for requests and determining if the response is already cached
   	 * - marking promises and determining if the request is already pending
@@ -1715,7 +1920,7 @@ Collection = (function() {
   	 * Params object
    */
 
-  Collection.prototype.__calcParamsMark = function(params) {
+  Collection.prototype.__calcCacheMark = function(params) {
     return JSON.stringify(params);
   };
 
@@ -1816,7 +2021,7 @@ Collection = (function() {
     return this.extendFetch({
       s: (function(_this) {
         return function(response, params) {
-          return delete _this.cache[_this.__calcParamsMark(params)];
+          return delete _this.cache[_this.__calcCacheMark(params)];
         };
       })(this)
     });
@@ -1837,12 +2042,12 @@ Collection = (function() {
     return this.extendFetch({
       s: (function(_this) {
         return function(response, params, method) {
-          return _this.cache[_this.__calcParamsMark(params)] = angular.copy(response);
+          return _this.cache[_this.__calcCacheMark(params)] = angular.copy(response);
         };
       })(this),
       e: (function(_this) {
         return function(response, params) {
-          return delete _this.cache[_this.__calcParamsMark(params)];
+          return delete _this.cache[_this.__calcCacheMark(params)];
         };
       })(this)
     });
@@ -1881,7 +2086,7 @@ Collection = (function() {
    */
 
   Collection.prototype.getCached = function(params) {
-    return this.cache[this.__calcParamsMark(params)];
+    return this.cache[this.__calcCacheMark(params)];
   };
 
 
@@ -1895,11 +2100,58 @@ Collection = (function() {
    */
 
   Collection.prototype.__rest = function(params) {
-    if (_.isFunction(this.rest)) {
-      return this.rest(params);
-    } else {
-      return this.rest;
+    var ref, rest;
+    rest = _.isFunction(this.rest) ? this.rest(params) : this.rest;
+    if (params[this.config.id_field] != null) {
+      rest = rest.one(params[this.config.id_field].toString());
+      delete params[this.config.id_field];
     }
+    if (((ref = params.__subconfig) != null ? ref.url : void 0) != null) {
+      rest = rest.one(params.__subconfig.url);
+    }
+    return rest;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__extractPayload
+  	 * @methodOf Private_methods
+  	 * @returns {object} Extracted payload
+  	 * @description
+  	 * Extracts payload from data to be passed to rest call by removing config fields
+   */
+
+  Collection.prototype.__extractPayload = function(data) {
+    return _.omit(data, this.config.id_field, '__subconfig', '__params', '__headers');
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__extractParams
+  	 * @methodOf Private_methods
+  	 * @returns {object} Extracted url params
+  	 * @description
+  	 * Extracts url params to be passed to rest call by removing config fields
+   */
+
+  Collection.prototype.__extractParams = function(data) {
+    return data.__params;
+  };
+
+
+  /**
+  	 * @ngdoc
+  	 * @name Private_methods#__extractHeaders
+  	 * @methodOf Private_methods
+  	 * @returns {object} Extracted headers
+  	 * @description
+  	 * Extracts headers to be passed with rest call by removing config fields
+   */
+
+  Collection.prototype.__extractHeaders = function(data) {
+    return data.__headers;
   };
 
 
