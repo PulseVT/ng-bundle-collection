@@ -25,7 +25,6 @@
     "commit": "20f838a07e02bfbdd8bba627dfee37c10c8fef79"
   },
   "_source": "git://github.com/diegotoral/bootstrap-bower.git",
-  "_target": "~3.0.0",
-  "_originalSource": "bootstrap-bower",
-  "_direct": true
+  "_target": "^3.0.0",
+  "_originalSource": "bootstrap-bower"
 }
