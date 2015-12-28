@@ -1554,7 +1554,7 @@ Collection = (function() {
   	</pre>
    */
 
-  Collection.prototype.fetch = function(_params, subconfig) {
+  Collection.prototype.fetch = function(_params) {
     var id, params, paramsStr;
     if (_params == null) {
       _params = {};
@@ -1569,7 +1569,7 @@ Collection = (function() {
       if (this.cache[paramsStr] != null) {
         return this.$q.when(this.cache[paramsStr]);
       } else {
-        return this.__private_fetch(params, subconfig);
+        return this.__private_fetch(params);
       }
     }
   };
@@ -1806,11 +1806,11 @@ Collection = (function() {
   	 * Params for fetch request
    */
 
-  Collection.prototype.__private_fetch = function(params, subconfig) {
+  Collection.prototype.__private_fetch = function(params) {
     var deferred, paramsStr, rest;
     this.inc();
     this.__callExtendFns(this.extendFns.fetch.b, params);
-    rest = this.__rest(params, subconfig);
+    rest = this.__rest(params);
     paramsStr = this.__calcCacheMark(params);
     deferred = this.$q.defer();
     if (this.mock) {

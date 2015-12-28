@@ -1009,7 +1009,7 @@ class Collection
 		});
 	</pre>
 	###
-	fetch: (_params = {}, subconfig) =>
+	fetch: (_params = {}) =>
 		# preventing params mixing if the same params object is passed to different collections
 		params = angular.copy @config.params or {}
 		# extending default preconfigured params with custom, passed to this function
@@ -1029,7 +1029,7 @@ class Collection
 				@$q.when @cache[paramsStr]
 			else
 				# no request with such params was made, just fetching data
-				@__private_fetch params, subconfig
+				@__private_fetch params
 
 	###*
 	# @ngdoc
@@ -1194,10 +1194,10 @@ class Collection
 	# @param {object} params
 	# Params for fetch request
 	###
-	__private_fetch: (params, subconfig) =>
+	__private_fetch: (params) =>
 		@inc()
 		@__callExtendFns @extendFns.fetch.b, params
-		rest = @__rest params, subconfig
+		rest = @__rest params
 		paramsStr = @__calcCacheMark params
 		deferred = @$q.defer()
 		if @mock #if mock is set, then answer with mock instead of making request
