@@ -96,7 +96,8 @@ class ItemModel
 	###
 	update: (data) =>
 		@update_locally data
-		@save()
+		data[@config.id_field] = @[@config.id_field]
+		@save data
 
 	###*
 	# @ngdoc
@@ -123,8 +124,8 @@ class ItemModel
 	# <p>Makes `PATCH` request to endpoint.</p>
 	# <p>Affects `collection.loading` flag</p>
 	###
-	save: =>
-		if arguments.length
-			@methods.update arguments...
+	save: (data) =>
+		if data?
+			@methods.update data
 		else
 			@methods.update @

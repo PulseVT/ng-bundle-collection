@@ -153,6 +153,7 @@ class Collection
 				update: @update
 				delete: @delete
 				remove: @remove
+			config: @config
 		@config.dontCollect = no unless @config.dontCollect?
 
 

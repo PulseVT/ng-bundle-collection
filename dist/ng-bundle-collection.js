@@ -119,7 +119,8 @@ ItemModel = (function() {
 
   ItemModel.prototype.update = function(data) {
     this.update_locally(data);
-    return this.save();
+    data[this.config.id_field] = this[this.config.id_field];
+    return this.save(data);
   };
 
 
@@ -152,10 +153,9 @@ ItemModel = (function() {
   	 * <p>Affects `collection.loading` flag</p>
    */
 
-  ItemModel.prototype.save = function() {
-    var ref;
-    if (arguments.length) {
-      return (ref = this.methods).update.apply(ref, arguments);
+  ItemModel.prototype.save = function(data) {
+    if (data != null) {
+      return this.methods.update(data);
     } else {
       return this.methods.update(this);
     }
@@ -396,7 +396,8 @@ Collection = (function() {
         update: this.update,
         "delete": this["delete"],
         remove: this.remove
-      }
+      },
+      config: this.config
     });
     if (this.config.dontCollect == null) {
       return this.config.dontCollect = false;
