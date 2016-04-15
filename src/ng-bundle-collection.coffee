@@ -143,7 +143,16 @@ class Collection
 		@config.withCaching = yes unless @config.withCaching?
 		@config.id_field = 'id' unless @config.id_field?
 		@config.respondWithPayload = yes unless @config.respondWithPayload?
-		@config.model = ItemModel unless @config.model?
+		unless @config.model?
+			@config.model = ItemModel
+		else
+			_.extend @config.model::, ItemModel::
+		_.extend @config.model::,
+			methods:
+				create: @create
+				update: @update
+				delete: @delete
+				remove: @remove
 		@config.dontCollect = no unless @config.dontCollect?
 
 
@@ -429,10 +438,7 @@ class Collection
 	###
 	__wrapWithModel: (item) =>
 		if _.isFunction @config.model
-			new @config.model item,
-				update: @update
-				delete: @delete
-				remove: @remove
+			new @config.model item
 		else
 			item
 

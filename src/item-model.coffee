@@ -36,8 +36,22 @@
 </pre>
 ###
 class ItemModel
-	constructor: (item, @methods) ->
+	constructor: (item) ->
 		_.extend @, item
+
+	###*
+	# @ngdoc
+	# @name ItemModel#create
+	# @methodOf ItemModel
+	# @returns {object}
+	# Removed item
+	# @description
+	# <p>Removes the item from collection locally.</p>
+	# @param {object} item
+	# Item data, must contain id-field
+	###
+	create: =>
+		@methods.create arguments...
 
 	###*
 	# @ngdoc
@@ -48,20 +62,7 @@ class ItemModel
 	# @description
 	# <p>Removes the item from collection locally.</p>
 	# @param {object} item
-	# Item data, must contain id-field
-	# @example
-	<pre>
-		//creating collection, with id-field 'id' by default
-		var users = new Collection(Restangular.all('users'));
-		//Creating a user
-		users.create({
-			name: 'Some User Name',
-			email: 'some-email@email.com'
-		}).then(function(user){
-			//This will remove user from collection, but not from backend
-			user.remove();
-		});
-	</pre>
+	# Item data, must contain id-fiel
 	###
 	remove: =>
 		@methods.remove @
@@ -76,19 +77,6 @@ class ItemModel
 	# <p>Removes item from collection and deletes it at backend using specified REST configuration.</p>
 	# <p>Makes `DELETE` request to endpoint.</p>
 	# <p>Affects `collection.loading` flag</p>
-	# @example
-	<pre>
-		//creating collection, with id-field 'id' by default
-		var users = new Collection(Restangular.all('users'));
-		//Creating a user
-		users.create({
-			name: 'Some User Name',
-			email: 'some-email@email.com'
-		}).then(function(user){
-			//This will make `DELETE` request to `users/:user.id`.
-			user.delete();
-		});
-	</pre>
 	###
 	delete: =>
 		@methods.delete @
@@ -105,24 +93,6 @@ class ItemModel
 	# <p>Affects `collection.loading` flag</p>
 	# @param {object} data
 	# Object with fields that should be updated or added
-	# @example
-	<pre>
-		var users = new Collection(Restangular.all('users'), {
-			id_field: 'specific_id_field'
-		});
-		//Creating a user
-		users.create({
-			name: 'Some User Name',
-			email: 'some-email@email.com'
-		}).then(function(user){
-			//This will make `PATCH` request to `users/:user.id`.
-			user.update({
-				name: 'User Name',
-				email: 'email@email.com'
-			});
-
-		});
-	</pre>
 	###
 	update: (data) =>
 		@update_locally data
@@ -138,24 +108,6 @@ class ItemModel
 	# <p>Updates item in collection locally (doesnt affect backend).</p>
 	# @param {object} item
 	# Item data to be written to item
-	# @example
-	<pre>
-		var users = new Collection(Restangular.all('users'), {
-			id_field: 'specific_id_field'
-		});
-		//Creating a user
-		users.create({
-			name: 'Some User Name',
-			email: 'some-email@email.com'
-		}).then(function(user){
-			//user will have new name and email
-			user.update_locally({
-				name: 'User Name',
-				email: 'email@email.com'
-			});
-
-		});
-	</pre>
 	###
 	update_locally: (data) =>
 		_.extend @, data
@@ -170,28 +122,9 @@ class ItemModel
 	# <p>Saves the current item state at backend using specified REST configuration.</p>
 	# <p>Makes `PATCH` request to endpoint.</p>
 	# <p>Affects `collection.loading` flag</p>
-	# @example
-	<pre>
-		var users = new Collection(Restangular.all('users'), {
-			id_field: 'specific_id_field'
-		});
-		//Creating a user
-		users.create({
-			name: 'Some User Name',
-			email: 'some-email@email.com'
-		}).then(function(user){
-			_.extend(user, {
-				name: 'User Name',
-				email: 'email@email.com'
-			});
-
-			//...
-			user.flag = true
-
-			//This will make `PATCH` request to `users/:user.id`.
-			user.save();
-		});
-	</pre>
 	###
 	save: =>
-		@methods.update @
+		if arguments.length
+			@methods.update arguments...
+		else
+			@methods.update @

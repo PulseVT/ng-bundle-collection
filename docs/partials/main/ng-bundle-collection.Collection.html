@@ -18,7 +18,7 @@
 </div></td></tr><tr><td>config</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-page"><p>Configuration for collection.</p>
 <p>Please see <a href="main/ng-bundle-collection.Collection.config">ng-bundle-collection.Collection.config</a> for available config properties.</p></div></td></tr></tbody></table></div>
 <div class="member method"><h2 id="methods">Methods</h2>
-<ul class="methods"><li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1587" class="view-source icon-eye-open"> </a><h3 id="methods___removemock">__removeMock()</h3>
+<ul class="methods"><li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1736" class="view-source icon-eye-open"> </a><h3 id="methods___removemock">__removeMock()</h3>
 <div class="__removemock"><div class="ng-bundle-collection-collection-removemock-page"><p>Removes current response mock.</p></div><h4 id="methods___removemock_example">Example</h4>
 <div class="example"><div class="ng-bundle-collection-collection-removemock-page"><pre class="prettyprint linenums">
 collection.__removeMock();
@@ -26,7 +26,7 @@ collection.__removeMock();
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1569" class="view-source icon-eye-open"> </a><h3 id="methods___setmock">__setMock(mock, mockDelay)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1718" class="view-source icon-eye-open"> </a><h3 id="methods___setmock">__setMock(mock, mockDelay)</h3>
 <div class="__setmock"><div class="ng-bundle-collection-collection-setmock-page"><p>Sets the response mock.</p>
 <p>No requests to backend will be made if the mock is set.</p></div><h5 id="methods___setmock_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mock</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-setmock-page"><p>The mock which should be responded to any <a href="main/ng-bundle-collection.Collection">collection</a><code>.fetch</code> request</p>
 </div></td></tr><tr><td>mockDelay</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-setmock-page"><p>The number of milliseconds of timeout before responding with mock</p>
@@ -46,7 +46,7 @@ collection.__setMock([
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L649" class="view-source icon-eye-open"> </a><h3 id="methods_add">add(data, params)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L662" class="view-source icon-eye-open"> </a><h3 id="methods_add">add(data, params)</h3>
 <div class="add"><div class="ng-bundle-collection-collection-add-page"><p>Adds an item to collection.
 Overwrites existing item if the id-field of item exists in collection</p>
 </div><h5 id="methods_add_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-add-page"><p>Item to be added or array of items.</p>
@@ -63,7 +63,7 @@ collection.add({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1223" class="view-source icon-eye-open"> </a><h3 id="methods_addfetchinterceptor">addFetchInterceptor(fn)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1372" class="view-source icon-eye-open"> </a><h3 id="methods_addfetchinterceptor">addFetchInterceptor(fn)</h3>
 <div class="addfetchinterceptor"><div class="ng-bundle-collection-collection-addfetchinterceptor-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#interceptors">ng-bundle-collection.Collection#interceptors</a><code>.fetch</code> chain</p>
 </div><h5 id="methods_addfetchinterceptor_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="ng-bundle-collection-collection-addfetchinterceptor-page"><p>Function which will be added to fetch interceptors chain.</p>
 </div></td></tr></tbody></table><h4 id="methods_addfetchinterceptor_example">Example</h4>
@@ -76,7 +76,7 @@ collection.addFetchInterceptor(function(successResponse){
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1186" class="view-source icon-eye-open"> </a><h3 id="methods_addinterceptor">addInterceptor(fns)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1335" class="view-source icon-eye-open"> </a><h3 id="methods_addinterceptor">addInterceptor(fns)</h3>
 <div class="addinterceptor"><div class="ng-bundle-collection-collection-addinterceptor-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#interceptors">ng-bundle-collection.Collection#interceptors</a> structure</p>
 </div><h5 id="methods_addinterceptor_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-addinterceptor-page"><p>Object, keys can be:</p>
 <ul>
@@ -95,7 +95,7 @@ collection.addInterceptor({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L694" class="view-source icon-eye-open"> </a><h3 id="methods_add_withtocache">add_withToCache(data, params)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L707" class="view-source icon-eye-open"> </a><h3 id="methods_add_withtocache">add_withToCache(data, params)</h3>
 <div class="add_withtocache"><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Adds item to collection and extends cache record, specified by <code>Params</code> parameter</p>
 </div><h5 id="methods_add_withtocache_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Item to be added or array of items.</p>
 <p>Item must contain an id-field named the same as the config parameter <code>collection.config.id_field</code> (by default it equals <code>&#39;id&#39;</code>)</p></div></td></tr><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-add-withtocache-page"><p>Params object that identifies which cache record should be the item added to</p>
@@ -118,7 +118,7 @@ This will add an item into cache record <a href="main/ng-bundle-collection.Colle
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1248" class="view-source icon-eye-open"> </a><h3 id="methods_at">at(index)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1397" class="view-source icon-eye-open"> </a><h3 id="methods_at">at(index)</h3>
 <div class="at"><div class="ng-bundle-collection-collection-at-page"><p>Takes an item from <a href="main/ng-bundle-collection.Collection">collection</a><code>.arr</code> by index</p>
 </div><h5 id="methods_at_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>index</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-at-page"><p>Index of item in <a href="main/ng-bundle-collection.Collection">collection</a><code>.arr</code></p>
 </div></td></tr></tbody></table><h5 id="methods_at_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-at-page"><p>Item from collection</p>
@@ -131,7 +131,7 @@ var item = collection.at(0);
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1273" class="view-source icon-eye-open"> </a><h3 id="methods_by">by(id)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1422" class="view-source icon-eye-open"> </a><h3 id="methods_by">by(id)</h3>
 <div class="by"><div class="ng-bundle-collection-collection-by-page"><p>Takes an item from <a href="main/ng-bundle-collection.Collection">collection</a><code>.objById</code> by its id</p>
 </div><h5 id="methods_by_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>id</td><td><a href="" class="label type-hint type-hint-number">number</a><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="ng-bundle-collection-collection-by-page"><p>Id-field value of item</p>
 </div></td></tr></tbody></table><h5 id="methods_by_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-by-page"><p>Item from collection</p>
@@ -146,7 +146,7 @@ var user = users.by(0);
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1385" class="view-source icon-eye-open"> </a><h3 id="methods_cancelallrequests">cancelAllRequests()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1534" class="view-source icon-eye-open"> </a><h3 id="methods_cancelallrequests">cancelAllRequests()</h3>
 <div class="cancelallrequests"><div class="ng-bundle-collection-collection-cancelallrequests-page"><p>Cancels all current pending requests (all promises in <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code>)</p>
 </div><h4 id="methods_cancelallrequests_example">Example</h4>
 <div class="example"><div class="ng-bundle-collection-collection-cancelallrequests-page"><pre class="prettyprint linenums">
@@ -155,7 +155,7 @@ collection.cancelAllRequests();
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1027" class="view-source icon-eye-open"> </a><h3 id="methods_clear">clear()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1176" class="view-source icon-eye-open"> </a><h3 id="methods_clear">clear()</h3>
 <div class="clear"><div class="ng-bundle-collection-collection-clear-page"><p>Clears collection by taking it back to initial empty state.</p>
 </div><h5 id="methods_clear_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-clear-page"><p>this, <a href="main/ng-bundle-collection.Collection">collection</a> instance</p>
 </div></td></tr></table><h4 id="methods_clear_example">Example</h4>
@@ -179,7 +179,7 @@ collection.cancelAllRequests();
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L794" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(item)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L807" class="view-source icon-eye-open"> </a><h3 id="methods_create">create(item)</h3>
 <div class="create"><div class="ng-bundle-collection-collection-create-page"><p>Creates single item in collection and at backend using specified REST configuration..</p>
 <p>Makes <code>POST</code> request to endpoint.</p>
 <p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_create_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-create-page"><p>Item data</p>
@@ -196,7 +196,7 @@ collection.create({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L607" class="view-source icon-eye-open"> </a><h3 id="methods_dec">dec()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L620" class="view-source icon-eye-open"> </a><h3 id="methods_dec">dec()</h3>
 <div class="dec"><div class="ng-bundle-collection-collection-dec-page"><p>Decreases the collection.loading flag by 1</p>
 </div><h5 id="methods_dec_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-dec-page"><p>Resulting collection.loading value</p>
 </div></td></tr></table><h4 id="methods_dec_example">Example</h4>
@@ -204,7 +204,7 @@ collection.create({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L931" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(item)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1070" class="view-source icon-eye-open"> </a><h3 id="methods_delete">delete(item)</h3>
 <div class="delete"><div class="ng-bundle-collection-collection-delete-page"><p>Removes single item from collection and deletes it at backend using specified REST configuration.</p>
 <p>Makes <code>DELETE</code> request to endpoint.</p>
 <p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_delete_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-delete-page"><p>Item data, must contain id-field</p>
@@ -230,7 +230,7 @@ collection.create({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1116" class="view-source icon-eye-open"> </a><h3 id="methods_extendadd">extendAdd(fns)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1265" class="view-source icon-eye-open"> </a><h3 id="methods_extendadd">extendAdd(fns)</h3>
 <div class="extendadd"><div class="ng-bundle-collection-collection-extendadd-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.add</code> structure</p>
 </div><h5 id="methods_extendadd_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-extendadd-page"><p>Object, keys can be:</p>
 <ul>
@@ -252,7 +252,7 @@ collection.extendAdd({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1154" class="view-source icon-eye-open"> </a><h3 id="methods_extendfetch">extendFetch(fns)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1303" class="view-source icon-eye-open"> </a><h3 id="methods_extendfetch">extendFetch(fns)</h3>
 <div class="extendfetch"><div class="ng-bundle-collection-collection-extendfetch-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.fetch</code> structure</p>
 </div><h5 id="methods_extendfetch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fns</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-extendfetch-page"><p>Object, keys can be:</p>
 <ul>
@@ -277,7 +277,7 @@ collection.extendFetch({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1087" class="view-source icon-eye-open"> </a><h3 id="methods_extendremove">extendRemove(fn)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1236" class="view-source icon-eye-open"> </a><h3 id="methods_extendremove">extendRemove(fn)</h3>
 <div class="extendremove"><div class="ng-bundle-collection-collection-extendremove-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.remove</code></p>
 </div><h5 id="methods_extendremove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="ng-bundle-collection-collection-extendremove-page"><p>Extending function</p>
 </div></td></tr></tbody></table><h4 id="methods_extendremove_example">Example</h4>
@@ -291,7 +291,7 @@ collection.extendRemove(function(item){
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1064" class="view-source icon-eye-open"> </a><h3 id="methods_extendupdate">extendUpdate(fn)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1213" class="view-source icon-eye-open"> </a><h3 id="methods_extendupdate">extendUpdate(fn)</h3>
 <div class="extendupdate"><div class="ng-bundle-collection-collection-extendupdate-page"><p>Adds function to <a href="main/ng-bundle-collection.Collection#extendfns">ng-bundle-collection.Collection#extendFns</a><code>.update</code></p>
 </div><h5 id="methods_extendupdate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="ng-bundle-collection-collection-extendupdate-page"><p>Extending function</p>
 </div></td></tr></tbody></table><h4 id="methods_extendupdate_example">Example</h4>
@@ -306,7 +306,7 @@ collection.extendUpdate(function(item){
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1352" class="view-source icon-eye-open"> </a><h3 id="methods_fetch">fetch(params)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1501" class="view-source icon-eye-open"> </a><h3 id="methods_fetch">fetch(params)</h3>
 <div class="fetch"><div class="ng-bundle-collection-collection-fetch-page"><p>Fetching data from backend.</p>
 <p>Makes <code>GET</code> request to configured endpoint.</p>
 <p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_fetch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-fetch-page"><p>Request params object</p>
@@ -331,7 +331,7 @@ collection.fetch({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L591" class="view-source icon-eye-open"> </a><h3 id="methods_inc">inc()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L604" class="view-source icon-eye-open"> </a><h3 id="methods_inc">inc()</h3>
 <div class="inc"><div class="ng-bundle-collection-collection-inc-page"><p>Increases the collection.loading flag by 1</p>
 </div><h5 id="methods_inc_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="ng-bundle-collection-collection-inc-page"><p>Resulting collection.loading value</p>
 </div></td></tr></table><h4 id="methods_inc_example">Example</h4>
@@ -339,7 +339,7 @@ collection.fetch({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1425" class="view-source icon-eye-open"> </a><h3 id="methods_invalidate">invalidate(data)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1574" class="view-source icon-eye-open"> </a><h3 id="methods_invalidate">invalidate(data)</h3>
 <div class="invalidate"><div class="ng-bundle-collection-collection-invalidate-page"><p>Clears <a href="main/ng-bundle-collection.Collection">collection</a><code>.cache</code></p>
 <p>Deletes cached responses where the key corresponds to params object, which <strong>contains</strong> passed params</p></div><h5 id="methods_invalidate_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-object">object</a><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="ng-bundle-collection-collection-invalidate-page"><ul>
 <li>The params object, which determines deleted cached responses
@@ -355,14 +355,70 @@ collection.fetch({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L621" class="view-source icon-eye-open"> </a><h3 id="methods_isloading">isLoading()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L634" class="view-source icon-eye-open"> </a><h3 id="methods_isloading">isLoading()</h3>
 <div class="isloading"><h5 id="methods_isloading_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ng-bundle-collection-collection-isloading-page"><p>Whether the colletion is loading something or not</p>
 </div></td></tr></table><h4 id="methods_isloading_example">Example</h4>
 <div class="example"><div class="ng-bundle-collection-collection-isloading-page"><p>collection.isLoading()</p>
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L979" class="view-source icon-eye-open"> </a><h3 id="methods_remove">remove(item)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L909" class="view-source icon-eye-open"> </a><h3 id="methods_patch">patch(item)</h3>
+<div class="patch"><div class="ng-bundle-collection-collection-patch-page"><p>Updates single item in collection and at backend using specified REST configuration.</p>
+<p>Makes <code>PATCH</code> request to endpoint by calling <a href="main/Private_methods">Private_methods</a><code>.__update</code> method.</p>
+<p>Affects <code>collection.loading</code> flag</p>
+<p><em>Aliases: <code>update</code></em></p></div><h5 id="methods_patch_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-patch-page"><p>Item data to be written to existing item</p>
+</div></td></tr></tbody></table><h5 id="methods_patch_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="ng-bundle-collection-collection-patch-page"><p>Promise which resolves with updated item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_patch_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-patch-page"><pre class="prettyprint linenums">
+var users = new Collection(Restangular.all('users'), {
+	id_field: 'specific_id_field'
+});
+//Creating a user
+users.create({
+	name: 'Some User Name',
+	email: 'some-email@email.com'
+}).then(function(user){
+	//This will make `PATCH` request to `users/:user.id`.
+	users.patch({
+		specific_id_field: user.specific_id_field,
+		name: 'User Name',
+		email: 'email@email.com'
+	});
+
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L870" class="view-source icon-eye-open"> </a><h3 id="methods_put">put(item)</h3>
+<div class="put"><div class="ng-bundle-collection-collection-put-page"><p>Updates single item in collection and at backend using specified REST configuration.</p>
+<p>Makes <code>PUT</code> request to endpoint by calling <a href="main/Private_methods">Private_methods</a><code>.__update</code> method.</p>
+<p>Affects <code>collection.loading</code> flag</p>
+<p><em>Aliases: <code>update</code></em></p></div><h5 id="methods_put_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-put-page"><p>Item data to be written to existing item</p>
+</div></td></tr></tbody></table><h5 id="methods_put_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="ng-bundle-collection-collection-put-page"><p>Promise which resolves with updated item or rejects with error response</p>
+</div></td></tr></table><h4 id="methods_put_example">Example</h4>
+<div class="example"><div class="ng-bundle-collection-collection-put-page"><pre class="prettyprint linenums">
+var users = new Collection(Restangular.all('users'), {
+	id_field: 'specific_id_field'
+});
+//Creating a user
+users.create({
+	name: 'Some User Name',
+	email: 'some-email@email.com'
+}).then(function(user){
+	//This will make `PATCH` request to `users/:user.id`.
+	users.put({
+		specific_id_field: user.specific_id_field,
+		name: 'User Name',
+		email: 'email@email.com'
+	});
+
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1128" class="view-source icon-eye-open"> </a><h3 id="methods_remove">remove(item)</h3>
 <div class="remove"><div class="ng-bundle-collection-collection-remove-page"><p>Removes single item from collection locally.</p></div><h5 id="methods_remove_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-remove-page"><p>Item data, must contain id-field</p>
 </div></td></tr></tbody></table><h5 id="methods_remove_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-remove-page"><p>Removed item</p>
 </div></td></tr></table><h4 id="methods_remove_example">Example</h4>
@@ -386,7 +442,7 @@ collection.fetch({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1318" class="view-source icon-eye-open"> </a><h3 id="methods_singlewhere">singleWhere(obj)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1467" class="view-source icon-eye-open"> </a><h3 id="methods_singlewhere">singleWhere(obj)</h3>
 <div class="singlewhere"><div class="ng-bundle-collection-collection-singlewhere-page"><p><p>Searches in collection for the single item which has particular fields with particular values</p></p>
 <p><p>Uses <a href="https://lodash.com/">lodash</a> method <code>findWhere</code></p>
 </div><h5 id="methods_singlewhere_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>obj</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-singlewhere-page"><p>Object with fields which the item should match to be found</p>
@@ -398,10 +454,11 @@ collection.singleWhere({level: 25, first_name: 'Andrew'});
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L845" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(item)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L948" class="view-source icon-eye-open"> </a><h3 id="methods_update">update(item)</h3>
 <div class="update"><div class="ng-bundle-collection-collection-update-page"><p>Updates single item in collection and at backend using specified REST configuration.</p>
-<p>Makes <code>PATCH</code> request to endpoint.</p>
-<p>Affects <code>collection.loading</code> flag</p></div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-page"><p>Item data to be written to existing item</p>
+<p>Makes <code>PATCH</code> request to endpoint by calling <a href="main/Private_methods">Private_methods</a><code>.__update</code> method.</p>
+<p>Affects <code>collection.loading</code> flag</p>
+<p><em>Aliases: <code>patch</code></em></p></div><h5 id="methods_update_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-page"><p>Item data to be written to existing item</p>
 </div></td></tr></tbody></table><h5 id="methods_update_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">promise</a></td><td><div class="ng-bundle-collection-collection-update-page"><p>Promise which resolves with updated item or rejects with error response</p>
 </div></td></tr></table><h4 id="methods_update_example">Example</h4>
 <div class="example"><div class="ng-bundle-collection-collection-update-page"><pre class="prettyprint linenums">
@@ -425,7 +482,7 @@ users.create({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L883" class="view-source icon-eye-open"> </a><h3 id="methods_update_locally">update_locally(item)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1022" class="view-source icon-eye-open"> </a><h3 id="methods_update_locally">update_locally(item)</h3>
 <div class="update_locally"><div class="ng-bundle-collection-collection-update-locally-page"><p>Updates single item in collection locally (doesnt affect backend).</p></div><h5 id="methods_update_locally_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>item</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-locally-page"><p>Item data to be written to existing item</p>
 </div></td></tr></tbody></table><h5 id="methods_update_locally_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-update-locally-page"><p>Updated item</p>
 </div></td></tr></table><h4 id="methods_update_locally_example">Example</h4>
@@ -439,7 +496,7 @@ collection.update_locally({
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1295" class="view-source icon-eye-open"> </a><h3 id="methods_where">where(obj)</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L1444" class="view-source icon-eye-open"> </a><h3 id="methods_where">where(obj)</h3>
 <div class="where"><div class="ng-bundle-collection-collection-where-page"><p><p>Searches in collection for the items which have particular fields with particular values</p></p>
 <p><p>Uses <a href="https://lodash.com/">lodash</a> method <code>where</code></p>
 </div><h5 id="methods_where_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>obj</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-where-page"><p>Object with fields which items should match to be found</p>
@@ -451,7 +508,7 @@ collection.where({level: 25, first_name: 'Andrew'});
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1882" class="view-source icon-eye-open"> </a><h3 id="methods_getcached">getCached()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L2032" class="view-source icon-eye-open"> </a><h3 id="methods_getcached">getCached()</h3>
 <div class="getcached"><div class="ng-bundle-collection-collection-getcached-page"><p>Extracts the response for request with particular params object</p>
 </div><h5 id="methods_getcached_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="ng-bundle-collection-collection-getcached-page"><p>cached response or undefined</p>
 </div></td></tr></table><h4 id="methods_getcached_example">Example</h4>
@@ -461,7 +518,7 @@ var cachedResponseForFirstPage = collection.getCached({page: 1, page_size: 10});
 </div></div>
 </div>
 </li>
-<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/511bff4/dist/ng-bundle-collection.js#L1864" class="view-source icon-eye-open"> </a><h3 id="methods_iscached">isCached()</h3>
+<li><a href="https://github.com/PulseVT/ng-bundle-collection/blob/872a73a/dist/ng-bundle-collection.js#L2014" class="view-source icon-eye-open"> </a><h3 id="methods_iscached">isCached()</h3>
 <div class="iscached"><div class="ng-bundle-collection-collection-iscached-page"><p>Determines whether the response for request with particular params object is cached</p>
 </div><h5 id="methods_iscached_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="ng-bundle-collection-collection-iscached-page"><p>Is cached or not</p>
 </div></td></tr></table><h4 id="methods_iscached_example">Example</h4>
@@ -519,6 +576,20 @@ with some properties or implement some extending functionality, but they can rep
   		(collection.objId[item[collection.config.id_field]] === item) === true;
   	</pre>
 <em>Note:</em> more handy and convenient way to take an item from <code>objById</code> storage is <a href="main/ng-bundle-collection.Collection#by">collection.by</a> method</p>
+</div></div>
+</li>
+<li><h3 id="properties_promises">promises</h3>
+<div class="promises"><div class="ng-bundle-collection-collection-promises-page"><p>Promises container. All requests promises are consolidated into promises of this container.
+Contains fields:</p>
+<ul>
+<li><code>global</code> (all requests)</li>
+<li><code>fetch</code> (get requests)</li>
+<li><code>put</code> (put requests)</li>
+<li><code>patch</code> (patch requests)</li>
+<li><code>update</code> (put+patch requests)</li>
+<li><code>create</code> (post requests)</li>
+<li><code>delete</code> (delete requests)</li>
+</ul>
 </div></div>
 </li>
 </ul>

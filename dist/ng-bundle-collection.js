@@ -40,15 +40,33 @@ var ItemModel,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 ItemModel = (function() {
-  function ItemModel(item, methods) {
-    this.methods = methods;
+  function ItemModel(item) {
     this.save = bind(this.save, this);
     this.update_locally = bind(this.update_locally, this);
     this.update = bind(this.update, this);
     this["delete"] = bind(this["delete"], this);
     this.remove = bind(this.remove, this);
+    this.create = bind(this.create, this);
     _.extend(this, item);
   }
+
+
+  /**
+  	 * @ngdoc
+  	 * @name ItemModel#create
+  	 * @methodOf ItemModel
+  	 * @returns {object}
+  	 * Removed item
+  	 * @description
+  	 * <p>Removes the item from collection locally.</p>
+  	 * @param {object} item
+  	 * Item data, must contain id-field
+   */
+
+  ItemModel.prototype.create = function() {
+    var ref;
+    return (ref = this.methods).create.apply(ref, arguments);
+  };
 
 
   /**
@@ -60,20 +78,7 @@ ItemModel = (function() {
   	 * @description
   	 * <p>Removes the item from collection locally.</p>
   	 * @param {object} item
-  	 * Item data, must contain id-field
-  	 * @example
-  	<pre>
-  		//creating collection, with id-field 'id' by default
-  		var users = new Collection(Restangular.all('users'));
-  		//Creating a user
-  		users.create({
-  			name: 'Some User Name',
-  			email: 'some-email@email.com'
-  		}).then(function(user){
-  			//This will remove user from collection, but not from backend
-  			user.remove();
-  		});
-  	</pre>
+  	 * Item data, must contain id-fiel
    */
 
   ItemModel.prototype.remove = function() {
@@ -91,19 +96,6 @@ ItemModel = (function() {
   	 * <p>Removes item from collection and deletes it at backend using specified REST configuration.</p>
   	 * <p>Makes `DELETE` request to endpoint.</p>
   	 * <p>Affects `collection.loading` flag</p>
-  	 * @example
-  	<pre>
-  		//creating collection, with id-field 'id' by default
-  		var users = new Collection(Restangular.all('users'));
-  		//Creating a user
-  		users.create({
-  			name: 'Some User Name',
-  			email: 'some-email@email.com'
-  		}).then(function(user){
-  			//This will make `DELETE` request to `users/:user.id`.
-  			user.delete();
-  		});
-  	</pre>
    */
 
   ItemModel.prototype["delete"] = function() {
@@ -123,24 +115,6 @@ ItemModel = (function() {
   	 * <p>Affects `collection.loading` flag</p>
   	 * @param {object} data
   	 * Object with fields that should be updated or added
-  	 * @example
-  	<pre>
-  		var users = new Collection(Restangular.all('users'), {
-  			id_field: 'specific_id_field'
-  		});
-  		//Creating a user
-  		users.create({
-  			name: 'Some User Name',
-  			email: 'some-email@email.com'
-  		}).then(function(user){
-  			//This will make `PATCH` request to `users/:user.id`.
-  			user.update({
-  				name: 'User Name',
-  				email: 'email@email.com'
-  			});
-  
-  		});
-  	</pre>
    */
 
   ItemModel.prototype.update = function(data) {
@@ -159,24 +133,6 @@ ItemModel = (function() {
   	 * <p>Updates item in collection locally (doesnt affect backend).</p>
   	 * @param {object} item
   	 * Item data to be written to item
-  	 * @example
-  	<pre>
-  		var users = new Collection(Restangular.all('users'), {
-  			id_field: 'specific_id_field'
-  		});
-  		//Creating a user
-  		users.create({
-  			name: 'Some User Name',
-  			email: 'some-email@email.com'
-  		}).then(function(user){
-  			//user will have new name and email
-  			user.update_locally({
-  				name: 'User Name',
-  				email: 'email@email.com'
-  			});
-  
-  		});
-  	</pre>
    */
 
   ItemModel.prototype.update_locally = function(data) {
@@ -194,32 +150,15 @@ ItemModel = (function() {
   	 * <p>Saves the current item state at backend using specified REST configuration.</p>
   	 * <p>Makes `PATCH` request to endpoint.</p>
   	 * <p>Affects `collection.loading` flag</p>
-  	 * @example
-  	<pre>
-  		var users = new Collection(Restangular.all('users'), {
-  			id_field: 'specific_id_field'
-  		});
-  		//Creating a user
-  		users.create({
-  			name: 'Some User Name',
-  			email: 'some-email@email.com'
-  		}).then(function(user){
-  			_.extend(user, {
-  				name: 'User Name',
-  				email: 'email@email.com'
-  			});
-  
-  			//...
-  			user.flag = true
-  
-  			//This will make `PATCH` request to `users/:user.id`.
-  			user.save();
-  		});
-  	</pre>
    */
 
   ItemModel.prototype.save = function() {
-    return this.methods.update(this);
+    var ref;
+    if (arguments.length) {
+      return (ref = this.methods).update.apply(ref, arguments);
+    } else {
+      return this.methods.update(this);
+    }
   };
 
   return ItemModel;
@@ -448,7 +387,17 @@ Collection = (function() {
     }
     if (this.config.model == null) {
       this.config.model = ItemModel;
+    } else {
+      _.extend(this.config.model.prototype, ItemModel.prototype);
     }
+    _.extend(this.config.model.prototype, {
+      methods: {
+        create: this.create,
+        update: this.update,
+        "delete": this["delete"],
+        remove: this.remove
+      }
+    });
     if (this.config.dontCollect == null) {
       return this.config.dontCollect = false;
     }
@@ -826,11 +775,7 @@ Collection = (function() {
 
   Collection.prototype.__wrapWithModel = function(item) {
     if (_.isFunction(this.config.model)) {
-      return new this.config.model(item, {
-        update: this.update,
-        "delete": this["delete"],
-        remove: this.remove
-      });
+      return new this.config.model(item);
     } else {
       return item;
     }
