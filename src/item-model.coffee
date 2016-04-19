@@ -37,7 +37,7 @@
 ###
 class ItemModel
 	constructor: (item) ->
-		_.extend @, item
+		_.extend @, item?.unrestangularized or item
 
 	###*
 	# @ngdoc
@@ -97,7 +97,7 @@ class ItemModel
 	update: (data) =>
 		@update_locally data
 		data[@config.id_field] = @[@config.id_field]
-		@unrestangularized.save data
+		@save data
 
 	###*
 	# @ngdoc

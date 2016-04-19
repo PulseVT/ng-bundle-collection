@@ -47,7 +47,7 @@ ItemModel = (function() {
     this["delete"] = bind(this["delete"], this);
     this.remove = bind(this.remove, this);
     this.create = bind(this.create, this);
-    _.extend(this, item);
+    _.extend(this, (item != null ? item.unrestangularized : void 0) || item);
   }
 
 
@@ -120,7 +120,7 @@ ItemModel = (function() {
   ItemModel.prototype.update = function(data) {
     this.update_locally(data);
     data[this.config.id_field] = this[this.config.id_field];
-    return this.unrestangularized.save(data);
+    return this.save(data);
   };
 
 
