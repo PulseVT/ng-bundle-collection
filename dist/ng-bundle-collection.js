@@ -120,7 +120,7 @@ ItemModel = (function() {
   ItemModel.prototype.update = function(data) {
     this.update_locally(data);
     data[this.config.id_field] = this[this.config.id_field];
-    return this.save(data);
+    return this.unrestangularized.save(data);
   };
 
 
