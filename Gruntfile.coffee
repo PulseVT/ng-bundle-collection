@@ -57,7 +57,11 @@ module.exports = (grunt) ->
 				options:
 					bare: yes
 				files:
-					'<%= config.dist %>/ng-bundle-collection.js': ['<%= config.src %>/*.coffee']
+					'<%= config.dist %>/ng-bundle-collection.js': [
+						'<%= config.src %>/item-model.coffee'
+						'<%= config.src %>/ng-bundle-collection.coffee'
+						'<%= config.src %>/config.coffee'						
+					]
 			examples:
 				options:
 					bare: yes

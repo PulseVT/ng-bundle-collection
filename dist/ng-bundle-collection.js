@@ -178,7 +178,7 @@ var Collection,
   	 * Main module which contains {@link ng-bundle-collection.Collection Collection} factory
    */
   var module;
-  module = angular.module('ng-bundle-collection', []);
+  module = angular.module('ng-bundle-collection', ['restangular']);
 
   /**
   	 * @ngdoc service
@@ -2185,4 +2185,25 @@ Collection = (function() {
 
   return Collection;
 
+})();
+
+(function() {
+  var module;
+  module = angular.module('ng-bundle-collection');
+  return module.config([
+    'RestangularProvider', function(RestangularProvider) {
+      return RestangularProvider.setResponseExtractor(function(response) {
+        var i, item, len;
+        if (_.isArray(response)) {
+          for (i = 0, len = response.length; i < len; i++) {
+            item = response[i];
+            item.unrestangularized = angular.copy(item);
+          }
+        } else {
+          response.unrestangularized = angular.copy(response);
+        }
+        return response;
+      });
+    }
+  ]);
 })();

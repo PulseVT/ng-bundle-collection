@@ -1,5 +1,3 @@
-#1.0.9
-
 do ->
 	###*
 	# @ngdoc object
@@ -7,7 +5,9 @@ do ->
 	# @description
 	# Main module which contains {@link ng-bundle-collection.Collection Collection} factory
 	###
-	module = angular.module 'ng-bundle-collection', []
+	module = angular.module 'ng-bundle-collection', [
+		'restangular'
+	]
 
 	###*
 	# @ngdoc service
