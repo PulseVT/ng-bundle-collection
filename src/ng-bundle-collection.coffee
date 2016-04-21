@@ -242,13 +242,13 @@ class Collection
 	###
 	_initProgressExposing: =>
 		if _.isFunction @config.inc
-			@inc = _.wrap @inc, (original) =>
-				original()
-				@config.inc()
+			@inc = _.wrap @inc, (original, data) =>
+				original data
+				@config.inc data
 		if _.isFunction @config.dec
-			@dec = _.wrap @dec, (original) =>
-				original()
-				@config.dec()
+			@dec = _.wrap @dec, (original, data) =>
+				original data
+				@config.dec data
 
 	###*
 	# @ngdoc
@@ -467,14 +467,14 @@ class Collection
 	</pre>
 	###
 	create: (data) =>
-		@inc()
+		@inc data
 		body = @__extractPayload data
 		params = @__extractParams data
 		headers = @__extractHeaders data
 		promise = @__rest(data).customPOST(body, null, params, headers).then (response) =>
 			@add response unless @config.dontCollect
 			response
-		promise.finally => @dec()
+		promise.finally => @dec data
 		@promises.create = @$q.when(@promises.create).then -> promise
 		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
@@ -602,14 +602,14 @@ class Collection
 	# Method to be done for updating. Can be 'put' or 'patch'.
 	###
 	__update: (data, method) =>
-		@inc()
+		@inc data
 		body = @__extractPayload data
 		params = @__extractParams data
 		headers = @__extractHeaders data
 		promise = @__rest(data).customOperation(method, null, params, headers, body).then (response) =>
 			@update_locally response unless @config.dontCollect
 			response
-		promise.finally => @dec()
+		promise.finally => @dec data
 		@promises[method] = @$q.when(@promises[method]).then -> promise
 		@promises.update = @$q.when(@promises.update).then -> promise
 		@promises.global = @$q.when(@promises.global).then -> promise
@@ -676,13 +676,13 @@ class Collection
 	</pre>
 	###
 	delete: (item) =>
-		@inc()
+		@inc item
 		params = @__extractParams item
 		headers = @__extractHeaders item
 		promise = @__rest(item).remove(params, headers).then (response) =>
 			@remove item unless @config.dontCollect
 			response
-		promise.finally => @dec()
+		promise.finally => @dec item
 		@promises.delete = @$q.when(@promises.delete).then -> promise
 		@promises.global = @$q.when(@promises.global).then -> promise
 		promise
@@ -1202,7 +1202,7 @@ class Collection
 	# Params for fetch request
 	###
 	__private_fetch: (params) =>
-		@inc()
+		@inc params
 		@__callExtendFns @extendFns.fetch.b, params
 		rest = @__rest params
 		paramsStr = @__calcCacheMark params

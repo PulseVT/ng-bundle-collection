@@ -507,17 +507,17 @@ Collection = (function() {
   Collection.prototype._initProgressExposing = function() {
     if (_.isFunction(this.config.inc)) {
       this.inc = _.wrap(this.inc, (function(_this) {
-        return function(original) {
-          original();
-          return _this.config.inc();
+        return function(original, data) {
+          original(data);
+          return _this.config.inc(data);
         };
       })(this));
     }
     if (_.isFunction(this.config.dec)) {
       return this.dec = _.wrap(this.dec, (function(_this) {
-        return function(original) {
-          original();
-          return _this.config.dec();
+        return function(original, data) {
+          original(data);
+          return _this.config.dec(data);
         };
       })(this));
     }
@@ -808,7 +808,7 @@ Collection = (function() {
 
   Collection.prototype.create = function(data) {
     var body, headers, params, promise;
-    this.inc();
+    this.inc(data);
     body = this.__extractPayload(data);
     params = this.__extractParams(data);
     headers = this.__extractHeaders(data);
@@ -822,7 +822,7 @@ Collection = (function() {
     })(this));
     promise["finally"]((function(_this) {
       return function() {
-        return _this.dec();
+        return _this.dec(data);
       };
     })(this));
     this.promises.create = this.$q.when(this.promises.create).then(function() {
@@ -971,7 +971,7 @@ Collection = (function() {
 
   Collection.prototype.__update = function(data, method) {
     var body, headers, params, promise;
-    this.inc();
+    this.inc(data);
     body = this.__extractPayload(data);
     params = this.__extractParams(data);
     headers = this.__extractHeaders(data);
@@ -985,7 +985,7 @@ Collection = (function() {
     })(this));
     promise["finally"]((function(_this) {
       return function() {
-        return _this.dec();
+        return _this.dec(data);
       };
     })(this));
     this.promises[method] = this.$q.when(this.promises[method]).then(function() {
@@ -1071,7 +1071,7 @@ Collection = (function() {
 
   Collection.prototype["delete"] = function(item) {
     var headers, params, promise;
-    this.inc();
+    this.inc(item);
     params = this.__extractParams(item);
     headers = this.__extractHeaders(item);
     promise = this.__rest(item).remove(params, headers).then((function(_this) {
@@ -1084,7 +1084,7 @@ Collection = (function() {
     })(this));
     promise["finally"]((function(_this) {
       return function() {
-        return _this.dec();
+        return _this.dec(item);
       };
     })(this));
     this.promises["delete"] = this.$q.when(this.promises["delete"]).then(function() {
@@ -1754,7 +1754,7 @@ Collection = (function() {
 
   Collection.prototype.__private_fetch = function(params) {
     var deferred, paramsStr, rest;
-    this.inc();
+    this.inc(params);
     this.__callExtendFns(this.extendFns.fetch.b, params);
     rest = this.__rest(params);
     paramsStr = this.__calcCacheMark(params);
