@@ -1221,7 +1221,7 @@ class Collection
 				else
 					@__error response, params
 					deferred.reject response
-		deferred.promise.finally @dec
+		deferred.promise.finally => @dec params
 		_.extend deferred.promise,
 			__selfResolve: deferred.resolve
 			__selfReject: deferred.reject

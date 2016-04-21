@@ -1784,7 +1784,11 @@ Collection = (function() {
         };
       })(this));
     }
-    deferred.promise["finally"](this.dec);
+    deferred.promise["finally"]((function(_this) {
+      return function() {
+        return _this.dec(params);
+      };
+    })(this));
     _.extend(deferred.promise, {
       __selfResolve: deferred.resolve,
       __selfReject: deferred.reject
