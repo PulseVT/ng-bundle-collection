@@ -1028,7 +1028,7 @@ Collection = (function() {
     for (index = j = 0, len = ref.length; j < len; index = ++j) {
       elem = ref[index];
       if (elem[this.config.id_field] === item[this.config.id_field]) {
-        _.extend(this.arr[index], item);
+        _.extend(this.arr[index], _.omit(item, _.isFunction));
         break;
       }
     }

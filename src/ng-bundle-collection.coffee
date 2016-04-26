@@ -638,7 +638,7 @@ class Collection
 		@objById[item[@config.id_field]] = item
 		for elem, index in @arr
 			if elem[@config.id_field] is item[@config.id_field]
-				_.extend @arr[index], item
+				_.extend @arr[index], _.omit item, _.isFunction
 				break
 		@__callExtendFns @extendFns.update, item
 		item
