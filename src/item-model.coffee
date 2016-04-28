@@ -50,8 +50,10 @@ class ItemModel
 	# @param {object} item
 	# Item data, must contain id-field
 	###
-	create: =>
-		@methods.create arguments...
+	create: (data) =>
+		data[@config.id_field] = @[@config.id_field]
+		@methods.create data
+	post: => @create arguments...
 
 	###*
 	# @ngdoc
@@ -96,8 +98,12 @@ class ItemModel
 	###
 	update: (data) =>
 		@update_locally data
-		data[@config.id_field] = @[@config.id_field]
 		@save data
+	patch: (data) =>
+		@save data, 'patch'
+	put: (data) =>
+		@save data, 'put'
+
 
 	###*
 	# @ngdoc
@@ -124,8 +130,10 @@ class ItemModel
 	# <p>Makes `PATCH` request to endpoint.</p>
 	# <p>Affects `collection.loading` flag</p>
 	###
-	save: (data) =>
+	save: (data, method='update') =>
 		if data?
-			@methods.update data
+			data[@config.id_field] = @[@config.id_field]
+		if data?
+			@methods[method] data
 		else
-			@methods.update @
+			@methods[method] @

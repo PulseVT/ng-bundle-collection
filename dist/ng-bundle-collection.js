@@ -43,9 +43,12 @@ ItemModel = (function() {
   function ItemModel(item) {
     this.save = bind(this.save, this);
     this.update_locally = bind(this.update_locally, this);
+    this.put = bind(this.put, this);
+    this.patch = bind(this.patch, this);
     this.update = bind(this.update, this);
     this["delete"] = bind(this["delete"], this);
     this.remove = bind(this.remove, this);
+    this.post = bind(this.post, this);
     this.create = bind(this.create, this);
     _.extend(this, (item != null ? item.unrestangularized : void 0) || item);
   }
@@ -63,9 +66,13 @@ ItemModel = (function() {
   	 * Item data, must contain id-field
    */
 
-  ItemModel.prototype.create = function() {
-    var ref;
-    return (ref = this.methods).create.apply(ref, arguments);
+  ItemModel.prototype.create = function(data) {
+    data[this.config.id_field] = this[this.config.id_field];
+    return this.methods.create(data);
+  };
+
+  ItemModel.prototype.post = function() {
+    return this.create.apply(this, arguments);
   };
 
 
@@ -119,8 +126,15 @@ ItemModel = (function() {
 
   ItemModel.prototype.update = function(data) {
     this.update_locally(data);
-    data[this.config.id_field] = this[this.config.id_field];
     return this.save(data);
+  };
+
+  ItemModel.prototype.patch = function(data) {
+    return this.save(data, 'patch');
+  };
+
+  ItemModel.prototype.put = function(data) {
+    return this.save(data, 'put');
   };
 
 
@@ -153,11 +167,17 @@ ItemModel = (function() {
   	 * <p>Affects `collection.loading` flag</p>
    */
 
-  ItemModel.prototype.save = function(data) {
+  ItemModel.prototype.save = function(data, method) {
+    if (method == null) {
+      method = 'update';
+    }
     if (data != null) {
-      return this.methods.update(data);
+      data[this.config.id_field] = this[this.config.id_field];
+    }
+    if (data != null) {
+      return this.methods[method](data);
     } else {
-      return this.methods.update(this);
+      return this.methods[method](this);
     }
   };
 
@@ -394,6 +414,8 @@ Collection = (function() {
       methods: {
         create: this.create,
         update: this.update,
+        patch: this.patch,
+        put: this.put,
         "delete": this["delete"],
         remove: this.remove
       },

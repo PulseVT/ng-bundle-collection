@@ -151,6 +151,8 @@ class Collection
 			methods:
 				create: @create
 				update: @update
+				patch: @patch
+				put: @put
 				delete: @delete
 				remove: @remove
 			config: @config
