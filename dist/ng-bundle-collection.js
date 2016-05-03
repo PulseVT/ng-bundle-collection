@@ -2092,7 +2092,7 @@ Collection = (function() {
       rest = rest.one(params[this.config.id_field].toString());
       delete params[this.config.id_field];
     }
-    if (((ref = params.__subconfig) != null ? ref.url : void 0) != null) {
+    if ((params != null ? (ref = params.__subconfig) != null ? ref.url : void 0 : void 0) != null) {
       rest = rest.one(params.__subconfig.url);
     }
     return rest;
