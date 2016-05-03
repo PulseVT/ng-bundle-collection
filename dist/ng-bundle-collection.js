@@ -530,16 +530,22 @@ Collection = (function() {
     if (_.isFunction(this.config.inc)) {
       this.inc = _.wrap(this.inc, (function(_this) {
         return function(original, data) {
-          original(data);
-          return _this.config.inc(data);
+          var ref;
+          if (!(data != null ? (ref = data.__subconfig) != null ? ref.noSpinner : void 0 : void 0)) {
+            original(data);
+            return _this.config.inc(data);
+          }
         };
       })(this));
     }
     if (_.isFunction(this.config.dec)) {
       return this.dec = _.wrap(this.dec, (function(_this) {
         return function(original, data) {
-          original(data);
-          return _this.config.dec(data);
+          var ref;
+          if (!(data != null ? (ref = data.__subconfig) != null ? ref.noSpinner : void 0 : void 0)) {
+            original(data);
+            return _this.config.dec(data);
+          }
         };
       })(this));
     }
@@ -836,7 +842,8 @@ Collection = (function() {
     headers = this.__extractHeaders(data);
     promise = this.__rest(data).customPOST(body, null, params, headers).then((function(_this) {
       return function(response) {
-        if (!_this.config.dontCollect) {
+        var ref;
+        if (!(_this.config.dontCollect || (data != null ? (ref = data.__subconfig) != null ? ref.dontCollect : void 0 : void 0))) {
           _this.add(response);
         }
         return response;
@@ -999,7 +1006,8 @@ Collection = (function() {
     headers = this.__extractHeaders(data);
     promise = this.__rest(data).customOperation(method, null, params, headers, body).then((function(_this) {
       return function(response) {
-        if (!_this.config.dontCollect) {
+        var ref;
+        if (!(_this.config.dontCollect || (data != null ? (ref = data.__subconfig) != null ? ref.dontCollect : void 0 : void 0))) {
           _this.update_locally(response);
         }
         return response;
@@ -1098,7 +1106,8 @@ Collection = (function() {
     headers = this.__extractHeaders(item);
     promise = this.__rest(item).remove(params, headers).then((function(_this) {
       return function(response) {
-        if (!_this.config.dontCollect) {
+        var ref;
+        if (!(_this.config.dontCollect || (item != null ? (ref = item.__subconfig) != null ? ref.dontCollect : void 0 : void 0))) {
           _this.remove(item);
         }
         return response;
@@ -1841,9 +1850,9 @@ Collection = (function() {
    */
 
   Collection.prototype.__success = function(response, params) {
-    var response_formatted;
+    var ref, response_formatted;
     response = this.__callInterceptors(this.interceptors.fetch, response, params);
-    if (!this.config.dontCollect) {
+    if (!(this.config.dontCollect || (params != null ? (ref = params.__subconfig) != null ? ref.dontCollect : void 0 : void 0))) {
       if ((response != null ? response.results : void 0) != null) {
         this.add(response.results);
       } else {
@@ -1893,7 +1902,12 @@ Collection = (function() {
    */
 
   Collection.prototype.__calcCacheMark = function(params) {
-    return JSON.stringify(params);
+    var toBeMarked;
+    toBeMarked = angular.copy(params);
+    if (toBeMarked != null ? toBeMarked.__subconfig : void 0) {
+      toBeMarked.__subconfig = _.pick(toBeMarked.__subconfig, 'url');
+    }
+    return JSON.stringify(toBeMarked);
   };
 
 
@@ -2074,7 +2088,7 @@ Collection = (function() {
   Collection.prototype.__rest = function(params) {
     var ref, rest;
     rest = _.isFunction(this.rest) ? this.rest(params) : this.rest;
-    if (params[this.config.id_field] != null) {
+    if ((params != null ? params[this.config.id_field] : void 0) != null) {
       rest = rest.one(params[this.config.id_field].toString());
       delete params[this.config.id_field];
     }

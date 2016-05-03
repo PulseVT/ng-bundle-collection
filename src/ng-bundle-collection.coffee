@@ -245,12 +245,14 @@ class Collection
 	_initProgressExposing: =>
 		if _.isFunction @config.inc
 			@inc = _.wrap @inc, (original, data) =>
-				original data
-				@config.inc data
+				unless data?.__subconfig?.noSpinner
+					original data
+					@config.inc data
 		if _.isFunction @config.dec
 			@dec = _.wrap @dec, (original, data) =>
-				original data
-				@config.dec data
+				unless data?.__subconfig?.noSpinner
+					original data
+					@config.dec data
 
 	###*
 	# @ngdoc
@@ -474,7 +476,7 @@ class Collection
 		params = @__extractParams data
 		headers = @__extractHeaders data
 		promise = @__rest(data).customPOST(body, null, params, headers).then (response) =>
-			@add response unless @config.dontCollect
+			@add response unless @config.dontCollect or data?.__subconfig?.dontCollect
 			response
 		promise.finally => @dec data
 		@promises.create = @$q.when(@promises.create).then -> promise
@@ -609,7 +611,7 @@ class Collection
 		params = @__extractParams data
 		headers = @__extractHeaders data
 		promise = @__rest(data).customOperation(method, null, params, headers, body).then (response) =>
-			@update_locally response unless @config.dontCollect
+			@update_locally response unless @config.dontCollect or data?.__subconfig?.dontCollect
 			response
 		promise.finally => @dec data
 		@promises[method] = @$q.when(@promises[method]).then -> promise
@@ -682,7 +684,7 @@ class Collection
 		params = @__extractParams item
 		headers = @__extractHeaders item
 		promise = @__rest(item).remove(params, headers).then (response) =>
-			@remove item unless @config.dontCollect
+			@remove item unless @config.dontCollect or item?.__subconfig?.dontCollect
 			response
 		promise.finally => @dec item
 		@promises.delete = @$q.when(@promises.delete).then -> promise
@@ -1247,7 +1249,7 @@ class Collection
 	###
 	__success: (response, params) =>
 		response = @__callInterceptors @interceptors.fetch, response, params
-		unless @config.dontCollect
+		unless @config.dontCollect or params?.__subconfig?.dontCollect
 			if response?.results?
 				@add response.results
 			else
@@ -1288,7 +1290,11 @@ class Collection
 	# @param {object} params
 	# Params object
 	###
-	__calcCacheMark: (params) -> JSON.stringify params
+	__calcCacheMark: (params) ->
+		toBeMarked = angular.copy params
+		if toBeMarked?.__subconfig
+			toBeMarked.__subconfig = _.pick toBeMarked.__subconfig, 'url'
+		JSON.stringify toBeMarked
 
 	###*
 	# @ngdoc
@@ -1406,7 +1412,7 @@ class Collection
 	###
 	__rest: (params) =>
 		rest = if _.isFunction @rest then @rest params else @rest
-		if params[@config.id_field]?
+		if params?[@config.id_field]?
 			rest = rest.one params[@config.id_field].toString()
 			delete params[@config.id_field]
 		rest = rest.one params.__subconfig.url if params.__subconfig?.url?
