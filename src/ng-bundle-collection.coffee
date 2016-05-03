@@ -1415,7 +1415,7 @@ class Collection
 		if params?[@config.id_field]?
 			rest = rest.one params[@config.id_field].toString()
 			delete params[@config.id_field]
-		rest = rest.one params.__subconfig.url if params.__subconfig?.url?
+		rest = rest.one params.__subconfig.url if params?.__subconfig?.url?
 		rest
 
 
