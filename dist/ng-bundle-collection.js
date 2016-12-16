@@ -2080,7 +2080,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           rest = _.isFunction(this.rest) ? this.rest(params) : this.rest;
           if ((params != null ? params[this.config.id_field] : void 0) != null) {
             rest = rest.one(params[this.config.id_field].toString());
-            delete params[this.config.id_field];
           }
           if ((params != null ? (ref = params.__subconfig) != null ? ref.url : void 0 : void 0) != null) {
             rest = rest.one(params.__subconfig.url);
