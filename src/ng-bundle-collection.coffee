@@ -398,7 +398,7 @@ do ->
 					paramsMark = @__calcCacheMark params
 					data = [data] unless _.isArray data
 					for item in data
-						if @cache[paramsMark]? and item[@config.id_field] not in _.pluck @cache[paramsMark].results, @config.id_field
+						if @cache[paramsMark]? and item[@config.id_field] not in _.map @cache[paramsMark].results, @config.id_field
 							@cache[paramsMark].results.push item
 					response
 
@@ -417,7 +417,7 @@ do ->
 				# Params object of request which responded with this item.
 				###
 				__addOne: (item, params) =>
-					unless item[@config.id_field] in _.pluck @objById, @config.id_field
+					unless item[@config.id_field] in _.map @objById, @config.id_field
 						fn item for fn in @extendFns.add.b
 						if @config.model?
 							item = @__wrapWithModel item

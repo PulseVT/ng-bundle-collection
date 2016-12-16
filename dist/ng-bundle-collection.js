@@ -733,7 +733,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           }
           for (j = 0, len = data.length; j < len; j++) {
             item = data[j];
-            if ((this.cache[paramsMark] != null) && (ref = item[this.config.id_field], indexOf.call(_.pluck(this.cache[paramsMark].results, this.config.id_field), ref) < 0)) {
+            if ((this.cache[paramsMark] != null) && (ref = item[this.config.id_field], indexOf.call(_.map(this.cache[paramsMark].results, this.config.id_field), ref) < 0)) {
               this.cache[paramsMark].results.push(item);
             }
           }
@@ -758,7 +758,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 
         Collection.prototype.__addOne = function(item, params) {
           var fn, j, l, len, len1, ref, ref1, ref2, results1;
-          if (ref = item[this.config.id_field], indexOf.call(_.pluck(this.objById, this.config.id_field), ref) < 0) {
+          if (ref = item[this.config.id_field], indexOf.call(_.map(this.objById, this.config.id_field), ref) < 0) {
             ref1 = this.extendFns.add.b;
             for (j = 0, len = ref1.length; j < len; j++) {
               fn = ref1[j];
